@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>{$helpinfo.title}</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/common.css">
+	<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/article.css" />
+</head>
+
+<body>
+	<div class="box">
+		<section>
+			<div class="contain">
+				<div class="content">
+					<div class="wenzhang_title">
+						{$helpinfo.title}
+					</div>
+					<a href="{:url('home/index/index')}" />
+					<div class="time">
+						<span class="date">{$helpinfo.updatetime|date='Y-m-d',###}</span><span class="writer">福满星</span>
+					</div>
+					</a>
+					<!--求关注图片-->
+					<div class="follow">
+						<img src="__HOME_STATIC__/img/follow.gif" alt="">
+					</div>
+					<div class="text">
+						{$helpinfo.content}
+						<span class="counts">阅读&nbsp;{$helpinfo.hits}</span>
+						<div class="border-bottom"></div>
+						<!--判断是否存在-->
+						{notempty name="helpinfo['bottompic']"}
+						<a href="{:url('home/index/index')}">
+							<div class="text-img">
+								<img id="bottom-img" src="{$helpinfo['bottompic']}" alt="">
+							</div>
+						</a>
+						{/notempty}
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<script src="__PUBLIC__/static/js/util.js"></script>
+	<img src="{$helpinfo.picurl}" id="wxShare-img" style="display:none !important;"/>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<script>
+		  //分享代码weichat_config
+  wx.config({$weichat_config->config(array('onMenuShareQQ','onMenuShareWeibo','onMenuShareQZone','onMenuShareTimeline','onMenuShareAppMessage'), false)});
+  wx.ready(function (){
+    var options = {
+          title: '{$helpinfo.title}',
+          desc: '{$helpinfo.titlecon}',
+        }
+    util.wxShare(options, shareSucc, shareFail);
+    function shareSucc(data){
+      alert('分享成功-_-');
+    }
+    function shareFail(data){
+      alert('分享失败-_-');
+    }
+  })
+	</script>
+</body>
+</html>

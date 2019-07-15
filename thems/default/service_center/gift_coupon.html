@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>赠品劵兑换</title>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="__HOME_STATIC__/css/coupon.css" />
+    
+    <script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+<script type="text/javascript">
+  var allAddress;
+  $.ajax({
+    url:'/public/data/area_data.json',
+    type:'GET',
+    dataType:'json',
+    async:false,
+    success:function (res) {
+      allAddress=res;
+    },
+    error:function (xhr,type) {
+      console.log('没有获取到所有的省市县信息');
+    }
+  })
+
+  function getAddressById(proId,cityId,areaId,townId) {
+    var townText='';
+    if(!townId){
+      townText='';
+    }else{
+      townText=allAddress[townId]["name"];
+    }
+    return (allAddress[proId]['name']+allAddress[cityId]['name']+allAddress[areaId]['name']+townText);
+  }
+</script>
+  <body style="background: #F3F3F3;">
+    {php}
+      if(!empty($address)) {
+        $address['phones'] = substr($address['phone'],0,3)."****".substr($address['phone'],7,4);
+      }
+    {/php}
+    <div class="box coupon-warrp">
+      <div class="addressbox">
+        {notempty name="address"}
+        <div class="wrapper" style="display: block ">
+            <div class="delivery_top clear">
+                <div class="name">收件人姓名{$address['name']}</div>
+                <div class="phone">{$address['phones']}<span>默认</span></div>
+            </div>
+            <div class="address_container">
+           <p class="address">
+             <img src="__HOME_STATIC__/img/addresslogo.png"/>
+            <script>document.write(getAddressById('{$address["province"]}','{$address["city"]}','{$address["area"]}','{$address["town"]}'))</script>
+            {$address['address_info']}</p>
+            </div>
+        </div>
+        {/notempty}
+        </div>
+        <div class="content">
+          赠品劵数量
+          <div class="inputBox">
+            <input onchange="edit(this)" type="text" placeholder="请输入要兑换的赠品劵数量" name="" id="" value="" />
+          </div>
+          <div class="dangqianjuan">
+            当前可用赠品劵{$userCouponNumber|default=0}劵
+          </div>
+        {notempty name="address"}
+          
+          <div onclick="confirm()" class="queding">
+            确定兑换
+          </div>
+        {/notempty}
+        
+      </div>
+    </div>
+    {block name="footermenu"}{/block}
+    {block name="footerjs"}
+    <script type="text/javascript">
+        {notempty name="address"}
+      
+      var click = 1;
+      var paramter = {
+        number: '',
+        address: getAddressById('{$address["province"]}','{$address["city"]}','{$address["area"]}','{$address["town"]}') + '{$address['address_info']}',
+        consignee: '{$address['name']}',
+        phone: '{$address['phone']}'
+      }
+      function confirm(){
+        if (click) {
+          click = 0
+          if (paramter.number == '' || paramter.number < 1) {
+            layer.open({
+              content: '请输入正确的数值'
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+            });
+            click = 1;
+            return false
+          }
+          $.ajax({
+            url:'{:url('giftCoupon')}',
+            data: paramter,
+            type: 'POST',
+            success: function(res){
+              if (res.code == 2000) {
+                setTimeout(function(){
+                  location.href = '{:url('index')}'
+                }, 1500)
+              }
+                    layer.open({
+                  content: res.msg
+                  ,skin: 'msg'
+                  ,time: 2 //2秒后自动关闭
+                });
+            }
+          })
+        }
+      }
+      {else /}
+      layer.open({
+        content: '您还未有默认地址,前往设置？'
+        ,btn: ['确定', '不要']
+        ,yes: function(index){
+          location.href = '{:url("address/index")}'
+        }
+      });
+      paramter = {}
+        {/notempty}
+        function edit(o){
+          paramter.number = $(o).val()
+        }
+      
+    </script>
+    {/block}
+  </body>
+</html>

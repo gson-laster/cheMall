@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<!--注册-->
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<title>注册</title>
+	<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/tool.css" />
+	<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/rem.css" />
+	<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/newStyle.css" />
+	<script src="__HOME_STATIC__/js/zepto.js"></script>
+</head>
+
+<body style="background: #fff;">
+	<div class="box SignUp Register OtherLogin Login">
+		<section>
+			<div class="warry">
+
+				<!--输入手机号-start-->
+				<div class="phone">
+					<input id="phone" data-name="手机号"  name="phone" type="text" placeholder="请输入手机号" />
+				</div>
+				<!--密码-->
+				<div class="password">
+					<input id="password" data-name="密码" name="password" type="password" placeholder="请输入密码(不少于六位)" />
+				</div>
+				<!--验证码-->
+				<div class="code">
+					<input id="code" data-name="验证码" name="code" type="text" placeholder="请输入验证码" />
+					<button class="sendcode" onclick="sendcode(this)" style="cursor:pointer;border:none">
+						发送验证码
+					</buton>
+				</div>
+				<!--推荐人-start-->
+				<div class="referee">
+					<input id="referee" type="text" name="agent_phone" data-name="推荐人手机号" placeholder="请输入推荐人手机号(必填)">
+				</div>
+
+				<!--按钮-start-->
+				<div class="submit">
+					<button onclick="submit_()">注册</button>
+				</div>
+				<!--按钮-end-->
+			</div>
+		</section>
+	</div>
+</body>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script>
+	var codeissend=1;//0验证码已经发送出去，不能再发送//1验证码未发送
+	//获取推荐人id
+	if(location.href.split('uid')[1]){
+		var co=location.href.split('uid')[1].split('/')[1].split('.html')[0];
+	}
+	//填入推荐人手机号
+	if (co) {
+		$.ajax({
+			type:"Post",
+			data:{id:co},
+			url:'{:url('api/base/getUser')}',
+			async:true,
+			success:function(data){
+				$("#referee").val(data.phone);
+			}
+		});
+	}
+	//发送验证码\
+	function sendcode(obj){
+		if(codeissend){
+			var phone=$("#phone").val();
+			if (!/^\d{11}$/.test(phone)){
+				alert("请正确输入手机号");
+				return false;
+			}
+			var obj=$(obj);
+			codeissend=0;
+			$.ajax({
+				type:"Post",
+				url:'{:url('ajaxSendSms')}',
+				data:{'mobile':phone},
+				async:true,
+				success:function(data){
+					alert(data.msg);
+					if (data.code==0) {
+						codeissend=1;
+					}
+					if (data.code==1002) {
+							var index='{:cache_data('site_config')['sms_wait_time']}';
+							var timer=setInterval(function(){
+								obj.html(testnum(index)+'s');
+								if (index==0) {
+									clearInterval(timer);
+									obj.html("发送验证码");
+									codeissend=1;
+								}
+								index--;
+							},1000);
+					}
+				}
+			});
+			}
+		}
+	function testnum(num){
+		if (num<10) {
+			return "0"+num;
+		}
+		else{
+			return num;
+		}
+	}
+	//验证数据并提交
+	function submit_(){
+		var submitisok=true;//数据是否能提交
+		var json={};//提交的数据
+		var input=$(".warry input");
+		input.each(function(){
+			if ($(this).val()=="") {
+				alert("请输入"+$(this).attr('data-name'));
+				submitisok=false;
+				return false;
+			}
+			if(($(this).attr('name')=='phone' || $(this).attr('name')=='agent_phone') &&!/^\d{11}$/.test($(this).val())){
+				alert("请输入正确的手机号");
+				submitisok=false;
+				return false;
+			}
+			if($(this).attr('name')=='password'&&$(this).val().length<6){
+				alert("密码不低于六位");
+				submitisok=false;
+				return false;
+			}
+			json[$(this).attr('name')]=$(this).val();
+		})
+		if (submitisok) {
+			$.ajax({
+				type:"Post",
+				data:json,
+				url:'{:url('register')}',
+				async:true,
+				success:function(data){
+					if(data.code!=1){
+						alert(data.msg)
+					}else if(data.code==1){
+				  		layer.open({
+					    content: '账户注册成功,是否绑定微信？'
+					    ,btn: ['是', '否']
+					    ,no: function(index){
+					      layer.close(index);
+					      $.ajax({
+					      	type:"post",
+					      	url:'{:url('login')}',
+					      	data:json,
+					      	async:true,
+					      	success:function(data){
+					      		if(data.code==1){
+						      		location.href='{:url('home/user/edit')}';
+						      	}
+					      		else{
+						      		location.href='{:url('home/login/index')}';
+					      		}
+					      	}
+					      });
+					    },
+					    yes:function(){
+					    	location.href='/home/weichat/auth_login?regster_bindwx=1&regster_uid='+data.data.id;
+					    }
+					  });
+					}
+				}
+			});
+		}
+	}
+</script>
+
+</html>

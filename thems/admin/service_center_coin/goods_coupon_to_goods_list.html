@@ -1,0 +1,157 @@
+<!-- page specific plugin scripts -->
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<body>
+<style>
+    .delete-img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        cursor: pointer;
+    }
+    .layui-layer-page .layui-layer-content{
+        height: 380px;
+    }
+</style>
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <!---->
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加分类</a>
+                      <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('delete')}"><i
+                              class="icon-trash"></i>批量删除</a>
+                    </span>
+                <!-- <span class="r_f">共：<b></b>条</span> -->
+            </div>
+            <!---->
+            <div class="table_menu_list">
+                <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                        <th width="50">ID</th>
+                        <th width="120">申请会员</th>
+                        <th width="80">申请数量</th>
+                        <th width="180">收件人</th>
+                        <th width="180">收件人电话</th>
+                        <th width="180">地址</th>
+                        <th width="180">多少单位的货</th>
+                        <th width="80">券的类型</th>
+                        <th width="80">审核状态</th>
+                        <th width="180">创建时间</th>
+                        <th width="250">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="li"}  
+                    <tr>
+                        <td><label><input type="checkbox" name="ids[]" value="{$li.id}" class="ace"><span class="lbl"></span></label></td>
+                        <td>{$li.id}</td>
+                        <td>{$li["user_id"]}</td>
+                        <td>{$li["coupon_num"]}</td>
+                        <td>{$li["consignee"]}</td>
+                        <td>{$li["phone"]}</td>
+                        <td>{$li["address"]}</td>
+                        <td>{$li["goods_num"]}</td>
+                        <td>
+                            {switch name="li.coupon_ty"}
+                            {case value="1"}兑换券{/case}
+                            {default/}赠品券
+                            {/switch}
+                        </td>
+                        <td class="checkStatus">
+                          {switch name="li.status"}
+                          {case value="1"}<span class="label label-default">未发货</span>{/case}
+                          {case value="2"}<span class="label label-success">已发货</span>{/case}
+                          {default/}<span class="label label-warning">驳回</span>
+                          {/switch}
+                        </td>
+                        <td>{$li.createtime|default=""}</td>
+                        <td class="td-manage" style="text-align:left;">  
+                            <!-- 审核成功&&未发货 才进行发货-->
+                            <!-- 审核成功&&未发货 才可以进行驳回 -->
+                            <!-- 驳回后本页不能操作 -->
+                            <!-- 已发货 -->
+                            <!-- 已收货 -->
+                            <a title="订单详细" href="{:url('goodsCouponToGoodsDetail')}?id={$li.id}" class="btn btn-xs btn-info order_detailed"><i class="fa fa-list bigger-120"></i></a>
+                            <!--{switch name="li.status"}
+                           
+                            {case value="1"}
+                            <a title="确认" href="javascript:;" onclick="verifyOrReject(this,{id:{$li.id}},1)" class="btn btn-xs btn-warning reject">确认</a>
+                            <a title="驳回" href="javascript:;" onclick="verifyOrReject(this,{id:{$li.id}},3)" class="btn btn-xs btn-warning reject">驳回</a>
+                            {/case}
+                            {case value="2"}
+                                {if condition="$li.shipping_status eq '0'"}
+                                <a title="发货" href="{:url('goodsCouponToGoodsDetail',array('id'=>$li.id))}" class="btn btn-xs btn-info">去发货</a>
+                                {/if}
+                                {if condition="$li.shipping_status eq '1' AND !empty($li.receipt_time)"}
+                                <a title="已收货" href="javascript:;" class="btn btn-xs btn-info">已收货</a>
+                                {/if}
+                                {if condition="$li.shipping_status eq '1' AND empty($li.receipt_time)"}
+                                <a href="已发货" href="javascript:;" class="btn btn-xs btn-info">已发货</a>
+                                {/if}
+                            {/case}
+                            {default/}<a href="javascript:;" title="已驳回" class="btn btn-xs btn-warning">已驳回</a>
+                            {/switch}-->
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+  //审核成功 
+ function verifyOrReject(obj,options,isReject){
+  var url = '{:url("doGoodsCouponToGoods")}'
+  var _this = $(obj)
+  var status
+  if(isReject==1){
+     status = 2
+  }else{
+    status =3
+  }
+  options.status = status
+  var ajaxOptions = {
+      type:'POST',
+      data:options,
+      url:url,
+      success:function(res){
+      if(res.code==2000){
+        layer.msg(res.msg)
+        // 审核成功
+        if(status==2){
+          var html = '<a href="javascript:;" class="btn btn-xs btn-success" title="审核成功"><i class="icon-ok bigger-120"></i></a>'    
+         _this.parent().prepend(html)
+         _this.parent().siblings('.checkStatus').html('<span class="label label-success">审核成功</span>')
+         _this.siblings('.reject').remove()
+         _this.remove()
+        }else{
+        //驳回
+//       window.location.reload()   
+        }  
+       }else{
+        layer.msg(res.msg)
+        window.location.reload() 
+       } 
+      },
+      error:function(){
+        layer.msg('服务器错误')
+      } 
+  }
+  $.ajax(ajaxOptions)
+ } 
+</script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>即时通讯-1.0</title>
+    <link rel="stylesheet" href="/Public/layui/css/layui.css">
+    <script type="text/javascript" src="/Public/layui/layui.js"></script>
+    <script type="text/javascript" src="/Public/static/js/zepto.js"></script>
+    <style>
+        .box{
+            border:#e2e2e2 1px solid;
+            width: 50%;
+            min-height: 500px;
+            margin: auto;
+        }
+        .msg{
+            height:450px;
+            overflow-y: scroll;
+            overflow-y: visible;
+            overflow-x: hidden;
+        }
+        .ans{
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+        .left{
+            float: left;
+        }
+        .right{
+            float: right;
+        }
+        .photo{
+            width: 50px;
+            height:50px;
+            border-radius: 25px;
+            overflow: hidden;
+            float: left;
+        }
+        .photo img {
+            width: 100%;
+        }
+        .name {
+            color: grey;
+        }
+        .message {
+            background-color: #e2e2e2;
+            border-radius: 4px;
+            padding: 8px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .messages {
+            background-color: blueviolet;
+            color: #fff;
+            border-radius: 4px;
+            padding: 8px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .s{
+            float: left;
+            margin-left: 10px;
+        }
+        .ss{
+            float: left;
+            margin-right: 10px;
+        }
+        .cb{
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+<blockquote class="layui-elem-quote">在线用户列表(<span class="num"></span>)</blockquote>
+<input type="hidden" id="photo" value="1111">
+<php>$class = array(
+    'layui-btn layui-btn-primary'=>0,
+    'layui-btn'=>1,
+    'layui-btn layui-btn-normal'=>2,
+    'layui-btn layui-btn-warm'=>3,
+    'layui-btn layui-btn-danger'=>4);</php>
+<div class="ubox"></div>
+
+
+<blockquote class="layui-elem-quote">群聊</blockquote>
+<div class="box">
+    <h2 style="text-align: center; padding-top: 10px">群聊</h2><hr>
+    <div class="msg">
+
+
+
+    </div>
+    <textarea id="post"></textarea>
+    <button id="fs" class="layui-btn layui-btn-normal">发 送</button> <span style="color: grey;">Tip：支持Enter发送消息(需要点一下内容框的外面)</span>
+</div>
+
+<blockquote class="layui-elem-quote">欢迎来到即时通讯1.0。 <span style="color: red">作者：周长城。</span> 还有些不好的地方，请大家见谅</blockquote>
+</body>
+</html>
+<script>
+    ws = new WebSocket("ws://127.0.0.1:7272");
+    var isConnect = false;
+    ws.onopen = function (evt) { onOpen(evt) };
+    ws.onclose = function (evt) { onClose(evt) };
+    ws.onmessage = function (evt) { onMessage(evt) };
+    ws.onerror = function (evt) { onError(evt) };
+    function onOpen(evt) {
+        console.log("连接服务器成功");
+        isConnect = true;
+        var name = $('#name').val();
+        var photo = $('#photo').val();
+        var json = {type:'name',name:name,photo:photo};
+        ws.send(JSON.stringify(json));
+    }
+
+    function onClose(evt) {
+    }
+
+    function onMessage(evt) {
+        var data = JSON.parse(evt.data);
+        if(data.type=='name') {
+            $('.ubox').empty();
+            for(var i in data.all) {
+                var str = '<button id="'+i+'" data-id="'+i+'" style="margin-bottom: 10px" data-photo="'+data.all[i]['name']+'" class="but <php>echo array_rand($class);</php>">'+data.all[i]['photo']+'</button>';
+                $('.ubox').append(str);
+            }
+            $('.num').text(data.num);
+        }else if(data.type=='logout') {
+            $('.ubox').empty();
+            for(var i in data.all) {
+                var str = '<button id="'+i+'" data-id="'+i+'" style="margin-bottom: 10px" data-photo="'+data.all[i]['name']+'" class="but <php>echo array_rand($class);</php>">'+data.all[i]['photo']+'</button>';
+                $('.ubox').append(str);
+            }
+            $('.num').text(data.num);
+        }else if(data.type=='msg') {
+            var str="";
+            var name = $('#name').val();
+            if(data.name==name) {
+                str+= '<div class="ans">';
+                str+= '<div class="right">';
+                str+='<div class="ss">';
+                str+= '<div class="name">'+data.photo+'</div>';
+                str+= '<div class="messages">'+html_decode(data.msg)+'</div>';
+                str+='</div>';
+                str+= '<div class="photo"><img src="'+data.name+'"></div>';
+                str+='<div class="cb"></div>';
+                str+= '</div>';
+                str+='<div class="cb"></div>';
+                str+= '</div>';
+            }else{
+                str+= '<div class="ans">';
+                str+= '<div class="left">';
+                str+= '<div class="photo"><img src="'+data.name+'"></div>';
+                str+='<div class="s">';
+                str+= '<div class="name">'+data.photo+'</div>';
+                str+= '<div class="message">'+html_decode(data.msg)+'</div>';
+                str+='</div>';
+                str+='<div class="cb"></div>';
+                str+= '</div>';
+                str+='<div class="cb"></div>';
+                str+= '</div>';
+            }
+            $('.msg').append(str);
+        }
+        console.log(data);
+    }
+
+    function sendName() {
+        var name = $('#name').val();
+        var photo = $('#photo').val();
+        var json = {name:name,photo:photo};
+        ws.send(JSON.stringify(name));
+    }
+
+
+    function html_decode(str)
+    {
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&amp;/g, "&");
+        s = s.replace(/&lt;/g, "<");
+        s = s.replace(/&gt;/g, ">");
+        s = s.replace(/&nbsp;/g, " ");
+        s = s.replace(/&#39;/g, "\'");
+        s = s.replace(/&quot;/g, "\"");
+        s = s.replace(/<br>/g, "\n");
+        return s;
+    }
+
+    function html_encode(str) {
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&/g, "&amp;");
+        s = s.replace(/</g, "&lt;");
+        s = s.replace(/>/g, "&gt;");
+        s = s.replace(/ /g, "&nbsp;");
+        s = s.replace(/\'/g, "&#39;");
+        s = s.replace(/\"/g, "&quot;");
+        s = s.replace(/\n/g, "<br>");
+        return s;
+    }
+////////////////////////////////////////////////////////////////////一下为页面样式
+    layui.use(['layer', 'form'], function(){
+        var layer = layui.layer
+            ,form = layui.form();
+
+        $('.ubox').delegate('.but','click',function() {
+            var photo = $(this).attr("data-photo");
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                skin: 'layui-layer-nobg', //没有背景色
+                shadeClose: true,
+                content: '<img src="'+photo+'">'
+            });
+
+        })
+
+        $('.ubox').delegate('.but','mouseover',function () {
+            var id = $(this).attr("data-id");
+            layer.tips('点击TA的查看头像', '#'+id, {
+                tips: [1, '#0FA6D8'] //还可配置颜色
+            });
+        })
+    });
+
+    layui.use('layedit', function(){
+        var layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: '/Test/upload' //接口url
+                ,type: 'post' //默认post
+            }
+        });
+        var index = layedit.build('post',{
+            height:200
+        }); //建立编辑器
+        $('#fs').click(function () {
+            var text = html_encode(layedit.getContent(index));
+            if(text=="") {
+                layer.msg('内容不能为空！', function(){});
+                return false;
+            }
+            var json = {type:'msg',text:text};
+            ws.send(JSON.stringify(json));
+            $('#LAY_layedit_1').contents().find('body').html('');
+        })
+    });
+    $(function () {
+        $(document).keyup(function(event){
+            if(event.keyCode ==13){
+                $("#fs").trigger("click");
+            }
+        });
+    })
+</script>

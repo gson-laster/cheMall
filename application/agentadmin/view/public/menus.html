@@ -1,0 +1,59 @@
+<div id="menu_style" class="menu_style">
+    <ul class="nav nav-list" id="nav_list">
+        <li class="home"><a href="javascript:void(0)" name="{:url('agentadmin/Index/welcome')}" class="iframeurl" title=""><i class="icon-home"></i><span class="menu-text"> 系统首页 </span></a></li>
+
+        <li>
+            <a href="#" class="dropdown-toggle"><i class="icon-group"></i><span class="menu-text">员工管理 </span><b class="arrow icon-angle-down"></b></a>
+            <ul class="submenu">
+                <!--<li class="home"><a href="javascript:void(0)" name="admin_Competence.html" title="权限管理" class="iframeurl"><i class="icon-double-angle-right"></i>权限管理</a></li>-->
+                <li class="home"><a href="javascript:void(0)" name="{:url('Employee/index')}" title="管理员列表" class="iframeurl"><i class="icon-double-angle-right"></i>员工列表</a></li>
+                <!--<li class="home">
+                    <a href="javascript:void(0)" name="{:url('Order/NeedPayOrderList')}" title="代理订单列表" class="iframeurl"><i class="icon-double-angle-right"></i>代理订单列表</a>
+                </li>-->
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="dropdown-toggle"><i class="icon-table"></i><span class="menu-text">统计数据</span><b class="arrow icon-angle-down"></b></a>
+            <ul class="submenu">
+                <li class="home"><a href="javascript:void(0)" name="{:url('Census/child_goods_list')}" title="销售明细" class="iframeurl"><i class="icon-double-angle-right"></i>销售明细</a></li>
+                <li class="home"><a href="javascript:void(0)" name="{:url('Census/childTree')}" title="层级树" class="iframeurl"><i class="icon-double-angle-right"></i>层级树</a></li>
+                <li class="home"><a href="javascript:void(0)" name="{:url('Census/index')}" title="会员统计" class="iframeurl"><i class="icon-double-angle-right"></i>会员统计</a></li>
+
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="dropdown-toggle"><i class="icon-list"></i><span class="menu-text">订单管理</span><b class="arrow icon-angle-down"></b></a>
+            <ul class="submenu">
+                <li class="home">
+                    <a href="javascript:void(0)" name="{:url('Order/NeedPayOrderList')}" title="代理订单列表" class="iframeurl"><i class="icon-double-angle-right"></i>代理订单列表</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="dropdown-toggle"><i class="icon-list"></i><span class="menu-text">消息列表</span><b class="arrow icon-angle-down"></b></a>
+            <ul class="submenu">
+                <li class="home">
+                    <a href="javascript:void(0)" name="{:url('Index/messaage_list')}" title="代理订单列表" class="iframeurl"><i class="icon-double-angle-right"></i>消息列表</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript">
+    $("#menu_style").niceScroll({
+        cursorcolor: "#888888",
+        cursoropacitymax: 1,
+        touchbehavior: false,
+        cursorwidth: "5px",
+        cursorborder: "0",
+        cursorborderradius: "5px"
+    });
+</script>
+<div class="sidebar-collapse" id="sidebar-collapse">
+    <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+</div>
+<script type="text/javascript">
+    try {
+        ace.settings.check('sidebar', 'collapsed')
+    } catch (e) {}
+</script>

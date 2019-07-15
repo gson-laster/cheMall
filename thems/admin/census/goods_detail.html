@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		 <div class="page-content clearfix">
+        <div id="Member_Ratings">
+            <div class="d_Confirm_Order_style">
+                <div class="search_style">
+                    <ul class="search_content clearfix">
+                        <form action="{:url('goods_detail')}" method="get">
+                     <li><label class="l_f">开始时间</label><input name="start_time" class="inline laydate-icon" id="start" style=" margin-left:10px;"></li>
+                            <li><label class="l_f">结束时间</label><input name="end_time" class="inline laydate-icon" id="end" style=" margin-left:10px;"></li>
+                            <li style="width:90px;"><button type="submit" class="btn_search"><i class="icon-search"></i>查询</button></li>
+                        </form>
+                    </ul>
+                </div>
+                <div class="table_menu_list">
+                    <table class="table table-striped table-bordered table-hover" id="sample-table">
+                        <thead>
+                            <tr>
+                              <th width="100">商品货号</th>
+                              <th width="100">订单货号</th>
+                              <th width="160">商品名称</th>
+                              <th width="80">商品数量</th>
+                              <th width="100">单价</th>
+                              <th width="100">总价</th>
+                              <th width="100">利润</th>
+                              <th width="100">状态</th>
+                              <th width="50">是否评价</th>
+                              <th width="50">订单详情</th>
+                              <th width="120">创建时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="list" id="u"}
+                            <tr>
+                              <td>{$u.goods_sn}</td>
+                              <td>{$u.order_sn}</td>
+                                <td>{$u.goods_name}</td>
+                                <td>{$u.goods_num}</td>
+                                <td>{$u.goods_price}</td>
+                                <td>{$u.goods_total}</td>
+                                <td>{$u.profit}</td>
+                                <td>{if condition="$u.is_send eq 0"}未发货{elseif condition="$u.is_send eq 1" /}已发货{elseif condition="$u.is_send eq 2" /}已换货{elseif condition="$u.is_send eq 3" /}已退货{/if}</td>
+                                <td>{if condition="$u.is_comment eq 1"}是{else /}否{/if}</td>
+                                <td><a title="订单详细" href="{:url('Admin/order/delivery_info',['order_id'=>$u['order_id']])}" class="btn btn-xs btn-info order_detailed"><i class="fa fa-list bigger-120"></i></a></td>
+                                <td>{$u.createtime|date="Y-m-d",###}</td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                    {$list->render()}
+                </div>
+            </div>
+        </div>
+    </div>
+	</body>
+<script type="text/javascript">
+  var date="",start="",end="";
+  {if condition="isset($time_string)"}
+    date="{$time_string}"
+  {/if}
+  if(date!=""){
+    start=date.split('至')[0];
+    end=date.split('至')[1];
+  }
+  $("#start").val(start);
+  $("#end").val(end);
+    laydate({
+      elem: '#start',
+      event: 'focus',
+      istoday: true
+    });
+    laydate({
+      elem: '#end',
+      event: 'focus',
+      istoday: true
+    });
+</script>
+</html>

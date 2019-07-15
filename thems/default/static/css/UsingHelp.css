@@ -1,0 +1,68 @@
+.UsingHelp{
+	background: #F5F5F5;
+}
+.UsingHelp .one{
+	background: white;
+	position: relative;
+	min-height: 0.7rem;
+	height: 100%;
+}
+.UsingHelp .user_img{
+	position: absolute;
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 50%;
+	overflow: hidden;
+	left: 0.12rem;
+	top: 0.1rem;
+}
+.UsingHelp .user_img img{
+	width: 100%;
+	height: 100%;
+}
+.UsingHelp .user_name{
+	margin-left: 0.7rem;
+	padding: 0.26rem 0;
+}
+.UsingHelp .Sign{
+	position: absolute;
+	right: 0.12rem;
+	top: 0;
+	padding: 0.26rem 0;
+}
+.UsingHelp .two{
+	margin-top: 0.12rem;
+}
+.UsingHelp .two li{
+	    background:url(../img/icon_01.png) 10px 50% no-repeat;
+	    padding: 0.08rem 0;
+}
+.UsingHelp .using_text{
+	background: white;
+	background: #FFF url(../img/icon_02.png?1611161132) right 50% no-repeat;
+	padding: 0.1rem 0.1rem;
+	/*margin: 0.1rem 0;*/
+	margin-left: 40px;
+	box-shadow: 1px 1px 5px #CCC;
+	border-radius: 0.08rem;
+	margin-right: 0.12rem;
+	padding-right: 0.24rem;
+}
+.UsingHelp .using_text p:first-child{
+		font-weight: 600;
+		-webkit-line-clamp: 1;
+}
+.UsingHelp .using_text p:last-child{
+	font-size: 0.12rem;
+	padding-top: 0.04rem;
+}
+.UsingHelp .two li:first-child{
+	    background:url(../img/icon_01_1.png) 10px 50% no-repeat !important;
+}
+.UsingHelp .two li:last-child{
+	    background:url(../img/icon_01_2.png) 10px 50% no-repeat !important;
+}
+/*.arrow{
+	float: right;
+	display: inline-block;
+}*/

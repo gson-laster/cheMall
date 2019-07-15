@@ -1,0 +1,67 @@
+
+{extend name='/public/base' /}
+{block name='title'}全民商城-商品分类{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">{/block}
+
+{block name='content'}
+<div class="box">
+    <div class="cate_header" style="border-bottom:1px solid #dbdbdb;">商品分类</div>
+    <div class="classify_container">
+        <div class="left">
+            <ul id="tab">
+                {volist name="first_list" id="list_item"}
+                {if condition="$list_item.level eq 1"}
+                <li>{$list_item.short_name}</li>
+                {/if}
+                {/volist}
+            </ul>
+        </div>
+
+        <div class="right">
+            {volist name="first_list" id="list_item" key="n"}
+            <div class="item_container" style="display:{eq name="n" value="1"}block{else/}none{/eq}">
+            {volist name="second_list" id="sl" key="k"}
+            {eq name="sl['pid']" value="$list_item['id']"}
+            <div class="item clear">
+                <p><a href="{:url('goodsList')}?cate_id={$sl['id']}">{$sl.short_name}</a></p>
+                <ul>
+                    {volist name="third_list" id="thl"}
+                    {eq name="thl['pid']" value="$sl['id']"}
+                    <li><a href="{:url('goodsList')}?cate_id={$thl['id']}">{$thl.short_name}</a></li>
+                    {/eq}
+                    {/volist}
+                </ul>
+            </div>
+            {/eq}
+            {/volist}
+        </div>
+        {/volist}
+    </div>
+</div>
+
+{block name='footermenu'}
+{include file="thems/default/public/Footer/footer.html"}
+{/block}
+
+{/block}
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script>
+  $(document).ready(function () {
+    var $oItem=$(".item_container");
+//		    $(($oItem)[0]).siblings().css("display","none");
+//左边栏点击
+    $("#tab").find("li").click(function () {
+      var index =0;
+      $(this).addClass("selected").siblings("li").removeClass("selected");
+      $(this).css("background","#f3f3f3");
+      $(this).css("border-left","2px solid #df3535");
+      $(this).siblings().css("background","white");
+      $(this).siblings().css("border-left","none");
+      index = $(this).index();
+      $($oItem[index]).css("display","block").siblings().css("display","none");
+    });
+  })
+</script>
+{/block}

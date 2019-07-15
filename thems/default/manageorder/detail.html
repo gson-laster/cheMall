@@ -1,0 +1,44 @@
+{extend name='/public/base' /} {block name='title'}订单详情{/block} {block name='headcss'}
+<link rel="stylesheet" href="../static//css/wallet.css" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<style type="text/css">
+  .footer_space{
+    height: 0 !important;
+  }
+</style>
+ {/block} 
+ {block name="content"}
+ {php}
+  $status = ['未处理', '已入账', '驳回'];
+ {/php}
+<div class="widthdraw_detail">
+  <div class="title">订单详情</div>
+  <ul class="lists">
+    <li class="item">
+      <p class="left">订单号</p>
+      <p class="right">{$result['ticket']}</p>
+    </li>
+    <li class="item">
+      <p class="left">充值账号</p>
+      <p class="right">{$result['money']}</p>
+    </li>
+    <li class="item">
+      <p class="left">会员昵称</p>
+      <p class="right">{:date('Y-m-d m:i:s', $result['createtime'])}</p>
+    </li>
+    <li class="item">
+      <p class="left">充值金额</p>
+      <p class="right">{$status[$result['status'] - 1]}</p>
+    </li>
+    <li class="item">
+      <p class="left">交易时间</p>
+      <p class="right">{:date('Y-m-d m:i:s', $result['updatetime'])}</p>
+    </li>
+    <li class="item">
+      <p class="left">充值状态</p>
+      <p class="right">{:date('Y-m-d m:i:s', $result['updatetime'])}</p>
+    </li>
+  </ul>
+  {block name='footermenu'} {include file="thems/default/public/Footer/footer.html"} {/block}
+</div>
+{/block}

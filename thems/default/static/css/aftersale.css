@@ -1,0 +1,26 @@
+
+.box.aftersale{
+  background-color: #fff;
+}
+
+
+.aftersale .header{
+  height: 140px;
+  width: 100%;
+  background-image: url('../img/aftersale.png');
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+}
+.aftersale .aftersale-list li{
+  background-color: #fff;
+  display: block;
+  height:42px;
+  border-bottom: 1px solid #f3f3f3;
+  line-height: 42px;
+  padding: 0 16px;
+  background: url('../img/user_center_03.png');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: auto 12px;
+}
+

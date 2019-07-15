@@ -1,0 +1,90 @@
+{extend name='/public/base' /}
+{block name='title'}会员升级-账户明细{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/applyagentlist.css"/>
+<link rel="stylesheet" href="__HOME_STATIC__/css/iconfont/iconfont.css"/>
+{/block}
+{block name="headjs"}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+{/block}
+{block name="content"}
+<div class="box">
+	<div class="title">
+		申请纪录
+	</div>
+	<div class="listBox">
+{php}
+foreach ($list as $value) {
+  if ($value['agent_type'] == 1) {
+    $type = '省级代理';
+  }
+    if ($value['agent_type'] == 2) {
+    $type = '市级代理';
+  }
+    if ($value['agent_type'] == 3) {
+    $type = '县级代理';
+  }
+    if ($value['agent_type'] == 4) {
+    $type = '经销商';
+  }
+  if ($value['status'] == 1) {
+    $edit = '';
+    $state = '<div class="over">已通过</div>';
+  } else if ($value['status'] == 3){
+    $state = '<div class="over">已取消</div>';
+  } 
+  else {
+    $state = '(审核中)';
+    $edit = '<div onclick="delete_('.$value["id"].', this)" class="delete"><span class="iconfont icon-shanchu"></span>撤销申请</div>';
+  }
+  echo '<div class="list"><span class="col">'.date('Y-m-d', $value['createtime']).'</span>升级为<span class="colo">'.$type.'<span class="n">'.$state.'</span>'.'</span>'.$edit.'</div>';
+}
+{/php}
+	</div>
+</div>
+{/block}
+{block name="footerjs"}
+<script type="text/javascript">
+	function delete_(id, obj) {
+	  var obj = $(obj)
+    var n =obj.parents('.list').find('.n')
+    layer.open({
+      content: '您确定取消申请吗？'
+      ,btn: ['取消', '不要']
+      ,yes: function(index){
+        $.ajax({
+        	type:"get",
+        	data: {
+        	  table: 'agent_apply',
+        	  id_name: 'id',
+        	  id_value: id,
+        	  field: 'status',
+        	  value: 3
+        	},
+        	url:"{:url('api/base/changeStatu')}",
+        	async:true,
+        	success: function(data) {
+        	  layer.close(index)
+        	  console.log(data.code == 1)
+        	  if (data.code == 1) {
+              obj.remove()
+              n.append('<div class="over">已取消</div>')
+        	  	  layer.open({
+                  content: '取消成功'
+                  ,skin: 'msg'
+                  ,time: 2 //2秒后自动关闭
+                });
+        	  } else {
+        	      layer.open({
+                content: '取消失败'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+              });
+        	  }
+        	}
+        });
+      }
+    });
+	}
+</script>
+{/block}

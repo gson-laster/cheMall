@@ -1,0 +1,157 @@
+{extend name='/public/base'/}
+{block name='title'}全民商城-收货地址{/block}
+<!--加载js-->
+{block name='headjs'}
+<script src='__HOME_STATIC__/js/zepto.js'></script>
+<script type="text/javascript">
+  let allAddress;
+  $.ajax({
+    url:'/public/data/area_data.json',
+    type:'GET',
+    dataType:'json',
+    async:false,
+    success:function (res) {
+      allAddress=res;
+    },
+    error:function (xhr,type) {
+      console.log('没有获取到所有的省市县信息');
+    }
+  })
+
+  function getAddressById(proId,cityId,areaId,townId) {
+    let townText='';
+    if(!townId){
+      townText='';
+    }else{
+      townText=allAddress[townId]["name"];
+    }
+    return (allAddress[proId]['name']+allAddress[cityId]['name']+allAddress[areaId]['name']+townText);
+  }
+</script>
+{/block}
+
+<!--加载css-->
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/address.css"/>
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/MultiPicker.css">
+{/block}
+<!--正文content-->
+{block name='content'}
+<body bgcolor="#F3F3F3">
+<div class="box DeliveryAdress">
+    <section>
+        <!--默认地址显示在第一行-->
+        {volist name='address_list' id='list'}
+        <div class="wrapper" style="display: {eq name='$list.id' value='$address_now'}block {else /}none {/eq}">
+            <div class="delivery_top clear">
+                <div class="name">{$list.name}</div>
+                <div class="phone">{$list.phone}</div>
+            </div>
+            <div class="address_container">
+                <p class="address">
+                    <script>document.write(getAddressById('{$list.province}','{$list.city}','{$list.area}','{$list.town}'))</script>
+                    {$list.address_info}</p>
+            </div>
+            <div class="delivery_bottom clear">
+                <div class="bottom_left">
+                    <span class="default"><img class="default_img" src="__HOME_STATIC__/img/selected_icon.png"
+                                               alt=""></span><span class="default_txt selected">默认地址</span>
+                </div>
+                <div class="bottom_right">
+                    <span class="edit"><a href="{:url('edit',['id'=>$list.id])}"><img
+                            src="__HOME_STATIC__/img/edit_icon.png" alt="">编辑</a></span>
+                    <span class="delete"><a href='javascript:;' data-id="{$list.id}" class="deleteId"><img
+                            src="__HOME_STATIC__/img/delete_icon.png" alt="">删除</a></span>
+                </div>
+            </div>
+        </div>
+        {/volist}
+
+        {volist name='address_list' id='list'}
+        {neq name='$list.id' value='$address_now'}
+        <div class="wrapper">
+            <div class="delivery_top clear">
+                <div class="name">{$list.name}</div>
+                <div class="phone">{$list.phone}</div>
+            </div>
+            <div class="address_container">
+                <p class="address">
+                    <script>document.write(getAddressById('{$list.province}','{$list.city}','{$list.area}','{$list.town}'))</script>
+                    {$list.address_info}</p>
+            </div>
+            <div class="delivery_bottom clear">
+                <div class="bottom_left">
+                    <span class="default"><img src="__HOME_STATIC__/img/selected_icon.png" alt=""></span><span
+                        class="default_txt">设为默认地址</span>
+                </div>
+                <div class="bottom_right">
+                    <span class="edit"><a href="{:url('edit',['id'=>$list.id])}"><img
+                            src="__HOME_STATIC__/img/edit_icon.png" alt="">编辑</a></span>
+                    <span class="delete"><a href='javascript:;' data-id="{$list.id}" class="deleteId"><img
+                            src="__HOME_STATIC__/img/delete_icon.png" alt="">删除</a></span>
+                </div>
+            </div>
+        </div>
+        {/neq}
+        {/volist}
+    </section>
+    <section class="space">
+        <a href='{:url("add")}{php}echo isset($_GET['backurl']) ? '?backurl='.$_GET['backurl'] : ''{/php}'>
+        <div class="DeliveryAdress_footer">
+            <div class="DeliveryAdress_text">
+                +新建地址
+            </div>
+        </div>
+        </a>
+    </section>
+</div>
+</body>
+{/block}
+
+<!--加载底部js-->
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/rewriteAddress.js"></script>
+<script>
+  window.alert = function (content, time) {
+    let _t = time || 2
+    layer.open({
+      content: content
+      , skin: 'msg'
+      , time: _t
+    })
+  }
+</script>
+<script>
+  $(document).ready(function () {
+      /*删除地址*/
+    $(".deleteId").click(function (e) {
+      var id = $(this).data('id');
+      var _this = $(this);
+      $.ajax({
+        url: "{:url('delete')}?id=" + id,
+        success: function (res) {
+          if (res.code == 1) {
+            alert('删除成功')
+            _this.parents('.wrapper').remove();
+          } else {
+            alert(res.msg)
+          }
+        }
+      })
+      return false;
+    })
+      /*设为默认地址*/
+    $('.bottom_left').click(function () {
+      var id = $(this).siblings('.bottom_right').find(".delete>a").data("id");
+      var uid = {$Request.session.qt_userId};
+      var address = ajaxDefault(id, uid);
+      $(this).find('span.default>img').css("display", "block");
+      $(this).find('span.default_txt').css('color', 'red').text('默认地址');
+
+      $(this).parents('.wrapper').siblings().find('.bottom_left').find('span:first-child>img').css("display", "none");
+      $(this).parents('.wrapper').siblings().find('.bottom_left').find('span:last-child').css('color', '#000').text("设为默认地址");
+      return false;
+    });
+  });
+</script>
+{/block}

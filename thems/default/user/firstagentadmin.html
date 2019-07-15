@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/common.css">
+  <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css">
+  <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/listOrder.css">
+  <title>代理订单列表</title>
+</head>
+<body>
+  <div class="box listOrder">
+    <div class="header-container">
+      <div class="header">
+        <input id="keyWorlds" type="text" name="searbar" value="" placeholder="订单编号/用户ID">
+        <a href="javascript:void(0);" id="search">查询</a>
+      </div>
+      <div class="selectbar">
+        <ul class="item">
+          <li class="active" data-action="WAITPAY2">待支付<span></span></li>
+          <li data-action="PAYEND">已付款 <span></span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="check none" style="margin-top:66px;">查询到<span></span>条</p>
+    <!--非查询的订单-->
+    <div class="selectContainer scrollload-container" style="margin-top:120px;">
+      <ul class="scrollload-content">
+      </ul>
+    </div>
+  </div>
+  <script type="text/javascript">
+  Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+      "M+": this.getMonth() + 1, //月份
+      "d+": this.getDate(), //日
+      "h+": this.getHours(), //小时
+      "m+": this.getMinutes(), //分
+      "s+": this.getSeconds(), //秒
+      "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+      "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+  }
+</script>
+  <script src="__HOME_STATIC__/js/zepto.js"></script>
+  <script src="__HOME_STATIC__/js/layer.js"></script>
+  <script src="__HOME_STATIC__/js/Scrollload.js"></script>
+  <script>
+    window.alert = function (content, time) {
+      var _t = time || 2;
+      layer.open({
+        content: content,
+        skin: 'msg',
+        time: _t
+      });
+    }
+  </script>
+  <script>
+    $(document).ready(function () {
+      // 已进入页面调用方法：
+      refreshFn();
+    });
+
+    var ali = $('.selectbar .item').find('li');
+    var action = '';
+    for (var i = 0; i < ali.length; i++) {
+      $(ali[i]).on('click', function () {
+        //获取 data-action的值;
+        action = $(this).data('action');
+
+        //改变边框颜色;
+        if (!$(this).hasClass('active')) {
+          $(this).addClass('active').siblings().removeClass('active');
+          $(this).siblings().find('span').html('');
+        }
+        refreshFn(action)
+      });
+    }
+
+    // 设置个数;
+    function setNumber(number) {
+      for (var i = 0; i < ali.length; i++) {
+        if ($(ali[i]).hasClass('active')) {
+          $(ali[i]).find('span').eq(0).html('(' + number + ')');
+        }
+      }
+    }
+
+    function refreshFn(type, url, page, pageSize) {
+      $('.scrollload-content').empty();
+      $('.scrollload-bottom').remove();
+      var p = page || 1;
+      var ps = pageSize || 15;
+      var type = type || "WAITPAY2";
+      var url = '{:url("agentadmin/Order/NeedPayOrderList")}' || url;
+      new Scrollload({
+        container: document.querySelector('.scrollload-container'),
+        content: document.querySelector('.scrollload-content'),
+        loadMore: function (me) {
+          page++;
+          $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            data: {
+              'type': type,
+              'agent_id': '{$Request.session.qt_userId}',
+              'page': p,
+              'pageSize': ps
+            },
+            success: function (res) {
+              var html = '';
+              if (res.code == 2000) {
+                setNumber(res.data.total);
+                var data = res.data.data;
+                html = htmlFn(data);
+                $('.scrollload-content').append(html);
+                if (res.data.total / parseInt(res.data.per_page) < res.data.current_page) {
+                  me.lock();
+                  me.noMoreData();
+                } else {
+                  me.unLock();
+                }
+
+              }
+            },
+            error: function (xhr, type) {
+              me.throwException();
+            }
+          });
+        }
+      });
+    }
+
+    // 拼接字符串;
+    function htmlFn(data) {
+      var html = '';
+      var buttonHtml = '';
+      for (var i = 0; i < data.length; i++) {
+
+        // 判断是否是待付款;
+        if (data[i]['pay_status'] == 1 && data[i]['order_status'] == 1) {
+          buttonHtml = '<div class="btn" onclick="confirmOrder(this)" data-id="' + data[i]['order_id'] +
+            '">确认</div>'
+        } else if (data[i]['order_status'] == 2) {
+          buttonHtml = '<div class="btn" data-id="'+data[i]['order_id']+'" onclick="payForChild(this)">付款</div>'; //付款
+        }
+        if(data[i]['pay_status']==2){
+          buttonHtml ='<div class="btn paied">已付款</div>'
+        }
+
+
+        html += '<li>' +
+          '<div class="orderDetail">' +
+          '<div class="left">' +
+          '<p>订单编号 <span>' + data[i]['order_sn'] + '</span></p>' +
+          '<p>收货人 <span>' + data[i]['consignee'] + '(' + data[i]['mobile'] + ')</span></p>' +
+          '<p>总金额 <span>' + data[i]['total_amount'] + '</span></p>' +
+          '<p>应付金额 <span>' + data[i]['order_amount'] + '</span></p>' +
+          ' </div>' +
+          '<div class="right">' +
+          '<p>' + new Date(data[i]['add_time']*1000).Format('yyyy-MM-dd') + '</p>' +
+          buttonHtml +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '</li>'
+      }
+      return html;
+
+    }
+
+  
+    //确认订单事件阻塞;
+    var clickStatus = 1;
+
+
+    var $loading = $('#loading');
+
+    // 确认订单;
+    function confirmOrder(obj) {
+      // 获取id:
+      var id = $(obj).data('id');
+
+      layer.open({
+        content: '确认订单么?',
+        btn: ['确定', '取消'],
+        yes: function (index, layero) {
+          if(clickStatus==1){
+            clickStatus=0;
+            $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url:'{:url("agentadmin/Order/confirm_order")}',
+            data: {
+              'order_id': id
+            },
+            success: function (res) {
+              //改变按钮点击事件;显示文字：
+              $(obj).text('付款');
+              $(obj).attr('onclick', 'payForChild(this)');
+              $(obj).attr('data-id',id);
+              layer.close(index);
+              clickStatus=1;
+            },
+            error: function (xhr, type) {
+              alert(xhr.status + '服务器错误');
+              clickStatus=1;
+            }
+          });
+          }
+          
+        }
+      });
+    }
+
+
+    //付款事件阻塞;
+    var payStatus=1;
+    
+
+
+    // 为订单付款;
+    function payForChild(obj) {
+      // 获取id;
+      var id = $(obj).data('id');
+      layer.open({
+        content: '付款么?,确定后不能取消',
+        btn: ['确定', '取消'],
+        yes: function (index, layero) {
+          if(payStatus==1){
+            payStatus=0;
+            $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: '{:url("agentadmin/Order/payForChildOrder")}',
+            data: {
+              'order_id': id,
+              'user_id': "{:session('qt_userId')}"
+            },
+            success: function (res) {
+              if (res.code == 2000) {
+                alert(res.msg);
+                $(obj).removeAttr('onclick').addClass('paied').text('已付款');
+              } else if (res.code == 4000) {
+                alert(res.msg);
+              }
+              payStatus=1;
+            },
+            error: function (xhr, type) {
+              alert(xhr.status + '服务器错误');
+              payStatus=1;
+            },
+          });
+          }
+        }
+      });
+    }
+
+    // 查询;
+    $('#search').on('click',function(){
+      // 获取要查询的关键字：
+      var checkKeyWords = $('#keyWorlds').val();
+      var page =0;
+      // 隐藏非搜索的;
+     $('.selectbar').hide();
+
+      //清空搜索以前的：
+      $('.scrollload-content').empty();
+      $('.scrollload-bottom').remove();
+
+      new Scrollload({
+        container:document.querySelector('.scrollload-container'),
+        content:document.querySelector('.scrolllod-Content'),
+        loadMore:function(me){
+           page++;
+           $.ajax({
+             type:'GET',
+             dataType:'json',
+             url:'{:url("agentadmin/Order/NeedPayOrderList")}',
+             data:{
+               'keyword':checkKeyWords,
+                'agent_id':{$Request.session.qt_userId},
+                'page':page
+             },
+             success:function(res){
+              if(res.code==2000){
+                var data = res.data.data;
+                html = htmlFn(data);                
+                $('.scrollload-content').append(html);
+                $('.check').removeClass('none').find('span').text(res.data.total);
+                $('.scrollload-container').css('margin-top','0px');
+                 if (res.data.total / parseInt(res.data.per_page) < res.data.current_page) {
+                  me.lock();
+                  me.noMoreData();
+                } else {
+                  me.unLock();
+                }
+              }
+             },
+             error:function(xhr,type){
+              me.throwException();
+             }
+           });
+        }
+      })
+    });
+  </script>
+</body>
+
+</html>

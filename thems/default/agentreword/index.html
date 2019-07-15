@@ -1,0 +1,224 @@
+{extend name="public/base" /}
+  {block name='title'}商城公告{/block}
+  {block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/brokerage.css">
+  {/block}
+  {block name='content'}
+  <body style="background: #F3F3F3;">
+   <div class="box">
+			<div class="h_backg">
+				<div class="h_box1">
+					<div class="hyear1">
+						<ul>
+							<li>
+								<span>请选择年</span>
+								<div class="h_select">
+									<span class="year1_sp"></span>
+									<img src="__HOME_STATIC__/img/h_sanjiao.png"/>
+								<select class="year1" name="year1"></select>								
+								</div>
+							</li>
+							<li>
+								<span>请选择月</span>
+								<div class="h_select">
+									<span class="month1_sp"></span>
+									<img src="__HOME_STATIC__/img/h_sanjiao.png"/>
+								<select class="month1" name="month1"></select>								
+								</div>
+							</li>
+							<div class="clear"></div>
+						</ul>						
+					</div>
+					<p>至</p>
+					<div class="hyear1">
+						<ul>
+							<li>		
+								<div class="h_select">
+							    <span class="year2_sp"></span>
+								<select class="year2" name="year2"></select>
+								<img src="__HOME_STATIC__/img/h_sanjiao.png"/>
+								</div>
+								<span class="cance">取消</span>
+							</li>
+							<li>		
+								<div class="h_select">
+							    <span class="month2_sp"></span>
+								<select class="month2" name="month2"></select>
+								<img src="__HOME_STATIC__/img/h_sanjiao.png"/>
+								</div>
+								<span onclick="ajaxFn('user_id', 'start', 'end')" class="confirm">确定</span>
+							</li>
+							<div class="clear"></div>
+						</ul>						
+					</div>
+				</div>
+			</div>
+			<div class="brokerage_header">
+				<span class="brokerage_time">选择时间段</span>
+				<div class="accumulate">
+				<span>累积佣金</span>
+				<p class="h_spall">{$data.total}</p>
+				</div>
+			</div>
+			<div class="brokerage_content">
+				<ul>
+					<li>
+						<p class="h_red">{:intval($data[1] + $data[2])}</p>
+						<span>代理提成</span>
+					</li>
+					<li>
+						<p class="h_bule">{$data[5]}</p>
+						<span>市场分红</span>
+					</li>
+					<li>
+						<p class="h_yellow">{$data[3]}</p>
+						<span>团队奖励</span>
+					</li>
+					<li>
+						<p class="h_green">{$data[4]}</p>
+						<span>领导津贴</span>
+					</li>
+					<div class="clear"></div>
+				</ul>
+			</div>
+			<div class="brokerage_detail">
+				<a href="{:url('home/Agentreword/rewordsDetail')}">
+					<span>查看佣金收入明细</span>
+					<img src="__HOME_STATIC__/img/back_light.png"/>
+				</a>
+			</div>
+		</div>
+  </body>
+  {/block}
+  {block name="footerjs"}
+  <script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+   //点击时间段
+		$('.brokerage_time').click(function(){
+			$('.h_backg').css("display","-webkit-box")
+		}) 
+		
+		$('.cance').click(function(){
+			$('.h_backg').css("display","none")
+		}) 
+		$('.confirm').click(function(){
+			$('.h_backg').css("display","none")
+		}) 
+		$('option').click(function(){
+			$this.html();
+		})
+	//日期
+	    var year1_sp = $('.year1_sp')
+		var myDate = new Date();  
+		var h_year = myDate.getFullYear();
+		var h_month = myDate.getMonth()+1;
+		SYT=h_year+'年';
+		SMT=h_month+'月';
+		SDT="-请选择日期-";		 
+//		 year1_sp.html($('select[name=year1]').html())
+		BYN=20;//年份范围往前50年
+		AYN=0;//年份范围往后0年
+		function YMDselect(){
+			this.SelY=document.getElementsByName(arguments[0])[0];
+			this.SelM=document.getElementsByName(arguments[1])[0];
+			this.SelD=document.getElementsByName(arguments[2])[0];
+			this.DefY=this.SelD?arguments[3]:arguments[2];
+			this.DefM=this.SelD?arguments[4]:arguments[3];
+			this.DefD=this.SelD?arguments[5]:arguments[4];
+			this.SelY.YMD=this;
+			this.SelM.YMD=this;
+			this.SelY.onchange=function(){YMDselect.SetM(this.YMD)};
+			if(this.SelD)this.SelM.onchange=function(){YMDselect.SetD(this.YMD)};
+			YMDselect.SetY(this)
+		};
+		//设置年份
+		YMDselect.SetY=function(YMD){
+			dDate = new Date();
+			dCurYear = dDate.getFullYear();
+			YMD.SelY.options.add(new Option(SYT,h_year));
+			for(i = dCurYear+AYN; i>(dCurYear-BYN); i--){
+				YMDYT=i+'年';
+				YMDYV=i;
+				OptY = new Option(YMDYT,YMDYV);
+				YMD.SelY.options.add(OptY);
+				if(YMD.DefY==YMDYV) OptY.selected=true
+			}
+			YMDselect.SetM(YMD)
+		};
+		//设置月份
+		YMDselect.SetM=function(YMD){
+			YMD.SelM.length = 0;
+			YMD.SelM.options.add(new Option(SMT,h_month));
+			if(YMD.SelY.value>0){
+				for(var i=1;i<=12;i++){
+					YMDMT=i+'月';
+					YMDMV=i;
+					OptM=new Option(YMDMT,YMDMV);
+					YMD.SelM.options.add(OptM);
+					if(YMD.DefM==YMDMV) OptM.selected=true
+				}
+			}
+			if(YMD.SelD)YMDselect.SetD(YMD)
+		};
+		YMDselect('year1','month1');
+		YMDselect('year2','month2');
+//业务
+  var year1 =  $('.year1').val();
+  var year2 =  $('.year2').val();
+  var month1 =  $('.month1').val();
+  var month2 =  $('.month2').val();
+   $('.year1_sp').html(year1+'年')
+   $('.year2_sp').html(year2+'年')
+   $('.month1_sp').html(month1+'月')
+   $('.month2_sp').html(month2+'月')
+   $('.year1').change(function(){
+      	var year1_sp = $(this).val()  
+      	$(this).attr('data-val',year1_sp)
+      	 $('.year1_sp').html(year1_sp+'年')
+      	 year1 = year1_sp;
+      })
+   $('.year2').change(function(){
+      	var year2_sp = $(this).val() 
+      		$(this).attr('data-val',year2_sp)
+      	 $('.year2_sp').html(year2_sp+'年')
+      	 year2 = year2_sp;
+      })
+   $('.month1').change(function(){
+      	var month1_sp = $(this).val() 
+      		$(this).attr('data-val',month1_sp)
+      	 $('.month1_sp').html(month1_sp+'月')
+      	 month1 = month1_sp
+      })
+   $('.month2').change(function(){
+      	var month2_sp = $(this).val() 
+      		$(this).attr('data-val',month2_sp)
+      	 $('.month2_sp').html(month2_sp+'月')
+      	  month2 = month2_sp
+    })     
+  	//ajax
+      function ajaxFn(user_id, start, end){
+      	var starttime = year1+'/'+month1;
+      	var startend = year2+'/'+month2;
+      	var user_id = {$Request.session.qt_userId};
+      	$.ajax({
+      		type:"POST",
+      		url:"{:url('home/Agentreword/countreword')}",
+      		async:true,
+      		data:{'user_id': user_id, 'start': starttime, 'end': startend},
+      		success:function(res){
+      			if(res.code==2000){
+      				$('.h_red').html(res.data[1]);
+      				$('.h_bule').html(res.data[4]);
+      				$('.h_yellow').html(res.data[3]);
+      				$('.h_green').html(res.data[2]);
+      				$('.h_spall').html(res.data[1]+res.data[2]+res.data[3]+res.data[4])
+      			}else{      				
+      			}
+      		}
+      	});
+      } 
+     
+  </script>
+{/block}
+</html>
+

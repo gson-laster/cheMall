@@ -1,0 +1,53 @@
+{extend name="public/base"}
+{block name="title"}
+付款
+{/block}
+{block name="headcss"}
+  <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/service.css">
+{/block}
+{block name="content"}
+<body style="background:#f5f5f5">
+  <div class="box service payment">
+    <h2>付款方式</h2>
+    <div class="payment_choice">
+      <ul>
+        <li>
+          <div class="left clear">
+            <p>银行卡</p>
+            <p>转账</p>
+          </div>
+          <div class="right clear">
+            <p>账号:{$result['site_bank_code']}</p>
+            <p>姓名:{$result['site_bank_khrname']}</p>
+            <p>开户行:{$result['site_bank_name']}</p>
+          </div>
+
+        </li>
+        <li>
+          <div class="left clear">
+            <p>支付宝</p>
+            <p>转账</p>
+          </div>
+          <div class="right clear" style="padding-top:12px;">
+            <p>账号:{$result['site_alipay_account']}</p>
+            <p>姓名:{$result['site_alipay_name']}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <p class="hint">温馨提示:完成付款后请于客服联系</p>
+    <div class="service_content">
+        <ul>
+				<li>客服微信:{$result['site_serviceWechat']}</li>
+				<li>客服QQ:{$result['site_serviceQQ']}</li>
+				<li>客服热线:{$result['site_servicePhone']}</li>
+        </ul>
+    </div>
+    <a href='{:url('home/index/index')}'>
+    	<div class="return_btn">
+	      返回首页
+	    </div>
+    </a>
+  </div>
+</body>
+{/block}

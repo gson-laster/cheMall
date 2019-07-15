@@ -1,0 +1,111 @@
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+
+
+<body>
+<style>
+    .delete-img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        cursor: pointer;
+    }
+    .add_menber li .add_name{
+        width: 48%;
+    }
+    .logoupload .btnbox a{
+        text-align: center;
+        display: block;
+        width: 100%;
+    }
+    #add_menber_style i{
+    	color: red;
+    }
+    .label_name{
+    	width: 180px !important;
+    }
+	.f0 td{
+    	background: #F9F9F9 !important;
+    	color: black !important;
+    }
+    .f0:hover td{
+    	background: #f0f0f0 !important;
+    }
+    .white td{
+    	background: white !important;
+    	color: black !important;
+    }
+  	.white:hover td{
+    	background: #f0f0f0 !important;
+    }
+</style>
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <!---->
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;"><i class="btn btn-danger">任务日志</i></a>
+                    </span>
+                <span class="r_f">共：<b></b>条</span>
+            </div>
+            <!---->
+            <div class="table_menu_list">
+   				            <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="100">ID</th>
+                        <th width="200">任务控制</th>
+                        <th width="200">执行时间</th>
+                        <th width="200">状态</th>
+                        <th width="200">日志</th>
+                        <th width="150">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+		                {volist name='list' id='u'}
+                        <tr class="sign">
+                        		<td align="left">{$u.id}</td>
+			                    <td align="center"> 
+			                    	{$u.task_ctrl}
+			                    </td>
+			                    <td align="left">{$u.run_time}</td>
+			                    <td align="left">{if condition="$u.status eq 0"}执行异常{else /}执行成功{/if}</td>
+			                    <td align="left">{$u.note}</td>
+			                    <td class="td-manage">
+			                       {if condition="$u.status eq 0"} <a title="执行" onclick="implement({$u.id},{$u.run_time})" href="javascript:;" class="btn">执行</a>{/if}
+			                    </td>
+			                </tr>
+		                {/volist}
+                    </tbody>
+                </table>
+                {$list->render()}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function implement(id,time){
+	$.ajax({
+		type:"Post",
+		data:{'id':id,'time':time},
+		url:'{:url('api/Task/everyDaytoAgent')}',
+		async:true,
+		function(data){
+			console.log(data);
+		}
+	});
+}
+</script>
+</body>

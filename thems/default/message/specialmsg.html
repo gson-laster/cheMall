@@ -1,0 +1,86 @@
+	{extend name="public/base" /}
+	{block name='title'}{$title}{/block}
+	{block name='headcss'}
+		<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+	{/block}
+	{block name='content'}
+	<body style="background: #F3F3F3;">
+		<div class="box message_type scrollload-container">
+			<section class="content_box scrollload-content" style="padding-bottom: 40px;">
+			</section>
+		</div>
+	</body>
+	{/block}
+	{block name="footerjs"}
+	<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+	<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="__HOME_STATIC__/js/Scrollload.js" type="text/javascript" charset="utf-8"></script>
+	<script src="__HOME_STATIC__/js/chat.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var seach=location.search.split('=')[1];
+			var content_box=$(".content_box");
+	//时间显示
+var msg_timebetween;//两条消息之间的时间间隔
+var send_timeold=true;//昨天的第一条消息显示“昨天”
+var before_time=[];//昨天之前的未读消息的年月日
+//上拉刷新
+ var srcollload_content=$('.scrollload-content');
+    $(document).ready(function () {
+        ajaxFn(seach, function (res) {
+        });
+    //发送请求;
+    function ajaxFn(type, cb, p, ps) {
+        var page = p || 1;
+        var pageSize = ps || 10;
+        new Scrollload({
+            container: document.querySelector('.scrollload-container'),
+            content: document.querySelector('.scrollload-content'),
+            loadMore: function (me) {
+            	var read="";//拼接已读消息id
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("home/Message/specialMsg")}?type=' + type + '&page=' + page + '&pageSize=' +pageSize,
+                    dataType: 'json',
+                    async: false,
+                    success: function (res) {
+                    	var data=res.url;
+                    	var html=""
+                        if (res.code === 2000) {
+                        	for (var i of data.data) {
+								var time=aaa(i.send_time);
+								html+='<div class="content">'+time+'<div class="text"><p>'+i.title+'</p><p>'+i.content+'</p></div></div>';
+								content_box.append(html);
+					      		read=read+i.message_id+",";//拼接已读的消息id
+								}	
+								var a=read.slice(0,-1);
+                	           $.ajax({
+					            	type:"Post",
+					            	data:{msg_id:a},
+					            	async:true,
+					            	url:'{:url('readMsg')}',
+					       			success:function(data){
+					       			}
+					            });
+						if(Math.ceil(data.total/data.per_page)==page){
+                        		me.lock();
+                                me.noMoreData();
+						}
+						else{
+								++page;
+                        		me.unLock();
+						}
+                        } else {
+                            me.noMoreData()
+                        }
+                    },
+                    error: function (xhr, type) {
+                        alert(xhr.status + '服务器错误')
+                    }
+                });
+            }
+        })
+    }
+    })
+		</script>
+	{/block}
+</html>

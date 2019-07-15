@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>配货劵明细</title>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="__HOME_STATIC__/css/coupon.css" />
+  </head>
+  <body>
+    <div class="box">
+      <div class="header">
+        <p>我的配货劵</p>
+        <p>{$trading_stamp |default = 0}</p>
+        <p><a href="{:url('goodsCoupon')}">立即兑换</a></p>
+      </div>
+      <div class="lists">
+        {empty name="list"}
+          <div class="empty-list-item">暂无记录</div>
+        {else/}
+        {volist name="list" id="l"}
+        <div class="list">
+          <p>{$l['note']}</p>
+          <p>{:date($l['createtime'])}</p>
+          {php}
+            if($l['createtime'] == 1){
+              $t = '+';
+              $c = 'add';
+            } else {
+              $t = '-';
+              $c = 'reduce';
+            }
+          {/php}
+          <div class="pos {$c}">
+            {$l['number']}</div>
+        </div>
+        {/volist}
+        {/empty}
+      </div>
+    </div>
+  </body>
+</html>

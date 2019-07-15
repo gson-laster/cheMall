@@ -1,0 +1,85 @@
+{extend name='/public/base'/} {block name='title'}会员中心-我的钱包{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/mywallet.css" />
+{/block} {block name="content"}
+
+<body style="background-color:#f3f3f3;">
+<div class="box">
+  <div class="mywallet-lists">
+    <ul>
+    <li class="item" id="gotoRemainder">
+    <div class="left remainder">
+      <span class="icon"></span>
+      <div class="context">
+        <p class="title">余&nbsp额</p>
+        <p class="content">余额、充值、积分、兑换及提现细则</p>
+      </div>
+    </div>
+    <div class="right">
+      <p class="text">{$user_vb}元</p>
+    </div>
+  </li>
+  <li class="item" id="gotoPoint">
+      <div class="left point">
+        <span class="icon"></span>
+        <div class="context">
+          <p class="title">积&nbsp分</p>
+          <p class="content">消费和兑换明细</p>
+        </div>
+      </div>
+      <div class="right">
+        <p class="text">{$record}分</p>
+      </div>
+    </li>
+    <li class="item" id="gotoCoupon">
+        <div class="left coupon">
+          <span class="icon"></span>
+          <div class="context">
+            <p class="title">赠&nbsp品&nbsp券</p>
+            <p class="content">会员赠品券获取及消费日志</p>
+          </div>
+        </div>
+        <div class="right">
+          <p class="text">{$trading_stamp}券</p>
+        </div>
+      </li>
+      <li class="item" id="gotoAchive">
+          <div class="left achive">
+            <span class="icon"></span>
+            <div class="context">
+              <p class="title">我&nbsp的&nbsp奖&nbsp励</p>
+              <p class="content">销售业绩、招商奖励、利润分红、订货额</p>
+            </div>
+          </div>
+          <div class="right">
+            <p class="text">&nbsp;</p>
+          </div>
+        </li>
+    </ul>
+  </div>
+{block name='footermenu'}
+{include file="thems/default/public/Footer/footer.html"}
+{/block}
+ </div>
+</body>
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script>
+var $gotoRemainder = $('#gotoRemainder')
+var $gotoPoint = $('#gotoPoint')
+var $gotoCoupon = $('#gotoCoupon')
+var $gotoAchive = $('#gotoAchive')
+$gotoRemainder.on('click',function(){
+  window.location.href = '{:url("home/user/myremainder")}'
+})
+$gotoPoint.on('click',function(){
+  window.location.href = '{:url("BalanceChange/toIntegralCenter")}'
+})
+$gotoCoupon.on('click',function(){
+//window.location.href = '{:url("home/Integral/exchangetrading_stamp")}'
+  window.location.href = '{:url("Balance_change/getBalanceChangeList")}?change_type=2'
+})
+$gotoAchive.on('click',function(){
+  window.location.href = '{:url("home/UserAchive/index")}'
+})
+</script>
+{/block}

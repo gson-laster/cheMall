@@ -1,0 +1,101 @@
+.DeliveryAdress.box {
+  background-color: #f3f3f3;
+}
+.wrapper {
+  background-color: #fff;
+  margin-bottom: 0.1rem;
+}
+.wrapper .delivery_top {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0.10rem;
+}
+.wrapper .delivery_top .name {
+  float: left;
+}
+.wrapper .delivery_top .phone {
+  float: right;
+}
+.wrapper .delivery_top .address {
+  width: 100%;
+}
+.wrapper .address_container {
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 0.10rem;
+  border-bottom: 1px solid #dbdbdb;
+}
+.wrapper .address_container p {
+  width: 90%;
+  margin: 0 auto ;
+  overflow: hidden;
+}
+.wrapper .delivery_bottom {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0.08rem;
+  line-height: 0.27rem;
+}
+.wrapper .delivery_bottom .bottom_left {
+  float: left;
+}
+.wrapper .delivery_bottom .bottom_left img {
+  width: 0.18rem;
+  vertical-align: top;
+  display: none;
+}
+.wrapper .delivery_bottom .bottom_left img.default_img {
+  display: block;
+  position: relative;
+  top: 0;
+}
+.wrapper .delivery_bottom .bottom_left span.default {
+  display: inline-block;
+  width: 0.18rem;
+  height: 0.18rem;
+  border-radius: 50%;
+  border: 1px solid #dbdbdb;
+  vertical-align: top;
+  position: relative;
+  margin-right: 0.04rem;
+  top: 0.02rem;
+}
+.wrapper .delivery_bottom .bottom_left span.default_txt {
+  line-height: 0.2rem;
+}
+.wrapper .delivery_bottom .bottom_left span.default_txt.selected {
+  color: #dd2727;
+}
+.wrapper .delivery_bottom .bottom_right {
+  float: right;
+}
+.wrapper .delivery_bottom .bottom_right img {
+  width: 0.24rem;
+  margin-right: 0.04rem;
+}
+.wrapper .delivery_bottom .bottom_right a {
+  line-height: 0.2rem;
+}
+/*底部css*/
+.DeliveryAdress .DeliveryAdress_footer {
+  position: fixed;
+  bottom: 0.3rem;
+  width: 100%;
+  max-width: 640px;
+}
+.DeliveryAdress .DeliveryAdress_text {
+  margin: 0 0.2rem;
+  background: #DD2727;
+  text-align: center;
+  color: white;
+  height: 0.4rem;
+  line-height: 0.4rem;
+  border-radius: 0.04rem;
+}
+.DeliveryAdress .space {
+  height: 0.8rem;
+  position: fixed;
+  width: 100%;
+  background-color: #fff;
+  bottom: 0;
+}

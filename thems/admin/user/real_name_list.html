@@ -1,0 +1,364 @@
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+
+
+<body>
+<style>
+    .delete-img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        cursor: pointer;
+    }
+    .add_menber li .add_name{
+        width: 48%;
+    }
+    .logoupload .btnbox a{
+        text-align: center;
+        display: block;
+        width: 100%;
+    }
+	.label_name{
+		width: 16% !important;
+	}
+	#pic_show{
+		width: 80px;
+		margin-left: 140px;
+	}
+	#pic_show img{
+		width: 100%;
+	}
+	.add_menber li{
+		height: auto !important; 
+	}
+	.pic_show img{
+		width: 40px;
+	}
+	.card img{
+		width: 60px;
+	}
+	#cardimg{
+		width: 60px;
+	}
+	#layer-img-container{
+		position: relative;
+
+	}
+	#layer-img-container > .btn{
+		position: fixed;
+		left: 50%;
+		z-index: 1000px;
+		top: 0;
+		height: 40px;
+		display: none;
+	}
+	#check-big-img{
+		max-width: 800px;
+		max-height: 700px;
+	}
+
+
+</style>
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" class="btn btn-danger"  onclick="deletesAll(this)" data-action="{:url('deleteRealName')}"><i class="icon-trash"></i>批量删除</a>
+                    </span>
+                <span class="r_f">共：<b></b>条</span>
+            </div>
+            <!---->
+            <div class="table_menu_list">
+   				            <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                        <th width="80">ID</th>
+                        <th width="100">用户ID</th>
+                        <th width="150">真实姓名</th>
+                        <th width="100">真实电话号码</th>
+                        <th width="100">银行卡号</th>
+                        <th width="200">开户银行</th>
+                        <th width="200">身份证</th>
+                        <!--<th width="200">支付宝</th>-->
+                        <!--<th width="200">微信</th>-->
+                        <th width="200">审核</th>
+                        <th width="150">状态</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+		                {volist name='list' id='u'}
+			                <tr data-id='{$u.id}'>
+			                    <td><label><input type="checkbox" name="ids[]" value="{$u.id}" class="ace"><span class="lbl"></span></label></td>
+			                    <td>{$u.id}</td>
+			                    <td>{$u.user_id}</td>
+			                    <td>{$u.real_name}</td>
+			                    <td align="left">{$u.real_phone}</td>
+			                    <td class="td-status">{$u.bank_card_code}</td>
+			                    <td>{$u.bank_name}</td> 
+			                    <td class="card"><img src="{$u.idcard_img}"/></td> 
+			                    <!--<td>{$u.alipay}</td>--> 
+			                    <!--<td>{$u.wxpay}</td>--> 
+			                    <td>{if condition="$u.status eq 0"}
+			                    	<div onclick="no({$u.id},1,this)" class="btn">
+			                    		通过
+			                    	</div>
+			                    	<div onclick="no({$u.id},2,this)" class="btn">
+			                    		否决
+			                    	</div>
+			                    	{elseif condition="$u.status eq 1"/}
+			                    	审核通过
+			                    	{elseif condition="$u.status eq 2"/}
+			                    	审核失败
+			                    	{/if}</td> 
+			                    <td class="td-manage">   
+			                        <a title="编辑" onclick="member_edit({$u.id})" href="javascript:;" class="btn btn-xs btn-info"><i class="icon-edit bigger-120"></i></a>
+			                        <a title="删除" href="javascript:;" onclick="member_del({$u.id},this)" class="btn btn-xs btn-warning"><i class="icon-trash  bigger-120"></i></a>
+			                    </td>
+			                </tr>
+		                {/volist}
+                    </tbody>
+                </table>
+            </div>
+	        {$list->render()}
+        </div>
+    </div>
+</div>
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+    <ul class=" page-content" style="height:100px">
+        <li class="adderss">
+            <label class="label_name">真实姓名：</label><span class="add_name"><input id="real_name" name="title" type="text" class="text_add" style=" width:350px" required data-title="title" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss">
+            <label class="label_name">真实电话号码：</label><span class="add_name"><input id="real_phone" name="desc" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+          <li class="adderss">
+            <label class="label_name">银行卡号：</label><span class="add_name"><input id="bank_card_code" name="keyword" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+      	<li class="adderss">
+            <label class="label_name">开户银行：</label><span class="add_name"><input id="bank_name" name="keyword" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+       </li>
+     	<li class="adderss">
+            <label class="label_name">身份证：</label><label for="addcard"><span class="add_name"><img id="cardimg"/></label></span>
+            <div class="prompt r_f"></div>
+       </li>
+     	<!--<li class="adderss">
+            <label class="label_name">支付宝：</label><span class="add_name"><input id="alipay" name="keyword" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+       </li>-->
+     	<!--<li class="adderss">
+            <label class="label_name">微信：</label><span class="add_name"><input id="wxpay" name="keyword" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+       </li>-->
+         <li class="adderss">
+            <label class="label_name">更改状态：</label><span class="add_name">
+	            <select id="status" style="width: 350px; margin-left: 10px;">
+	            	<option value="1">审核通过</option>
+	            	<option value="2">审核失败</option>
+	            </select>
+            </span>
+            <div class="prompt r_f"></div>
+        </li>
+    </ul>
+</div>
+       <input  onchange="card(this)" id="addcard" type="file" style="display: none;" />
+<input type="file" name="paymentLogo" id="paymentLogo" onchange="fileSelect(this)" style="display:none"/>
+
+	<!--查看图片大图-->
+		<div id="layer-img-container">
+		<img src="" alt="" id="check-big-img">
+		<button type="button" class="btn btn-success">旋转</button>
+		</div>
+
+
+
+<script type="text/javascript">
+	  /*删除实名认证-start*/
+  function member_del(id,obj) {
+    layer.confirm('确认要删除吗？', function(index) {
+      adminAjax('Get', '{:url('deleteRealName')}', util.jsonToUrlStr({"id":id}), false, function () {
+        $(obj).parents("tr").remove();
+        layer.msg('已删除!', {
+          icon: 1,
+          time: 1000
+        });
+      })
+    });
+  }
+</script>
+<script type="text/javascript">
+	//上传身份证
+	var result="";
+			function card(obj){
+				var file=obj.files[0];
+				if(!/image\/.*/.test(file.type)){
+					alert("请选择图片");
+					return false;
+				}
+				var reader=new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload=function(){
+					$(".top_img img").attr('src',this.result);
+					result=this.result;
+					$("#cardimg").attr('src',this.result);
+				}
+			}
+		function member_edit(id) {
+			var input=$('#add_menber_style input');
+    		adminAjax('Post', '{:url('getRealNameById')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+          /*返回数据成功*/
+      if(res.code>0){
+        var data =res.data;
+		input.each(function(){
+			var key=$(this).attr("id");
+			$(this).val(data[key])
+		})
+		$('#cardimg').attr('src',data.idcard_img);
+		$("#status option").each(function(){
+			if($(this).val()==data.status){
+				$(this).attr('selected','selected');
+			}
+		})
+        layer.open({
+          type:1,
+          title:'修改用户真实信息',
+          maxmin:true,
+          shadeClose:true,
+          area:['800px',''],
+          content:$('#add_menber_style'),
+          btn:['提交','取消'],
+          yes:function (index,layero) {
+          	var bool=false;
+          	var src=$('#cardimg').attr('src');
+          	if(result!=""){
+		        $.ajax({
+			        type: "Post",
+			        url: "{:url('api/UploadFiles/saveBase64Image')}?to_dir=IDcardimg&compress=true",
+			        data: {
+			          'formFile': result
+			        },
+			        async: false,
+			        success: function (data) {
+						if (data.code==0) {
+					          	$.ajax({
+						          	  type: "Post",
+						          	  url: '{:url("api/UploadFiles/delImg")}',
+						          	  data: {
+						          	    'path': src
+						          	  },
+						          	  async: true,
+						          	  success: function (data) {
+								
+						          	  }
+					          	});
+							src=data.url;
+						}
+			        }
+		      });
+          	}
+          	        //删除之前的图片
+      	        var data_={};
+          		input.each(function(){
+					if($(this).val()==""){
+						layer.msg("请输入关键项");
+						bool=true;
+						return true;
+					}
+				var key=$(this).attr("id");
+				data_[key]=$(this).val();
+				});
+				if(bool){
+					return false;
+				}
+          	data_.id=id;
+          	data_.idcard_img=src;
+			data_.status=$("#status").val();
+           if(data_){
+           	  util.ajaxPost('{:url("saveRealName")}',data_).done(function (res) {
+              if(res.code>0){
+                layer.close(index);
+                layer.msg(res.msg);
+                setTimeout(function () {
+                  window.location.href=res.url;
+                },1000);
+              }else{
+                layer.msg(res.msg);
+              }
+            }).fail(function (error) {
+              layer.msg(error.status+"服务器发生错误");
+            })
+           }
+          }
+        })
+      }
+    })
+  };
+  function no(id,status,obj){
+  	var data_={table:'user_realname',id_name:'id',id_value:id,field:'status',value:status};
+	$.ajax({
+		type:"Get",
+		url:'{:url('api/Base/changeStatu')}',
+		async:true,
+		data:data_,
+		success:function(data){
+			if (data.code==1) {
+				if (status==1) {
+					$(obj).parents('td').html("审核成功");
+				}
+				if (status==2) {
+					$(obj).parents('td').html("审核不通过");
+				}
+			}
+		}
+	});
+  }
+
+	// 点击图片放大;
+	$('td.card > img').on('click',function(){
+		var cardImg = $(this)[0].src;
+		// 显示旋转按钮;
+		$('#layer-img-container > .btn').css('display','block');
+		$('#check-big-img').attr('src',cardImg);
+		if(cardImg.length>0){
+			layer.open({
+			type:1,
+			title:'查看图片',
+			shadeClose:true,
+			content:$('#layer-img-container'),
+			area:'auto',
+			maxWidth:'800', 
+			maxmin:true,
+			resize:true,
+			moveOut:true   
+		});
+		}
+	});
+
+	var imgRotateIndex =1;
+	$('#layer-img-container > .btn').on('click',function(){
+		var imgRotate =90;
+		imgRotateIndex++;			
+		imgRotate=imgRotate*imgRotateIndex;	
+		$('#check-big-img').css('transform','rotate('+imgRotate+'deg)');
+	
+	});
+
+</script>
+</body>

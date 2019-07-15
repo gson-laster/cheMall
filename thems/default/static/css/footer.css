@@ -1,0 +1,68 @@
+.footer{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	max-width: 640px;
+	background: white;
+	border-top: 1px solid #F3F3F3;
+	text-align: center;
+	padding-top: 0.06rem;
+	padding-bottom: 0.03rem;
+	z-index: 999999;
+}
+.footer li{
+	float:left;
+	width:20%;
+}
+.footer li img{
+	height: 0.18rem;
+}
+.footer li{
+	/*padding-top: 0.03rem;*/
+	color: #0E0E0E;
+}
+.footer li.active a{
+	color: #DF3F3F;
+}
+.footer_space{
+	height: 0.6rem;
+}
+.foot-icon{
+	display: block;
+	height: 0.2rem;
+	width: 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+}
+.foot-icon.home{
+	background-image: url(../img/footer_home_icon.png);
+}
+.foot-icon.category{
+	background-image: url(../img/cate.png);
+}
+.foot-icon.shopcar{
+	background-image: url(../img/footer_05.png);
+}
+.foot-icon.service{
+	background-image: url(../img/footer_07.png);
+}
+.foot-icon.user{
+	background-image: url(../img/footer_09.png);
+}
+/*active*/
+.active .foot-icon.home{
+	background-image: url(../img/footer_03.png);
+}
+.active .foot-icon.category{
+	background-image: url(../img/cate_selected.png);
+}
+.active .foot-icon.shopcar{
+	background-image: url(../img/footer_shopcar_select_icon.png);
+}
+.active .foot-icon.service{
+	background-image: url(../img/footer_service_select_icon.png);
+}
+.active .foot-icon.user{
+	background-image: url(../img/footer_my_selected_icon.png);
+}

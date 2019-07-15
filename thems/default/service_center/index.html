@@ -1,0 +1,278 @@
+{extend name='/public/base' /} {block name='title'}服务中心{/block} {block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+<style>
+    .shadow {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+        z-index: 600;
+    }
+
+    .shadow .img-container {
+        /*width: 200px;*/
+        height: auto;
+        position: absolute;
+        margin: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /*right: 0;
+        bottom: 0;*/
+        background-color: #fff;
+        text-align: center;
+        /*padding-top: 10px;*/
+        padding: 20px;
+        border-radius: 4px;
+    }
+
+    .shadow .img-container p {
+        text-align: center;
+        line-height: 28px;
+        /*padding-bottom: 2px;*/
+       font-size: 18px;
+    }
+
+    .shadow .img-container img {
+        width: 250px;
+    }
+    .firstagentadmin_container p{
+    position: absolute;
+    background: #D70030;
+    top: 0;
+    left: 50%;
+    color: white !important;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 50%;
+    font-size: 12px;
+    }
+</style>
+{/block} {block name='content'}
+<body style="background: #F3F3F3;">
+    <div class="box user_box">
+        <section>
+            <div class="my_header">
+                <div class="my_top">
+                    <a href="{:url('user/index')}">
+                      <div class="my_shezhi slider">
+                      <img src="__HOME_STATIC__/img/usercenter_03.png" /><span>切换到会员</span>
+                    </div>
+                    </a>
+                    <div class="my_tuichu">
+                        <!--<img src="__HOME_STATIC__/img/usercenter_06.png" /><span>退出</span>-->
+                      <a href="{:url('user/edit',['id'=>$userInfo.id])}">
+                        <div class="my_shezhi">
+                            <img src="__HOME_STATIC__/img/usercenter_03.png" /><span>设置</span>
+                        </div>
+                      </a>
+                    </div>
+                </div>
+                <div class="login">
+                    <div class="avatar">
+                        <a href="{:url('edit',['id'=>$userInfo.id])}">
+                  {if condition='$userInfo.userimg eq ""'}<img id="userimg" src="__HOME_STATIC__/img/defalut_userimg.jpg" />{else/}<img id="userimg" src={$userInfo.userimg} />{/if}
+                </a>
+                    </div>
+                    <div class="login_text">{$userInfo.nickname|default=$userInfo.phone}
+                        <div class="my_daili">
+                          服务中心
+                        </div>
+                    </div>
+                </div>
+            <div class="my_header_item">
+                <div class="items">
+                    <ul>
+                        <li><a href="{:url('service_center/applyrechargelist')}"><span>{$serviceCoin['recharge_quota']|default=0}</span><p>充值额度</p></a></li>
+                        <li>
+                          <a href="{:url('service_center/goodscouponslist')}">{$serviceCoin['distribution_ticket']|default=0}<span></span>
+                    <p>配货劵</p></a></li>
+                           <li><a href="{:url('service_center/giftCouponList')}">
+                          <span>{$serviceCoin['comp_ticket']|default=0}</span>
+                            <p>赠品劵</p></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--<div class="my_orders">
+                <div class="orders_top clear">
+                    <span>我的订单</span>
+                    <a href="{:url('home/Myorders/getorder')}?status=all"><span class="my_bg_img">全部订单</span></a>
+                </div>
+                <div class="orders_bottom">
+                    <ul>
+                        <li>
+                            <a href="{:url('home/Myorders/getorder')}?pay_status=1&status=WAITPAY" style="text-decoration: none">
+                                <div class="my_img">
+                                    <img src="__HOME_STATIC__/img/my_unPaied_icon.png" alt="">
+                                    <p id="NPAY" style="display: none"></p>
+                                </div>
+                                <p>待付款</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('home/Myorders/getorder')}?pay_status=2&status=WAITSEND" style="text-decoration: none">
+                                <div class="my_img">
+                                    <img src="__HOME_STATIC__/img/my_delivery_icon.png" alt="">
+                                    <p id="NSEND" style="display: none"></p>
+                                </div>
+                                <p>待发货</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('home/Myorders/getorder')}?pay_status=2&status=WAITRECEIVE" style="text-decoration: none">
+                                <div class="my_img">
+                                    <img src="__HOME_STATIC__/img/my_unSign_icon.png" alt="">
+                                    <p id="NGET" style="display: none"></p>
+                                </div>
+                                <p>待收货</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:url('home/Myorders/getorder')}?pay_status=2&status=WAITCCOMMENT" style="text-decoration:none">
+                                <div class="my_img">
+                                    <img src="__HOME_STATIC__/img/my_evalute_icon.png" alt="">
+                                    <p id="NCOM" style="display: none"></p>
+                                </div>
+                                <p>待评价</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>-->
+
+        </section>
+        <section>
+                <div class="bottom_bottom" style="margin-bottom: 20px;">
+                    <ul class="bottom_bottom_up">
+                       <li class="bottom_bottom_item">
+                         <a href="{:url('service_center/applyrechage')}">
+                            <img src="__HOME_STATIC__/img/shangjiachongzhi.png" alt="">
+                          <p>商家充值</p></a>
+                        </li>
+                         <li class="bottom_bottom_item"><a href="{:url('userRechage')}">
+                          <img src="__HOME_STATIC__/img/userRecharge.png" alt="">
+                          <p>会员充值</p></a>
+                        </li>
+                        <li class="bottom_bottom_item">
+                          <a href="{:url('recodeToGoods', array('type' => 'service'))}">
+                          <img src="__HOME_STATIC__/img/usercenter_22.png" alt="">
+                          <p>积分换货</p></a>
+                        </li>
+                        <li class="bottom_bottom_item"><a href="{:url('userRechargeList')}">
+                          <img src="__HOME_STATIC__/img/manageOrder.png" alt="">
+                          <p>订单管理</p></a>
+                        </li>
+                        <li onclick="serverList()" class="bottom_bottom_item">
+                          <img src="__HOME_STATIC__/img/saleOfService.png" alt="">
+                          <p>服务收入</p>
+                        </li>
+                        <li class="bottom_bottom_item"><a href="{:url('user/MyTeam')}">
+                          <img src="__HOME_STATIC__/img/userManage.png" alt="">
+                          <p>会员管理</p></a>
+                        </li>
+                        <li class="bottom_bottom_item">
+                        <a href="/home/message/dialogList?consignee_id={$userInfo.parent_agent}">
+                            <img src="__HOME_STATIC__/img/usercenter_32.png" alt="">
+                            <p>联系客服</p>
+                        </a>
+                        </li>
+                          <li onclick="login_out()" class="bottom_bottom_item">
+                            <img src="__HOME_STATIC__/img/goout.png" alt="">
+                            <p>退出</p>
+                        </li>
+                    </ul>
+                    <div class="clear">
+                    
+                    </div>
+            </div>
+        </section>
+        {block name='footermenu'} {include file="thems/default/public/Footer/footer.html"} {/block}
+</body>
+{/block} {block name="footerjs"}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    $.ajax({
+        url: '{:url("home/Order/ajaxCount")}',
+        type: 'GET',
+        dataType: 'json',
+        success: function (res) {
+            if (res.code > 0) {
+                var num = res.data.num;
+                for (var v in num) {
+                    if (num[v] <= 0) {
+                        $('#' + v).css("display", 'none');
+                    } else {
+                        $('#' + v).css('display', 'block');
+                        $('#' + v).text(num[v]);
+                    }
+                }
+            }
+        }
+    })
+
+    function login_out() {
+        $.ajax({
+            url: "{:url('home/user/login_out')}",
+            success: function (res) {
+                if (res.code > 0) {
+                    location.href = res.url;
+                }
+            }
+        });
+    }
+
+    // 判断是否显示弹层;
+    var showStatus = {if condition= "isset($userInfo['is_show_qrcode']) AND (!is_null($userInfo['is_show_qrcode']))"}{$userInfo['is_show_qrcode']}{else/}0{/if};
+    
+    if (showStatus < 3) {
+        showStatus++;
+        $('.shadow').removeClass('none');
+        $.ajax({
+            type: 'Get',
+            dataType: 'json',
+            url: '{:url("api/Base/changeStatu")}',
+            data: {
+                'table': 'user',
+                'id_name': 'id',
+                'id_value': {$userInfo["id"]},
+                'field': 'is_show_qrcode',
+                'value': showStatus
+            },
+            success: function (res) {
+                // console.log(showStatus);
+            },
+            error: function () {}
+        });
+    }
+    // 弹层被点击隐藏;
+    $('.shadow').on('click', function () {
+        $(this).addClass('none');
+    });
+    $('.img-container').on('click', function () {
+        return false;
+    });
+    var date = {
+      y: new Date().getFullYear(),
+      m: new Date().getMonth() + 1
+    }
+  function getstart(){
+  var d = new Date(new Date(date.y + '/' + date.m + '/' + '1').getTime() - 86400000)
+  return d.getFullYear() + '-' + Number(d.getMonth() + 1) + '-' + d.getDate()
+}
+function getend(){
+  var m = Number(date.m) + 1
+  var y = date.y
+  if (m == 13) {
+    m = 1;
+    y ++
+  }
+  return y + '-' + m + '-1'
+}
+function serverList(){
+  location.href = '{:url('serviceSalesDetail')}?start=' + getstart() + '&end=' + getend()
+}
+</script>
+{/block}

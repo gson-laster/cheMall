@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+ <link href="__ADMIN_STATIC__/assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="__ADMIN_STATIC__/css/style.css"/>
+        <link href="__ADMIN_STATIC__/assets/css/codemirror.css" rel="stylesheet">
+        <link rel="stylesheet" href="__ADMIN_STATIC__/assets/css/ace.min.css" />
+        <link rel="stylesheet" href="__ADMIN_STATIC__/font/css/font-awesome.min.css" />
+        <!--[if lte IE 8]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+		<script src="__ADMIN_STATIC__/js/jquery-1.9.1.min.js"></script>
+        <script src="__ADMIN_STATIC__/assets/js/bootstrap.min.js"></script>
+		<script src="__ADMIN_STATIC__/assets/js/typeahead-bs2.min.js"></script>
+		<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+		<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+        <script src="__ADMIN_STATIC__/assets/layer/layer.js" type="text/javascript" ></script>
+        <script src="__ADMIN_STATIC__/js/H-ui.js" type="text/javascript"></script>
+        <script src="__ADMIN_STATIC__/js/displayPart.js" type="text/javascript"></script>
+<title>文章分类</title>
+</head>
+
+<body>
+<div class="margin clearfix">
+ <div class="sort_style">
+  <div class="border clearfix">
+       <span class="l_f">
+        <!--  <a href="javascript:;"  id="add_page" class="btn btn-warning"><i class="fa fa-plus"></i>评价列表</a>-->
+        <a href="javascript:;" class="btn btn-danger"  onclick="deletesAll(this)" data-action="{:url('admin/comments/delcomment')}"><i class="icon-trash"></i> 批量删除</a>
+       </span>
+      <!-- <span class="r_f">共：<b>5</b>分类</span> -->
+     </div>
+     <!--分类类表-->
+     <div class="article_sort_list">
+         <table class="table table-striped table-bordered table-hover" id="sample-table">
+       <thead>
+		 <tr>
+				<th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+				<th width="80px">ID</th>
+                <th width="80px">商品名称</th>
+                <th width="100px">订单号</th>
+				<th width="150px">用户名称</th>
+				<th width="200px">评价内容</th>
+				<th width="200px">评价时间</th>
+                <th width="80px">评价等级</th>
+				<th width="150px">服务水平</th>
+				<th width="100px">货物质量</th>
+				<th width="100px">操作</th>
+
+
+			</tr>
+		</thead>
+        <tbody>
+        {volist name="info" id="ats"}
+         <tr>
+        <td><label><input type="checkbox" name="ids[]" value="{$ats.comment_id}" class="ace"><span class="lbl"></span></label></td>
+          <td>{$ats.comment_id}</td>
+          <td>{$ats.goods_name}</td>
+          <td>{$ats.goods_sn}</td>
+          <td>{$ats.phone}</td>
+          <td>{$ats.content}</td>
+          <td>{$ats.add_time|date='Y-m-d H:m:s', ###}</td>
+          <td>{if condition="$ats.evaluate eq 0"}差评{elseif condition="$ats.evaluate eq 1"/}中评{else /}好评{/if}</td>
+          <td>{if condition="$ats.service_rank eq 1"}一星{elseif condition="$ats.service_rank eq 2"/}二星{elseif condition="$ats.service_rank eq 3"/}三星{elseif condition="$ats.service_rank eq 4"/} 四星{else /}五星{/if}</td>
+          <td>{if condition="$ats.service_rank eq 1"}一星{elseif condition="$ats.service_rank eq 2"/}二星{elseif condition="$ats.service_rank eq 3"/}三星{elseif condition="$ats.service_rank eq 4"/} 四星{else /}五星{/if}</td>
+          <td class="td-manage">
+           <a title="删除" href="javascript:;"  onclick="member_del(this,{$ats.comment_id})" class="btn btn-xs btn-danger" ><i class="fa fa-trash  bigger-120"></i></a>
+          </td>
+         </tr>
+       {/volist}
+        </tbody>
+        </table>
+     </div>
+
+ </div>
+</div>
+
+<script>
+$(function() {
+  var oTable1 = $('#sample-table').dataTable( {
+  "aaSorting": [[ 1, "desc" ]],//默认第几个排序
+  "bStateSave": true,//状态保存
+  "aoColumnDefs": [
+	//{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+	{"orderable":false,"aTargets":[0,2,3,4,6,7,]}// 制定列不参与排序
+  ]});
+		  $('table th input:checkbox').on('click' , function(){
+			  var that = this;
+			  $(this).closest('table').find('tr > td:first-child input:checkbox')
+			  .each(function(){
+				 this.checked = that.checked;
+				 $(this).closest('tr').toggleClass('selected');
+	 });
+  });
+});
+
+
+
+
+
+
+
+/*class-删除*/
+function member_del(obj,id){
+	 layer.confirm('确认要删除吗？', function(index) {
+	      adminAjax('Get', '{:url('delcomment')}', util.jsonToUrlStr({"id":id}), false, function () {
+	        $(obj).parents("tr").remove();
+	        layer.msg('已删除!', {
+	          icon: 1,
+	          time: 1000
+	        });
+	      })
+	    });
+}
+</script>
+</body>
+</html>
+

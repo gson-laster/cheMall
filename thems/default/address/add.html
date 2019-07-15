@@ -1,0 +1,217 @@
+{extend name='/public/base'/}
+{block name='title'}全名商城-新建地址{/block}
+{block name='headcss'}
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/address.css">
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/MultiPicker.css">
+{/block}
+{block name='content'}
+<div class="box NewAddress">
+    <section>
+        <div class="one">
+            <div class="user">
+                <div class="userinformation">
+                    收件人：
+                </div>
+                <div class="userinput">
+                    <input type="text" id="receive_name" name="name"/>
+                </div>
+            </div>
+            <!----------->
+            <div class="user">
+                <div class="userinformation">
+                    联系电话：
+                </div>
+                <div class="userinput">
+                    <input type="text" id="new_phone" name="phone"/>
+                </div>
+            </div>
+            <!--------->
+            <div class="user">
+                <div class="userinformation">
+                    所在地区：
+                </div>
+                <div class="userinput">
+                    <input readonly id="new_district" name="district" type="text"></input>
+                </div>
+                <div class="btn">
+                    <button>
+                        <!--<img src="__HOME_STATIC__/img/NewAddress_03.png"/>-->
+                    </button>
+                </div>
+            </div>
+            <div class="user">
+                <div class="userinformation">
+                    街道:
+                </div>
+                <div class="userinput">
+                    <input readonly id="street" type="text" value="请选择街道地址"/>
+                </div>
+                <div class="btn">
+                    <button>
+                        <!--<img src="__HOME_STATIC__/img/NewAddress_03.png"/>-->
+                    </button>
+                </div>
+            </div>
+            <div class="user">
+                <div class="userinformation">
+                    详细地址：
+                </div>
+                <div class="userinput">
+                    <input type="text" id="address_detail" name="address_info"/>
+                </div>
+            </div>
+            <div class="user">
+                设置默认地址
+                <p>
+                    注:每次下单时会使用该地址
+                </p>
+                <div class="eclipse">
+                    <div class="circle">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--multipicker插件插入的容器-->
+    <section>
+        <div id="targetContainer"></div>
+    </section>
+    <section>
+        <div id="anotherContainer"></div>
+    </section>
+
+    <section class="footer_space">
+        <div class="footer_use">
+            <div class="use"><a href="javascript:void(0)">保存并使用</a></div>
+        </div>
+    </section>
+</div>
+{/block}
+
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/NewAddress.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/MultiPicker.js"></script>
+<script src="__HOME_STATIC__/js/rewriteAddress.js"></script>
+<script>
+  $(document).ready(function () {
+      /*清空input*/
+    $('input[type="text"]').val('');
+
+      /*保存省市县的id*/
+    let province='', city='', area='';
+
+    let address = [];
+    address[0]=province;
+    address[1]=city;
+    address[2]=area;
+      /*第一次进入页面就加载省市县信息*/
+    ajaxAddress(function (res) {
+      if (res.length > 0) {
+          /*清空街道残留的信息*/
+        $('#street').val('');
+
+          /*传入id获取街道信息*/
+        let townId = res[res.length - 1]['id'];
+        getTown(townId, 'json');
+
+          /*获取省市县id值*/
+        for(let i=0;i<res.length;i++){
+          address[i]=res[i]['id'];
+        }
+      }
+    });
+    $('.footer_use').find('.use').click(function () {
+        /*获取要填入信息的元素的值*/
+      let data;
+      let receive_name = $('#receive_name').val();
+      let new_phone = $('#new_phone').val();
+      let address_detail = $('#address_detail').val();
+      let uid = {$Request.session.qt_userId};
+      let new_district = $('#new_district').val();
+      let street = $('#new_district').val();  
+
+
+
+        /*去除手机号空格*/
+      function trimStr(str) {
+        return str.replace(/(^\s*)|(\s*$)/g, '');
+      }
+      if (receive_name == '') {
+        toast("姓名不能为空")
+        return false;
+      } else if (new_phone == '' || isNaN(trimStr(new_phone))) {
+        toast("手机输入错误")
+        return false;
+      } else if (new_district == '') {
+        toast("请选择所在地区");
+        return false;
+      }else if(street==''){
+        toast('请选择街道');
+      }
+       else if (address_detail.length > 32) {
+        toast("详细地址太长");
+        return false;
+      } else {
+          /*获取出省、市、区/县,拼装请求地址*/
+
+        let data = {
+          name: receive_name,
+          phone: new_phone,
+          province:address[0],
+          city:address[1],
+          area: address[2],
+          town:address[3],
+          uid: uid,
+          'address_info': address_detail,
+        }
+        $.ajax({
+          url: '{:url("save")}{php}echo isset($_GET['backurl']) ? '?backurl='.$_GET['backurl'] : ''{/php}',
+          type: 'POST',
+          data: data,
+          success: function (res) {
+            if (res.code = 1) {
+                /*判断是否设置默认地址*/
+              if (eclipse_bool) {
+                let last_id = res.data['last_id'];
+                ajaxDefault(last_id, uid);
+              }
+              location.href = res.url;
+            }
+          },
+          error: function (res) {
+            console.log("返回错误");
+          }
+        })
+      }
+    });
+
+      /*获取town*/
+    function getTown(parent_id, atype) {
+      let type = atype || 'json';
+      $.ajax({
+        url:'{:url("api/base/getTwon")}?parent_id=' + parent_id + '&type=' + type,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success: function (res) {
+          let street='';
+          try {
+            fnMultiPicker(res, 'street', 'anotherContainer', function (arr) {
+              street=arr[0]['id'];
+              address.push(street);
+            })
+          }catch (e){
+            alert('咦,这里好像没有街道诶!');
+          }
+        },
+        error: function (xhr, type) {
+          alert('获取街道错误');
+        }
+      })
+    }
+  });
+</script>
+{/block}

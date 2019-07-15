@@ -1,0 +1,494 @@
+<style>
+	.goods-warrp{
+		width: 100%;
+	}
+	.goods-warrp .goods-item{
+		width: 20%;
+		float: left;
+		border:1px solid #ddd;
+		border-radius: 5px;
+		box-sizing: border-box;
+		padding: 5px;
+		margin: 12px;
+		cursor: pointer;
+	}
+	.goods-warrp .goods-item img{
+		width: 100%;
+	}
+	.goods-warrp .goods-item h3{
+		font-weight: normal;
+		font-size: 14px;
+	}
+	.goods-warrp .goods-item.active{
+		border-color: #00a2d4;
+	}
+</style>
+<body>
+<div class="page-content clearfix">
+	<div id="Member_Ratings">
+		<div class="d_Confirm_Order_style">
+			<!---->
+			<div class="border clearfix">
+        <span class="l_f">
+          <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加活动</a>
+          <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('delete')}"><i class="icon-trash"></i>批量删除</a>
+        </span>
+				<span class="r_f">共：<b></b>条</span>
+			</div>
+			<!---->
+			<div class="table_menu_list">
+				<table class="table table-striped table-bordered table-hover" id="sample-table">
+					<thead>
+					<tr>
+						<th width="10"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+						<th width="50">ID</th>
+						<th width="100">活动名称</th>
+						<th width="240">活动类型</th>
+						<th width="200">触发的钩子</th>
+						<th width="240">参与活动的字段</th>
+						<th width="200">参与活动字段的值</th>
+						<th width="70">状态</th>
+						<th width="70">第一次动作</th>
+						<th width="70">参与活动的商品</th>
+						<th width="200">创建时间</th>
+						<th width="250">操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					{volist name="list" id="u"}
+					<td><label><input type="checkbox" name="ids[]" value="{$u.id}" class="ace"><span class="lbl"></span></label></td>
+					<td>{$u.id}</td>
+					<td>{$u.title}</td>
+					<td>{:config('active_type')[$u['type']]}</td>
+					<td>{:config('active_hook')[$u['hook']]}</td>
+					<td>{:config('active_field')[$u['field']]}</td>
+					<td>{$u.value}</td>
+					<td class="td-status"><span class="label {if condition="$u['status'] eq '1'"}label-success{else/}label-defaunt{/if} radius">{if condition="$u.status eq 1"}是{else/}否{/if}</span></td>
+					<td class="td-status"><span class="label {if condition="$u['first_action'] eq '1'"}label-success{else/}label-defaunt{/if} radius">{if condition="$u.first_action eq 1"}是{else/}否{/if}</span></td>
+					<td>{neq name="u.active_goods" value=""}<a class="btn btn-xs btn-success" onclick="showGoodsItem('{$u.active_goods}')">查看活动商品</a>{/neq}</td>
+					<td>{$u.createtime}</td>
+					<td class="td-manage">
+						<a onClick="{if condition="$u['status'] eq '1'"}member_stop(this,{$u.id}){else/}member_start(this,{$u.id}){/if}" href="javascript:;" title="{if condition="$u['status'] eq '1'"}停用{else/}启用{/if}" class="btn btn-xs btn-success"><i class="icon-ok bigger-120"></i></a>
+						<a title="编辑" onclick="member_edit({$u.id})" href="javascript:;" class="btn btn-xs btn-info"><i class="icon-edit bigger-120"></i></a>
+						<a title="删除" href="javascript:;" onclick="member_del(this,{$u.id})" class="btn btn-xs btn-warning"><i class="icon-trash  bigger-120"></i></a>
+					</td>
+					</tr>
+					{/volist}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+	<ul class=" page-content">
+		<li class="adderss">
+			<label class="label_name" style="width: 200px">升级名称：</label><span class="add_name"><input name="title" type="text"  class="text_add" style=" width:350px" required data-title="活动名称" data-role="add"/></span>
+			<div class="prompt r_f"></div>
+		</li>
+		<li class="adderss">
+			<label class="label_name" style="width: 200px">升级类型：</label>
+			<span class="add_name">
+            <select class="text-add" name="type" style=" width:350px;margin-left: 10px;" data-role="add">
+	            {foreach name=":config('active_type')" item="item" key="k"}
+                <option value="{$k}">{$item}</option>
+	            {/foreach}
+            </select>
+          </span>
+			<div class="prompt r_f"></div>
+		</li>
+		<li class="adderss">
+			<label class="label_name" style="width: 200px">升级条件：</label>
+			<span class="add_name">
+            <select class="text-add" name="hook" style=" width:350px;margin-left: 10px;" data-role="add">
+	            {foreach name=":config('active_hook')" item="item" key="i"}
+                <option value="{$i}">{$item}</option>
+	            {/foreach}
+            </select>
+          </span>
+			<div class="prompt r_f"></div>
+		</li>
+		<li class="adderss">
+			<label class="label_name" style="width: 200px">参与活动的字段：</label>
+			<span class="add_name">
+             <select class="text-add" name="field" style=" width:350px;margin-left: 10px;" data-role="add">
+	            {foreach name=":config('active_field')" item="item" key="i"}
+                <option value="{$i}">{$item}</option>
+	            {/foreach}
+            </select>
+          </span>
+			<div class="prompt r_f"></div>
+		</li>
+		<li class="adderss"><label class="label_name" style="width: 200px">参与活动的字段的值：</label><span class="add_name"><input name="value" type="text"  class="text_add" style=" width:350px" required data-title="分类名称" data-role="add"/></span>
+			<div class="prompt r_f" style="color: #999">注: 字段为用户身份时 1、省级代理 2、市级代理 3、县级代理 4、经销商 (用户身份不会往下降)；字段为用户vb时 整数为加 负数为减</div>
+		</li>
+		<li style="text-align: center; width: 100%">
+			<a class="btn btn-xs btn-success" onclick="showGoods()">选择参与活动商品</a>
+		</li>
+		<li style="width: 100%"><label class="label_name" style="width: 200px">是否第一次动作触发：</label>
+			<span class="add_name">
+	     <label><input name="first_action" type="radio" checked="checked" value="1" class="ace" data-role="add"/><span class="lbl">是</span></label>&nbsp;&nbsp;&nbsp;
+				<label><input name="first_action"type="radio" class="ace" value="0" data-role="add"/><span class="lbl">否</span></label>
+			</span>
+			<div class="prompt r_f" style="color: #999; text-align: left">注: 充值活动: 第一次充值；购买活动：该商品第一次下单(之前购买过该商品，则无法参与该活动)；代理开通：第一次开通代理</div>
+		</li>
+		<li><label class="label_name" style="width: 200px">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
+     <label><input name="status" type="radio" checked="checked" value="1" class="ace" data-role="add"/><span class="lbl">启用</span></label>&nbsp;&nbsp;&nbsp;
+			<label><input name="status"type="radio" class="ace" value="0" data-role="add"/><span class="lbl">关闭</span></label></span>
+			<div class="prompt r_f"></div>
+		</li>
+		<input type="hidden" name="active_goods" id="goods_id" value="" data-title="参与活动的商品" data-role='add' />
+	</ul>
+</div>
+
+<!--商品-->
+<div class="show-goods" style="display:none">
+	<div class="goods-warrp">
+		<ul>
+			{volist name="goods" id="item"}
+			<li class="goods-item" onclick="select_goods({$item.id}, this)" data-id="{$item.id}">
+				<img src="{$item.thumb}" alt="" />
+				<h3>{$item.title}</h3>
+			</li>
+			{/volist}
+		</ul>
+	</div>
+</div>
+<div class="show-goods-item" style="display:none">
+	<div class="goods-warrp">
+		<ul>
+		
+		</ul>
+	</div>
+</div>
+<script>
+    function treeClicked(obj,cat_id,parent_id_path){
+
+        var src = $(obj).attr('src');
+        if(src == '__ADMIN_STATIC__/images/tv-expandable.gif')
+        {
+            $(".parent_id_"+cat_id).show();
+            $(obj).attr('src','__ADMIN_STATIC__/images/tv-collapsable-last.gif');
+        }else{
+            $("tr[parent_id_path^='"+parent_id_path+"_']").hide().find('img').attr('src','__ADMIN_STATIC__/images/tv-expandable.gif');
+            $(obj).attr('src','__ADMIN_STATIC__/images/tv-expandable.gif');
+        }
+    }
+		var layerActie
+    function showGoodsItem($ids) {
+        if(!$ids || $ids == '') return ;
+        util.ajaxGet('/api/base/getGoods',{'ids': $ids}).done(function (res) {
+            var html = ''
+		        if(!res||res.length == 0)  return
+		        for(var i=0; i < res.length; i++) {
+                var _d = res[i]
+                html += `<li class="goods-item" onclick="select_goods(${_d.active_goods}, this)" data-id="${_d.id}">
+														<img src="${_d.thumb}" alt="" />
+														<h3>${_d.title}</h3>
+												</li>`
+		        }
+		        $(".show-goods-item .goods-warrp > ul").html(html)
+            layerActie = layer.open({
+                content: $(".show-goods-item"),
+                type: 1,
+                title: '添加分类',
+                maxmin: true,
+                shadeClose: true, //点击遮罩关闭层
+                area: ['800px', ''],
+                btn: ['提交', '取消'],
+                yes: function () {
+                    var $ids = $(".goods-item.active");
+                    var ids = ''
+
+                    $ids.each(function (index, item) {
+                        ids += $(item).data('id') + ','
+                    })
+                    $("#goods_id").val(ids.substring(0, ids.length -1 ))
+                    layer.close(layerActie)
+                }
+            })
+        }).fail(function (err) {
+            layer.msg(err.status+"服务器发生错误")
+        })
+    }
+    
+    jQuery(function($) {
+        $('table th input:checkbox').on('click', function() {
+            var that = this;
+            $(this).closest('table').find('tr > td:first-child input:checkbox')
+                .each(function() {
+                    this.checked = that.checked;
+                    $(this).closest('tr').toggleClass('selected');
+                });
+
+        });
+
+        $('[data-rel="tooltip"]').tooltip({
+            placement: tooltip_placement
+        });
+
+        function tooltip_placement(context, source) {
+            var $source = $(source);
+            var $parent = $source.closest('table')
+            var off1 = $parent.offset();
+            var w1 = $parent.width();
+
+            var off2 = $source.offset();
+            var w2 = $source.width();
+
+            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+            return 'left';
+        }
+    })
+		/*用户-添加*/
+    $('#member_add').on('click', function() {
+        openPanle('add', null);
+        layer.open({
+            type: 1,
+            title: '添加分类',
+            maxmin: true,
+            shadeClose: true, //点击遮罩关闭层
+            area: ['800px', ''],
+            content: $('#add_menber_style'),
+            btn: ['提交', '取消'],
+            yes: function(index, layero) {
+                var num = 0;
+                var str = "";
+                //不能为空
+                $(".add_menber input[type$='text']").each(function(n) {
+                    if ($(this).val() == "") {
+
+                        layer.alert(str += "" + $(this).attr("data-title") + "不能为空！\r\n", {
+                            title: '提示框',
+                            icon: 0,
+                        });
+                        num++;
+                        return false;
+                    }
+                });
+                if($("#goods_id").val() == '' && $("select[name='type']").val() == 'GOODSORDER') {
+                    layer.alert(str += "" + $("#goods_id").attr("data-title") + "不能为空！\r\n", {
+                        title: '提示框',
+                        icon: 0,
+                    });
+                    num++;
+                    return false;
+                }
+                if (num > 0) {
+                    return false;
+                } else {
+                    var data = serializeData();
+                    console.log(data)
+                    util.ajaxPost("{:url('saveActively')}", data).done(function (res) {
+                        if(res.code > 0){
+                            layer.close(index);
+                            layer.msg(res.msg)
+                            setTimeout(function () {  window.location.href = res.url;},2000)
+                        }else{
+                            layer.msg(res.msg)
+                        }
+
+                    }).fail(function (err) {
+                        layer.msg(err.status+"服务器发生错误")
+                    });
+                }
+            }
+        });
+    });
+    var layerIndex;
+    function showGoods() {
+        layerIndex = layer.open({
+            content: $(".show-goods"),
+            type: 1,
+            title: '添加分类',
+            maxmin: true,
+            shadeClose: true, //点击遮罩关闭层
+            area: ['800px', ''],
+            btn: ['提交', '取消'],
+            yes: function () {
+                var $ids = $(".goods-item.active");
+                var ids = ''
+                
+		            $ids.each(function (index, item) {
+		                ids += $(item).data('id') + ','
+                })
+		            $("#goods_id").val(ids.substring(0, ids.length -1 ))
+		            layer.close(layerIndex)
+            }
+        })
+    }
+    // 选择商品
+    function select_goods(goods_id, obj){
+      if($(obj).hasClass('active')){
+        $(obj).removeClass('active')
+      }else{
+        $(obj).addClass('active')
+      }
+    }
+    function serializeData(type){
+        var _type = type || 'add';
+        var eles = $("*[data-role='add']");
+        // console.log(eles.find('input[name="user[phone]"]'))
+        var data = [];
+        var str = '';
+        for (var i = 0; i < eles.length; i++) {
+            var _d = $(eles[i]);
+            if(_d.attr('type') == 'radio'){
+                if(_d.prop('checked')){
+                    data[_d.attr('name')] = _d.val();
+                    str += _d.attr('name') + '=' + _d.val() + '&';
+                }
+            }else{
+                data[_d.attr('name')] = _d.val();
+                str += _d.attr('name') + '=' + _d.val() + '&';
+            }
+        }
+        return str.substring(0, str.length -1 );
+    }
+		/*用户-查看*/
+    function member_show(title, url, id, w, h) {
+        layer_show(title, url + '#?=' + id, w, h);
+    }
+		/*用户-停用*/
+    function member_stop(obj, id) {
+        layer.confirm('确认要停用吗？', function(index) {
+            adminAjax('Get','{:url('/api/base/changeStatu')}', util.jsonToUrlStr({"table":'actively','id_name': 'id','id_value': id, 'field': 'status', 'value': 0}), false, function () {
+                layer.msg('已停用!', {
+                    icon: 5,
+                    time: 1000
+                });
+                $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs " onClick="member_start(this,'+id+')" href="javascript:;" title="正常"><i class="icon-ok bigger-120"></i></a>');
+                $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius">已停用</span>');
+                $(obj).remove();
+            })
+
+        });
+    }
+		
+		/*用户-启用*/
+    function member_start(obj, id) {
+        layer.confirm('确认要启用吗？', function(index) {
+
+            adminAjax('Get','{:url('/api/base/changeStatu')}', util.jsonToUrlStr({"table":'actively','id_name': 'id','id_value': id, 'field': 'status', 'value': 1}), false, function () {
+
+                layer.msg('已启用!', {
+                    icon: 6,
+                    time: 1000
+                });
+                $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs btn-success" onClick="member_stop(this,'+id+')" href="javascript:;" title="停用"><i class="icon-ok bigger-120"></i></a>');
+                $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">正常</span>');
+                $(obj).remove();
+            })
+
+        });
+    }
+		/*用户-编辑*/
+    function member_edit(id) {
+        openPanle('edit', id, function () {
+            layer.open({
+                type: 1,
+                title: '修改用户信息',
+                maxmin: true,
+                shadeClose: false, //点击遮罩关闭层
+                area: ['800px', ''],
+                content: $('#add_menber_style'),
+                btn: ['提交', '取消'],
+                yes: function(index, layero) {
+                    var num = 0;
+                    var str = "";
+                    $(".add_menber input[type$='text']").each(function(n) {
+                        if ($(this).val() == "") {
+                            layer.alert(str += "" + $(this).attr("name") + "不能为空！\r\n", {
+                                title: '提示框',
+                                icon: 0,
+                            });
+                            num++;
+                            return false;
+                        }
+                    });
+                    //校验密码
+                    if($("input[name='password']").val() != $("input[name='password_confirm']").val()){
+                        layer.alert('两次输入的密码不一样', {
+                            title: '提示框',
+                            icon: 0
+                        });
+                        num ++;
+                        return false;
+                    }
+                    if (num > 0) {
+                        return false;
+                    } else {
+                        var data = serializeData();
+                        // console.log(data)
+                        util.ajaxPost("{:url('saveActively')}", data+"&id="+id).done(function (res) {
+                            if(res.code > 0){
+                                layer.close(index);
+                                layer.msg(res.msg)
+                                setTimeout(function () {  window.location.href = res.url;},2000)
+                            }else{
+                                layer.msg(res.msg)
+                            }
+                        }).fail(function (err) {
+                            layer.msg(err.status+"服务器发生错误")
+                        });
+                    }
+                }
+            });
+        })
+
+    }
+		/*用户-删除*/
+    function member_del(obj, id) {
+        layer.confirm('确认要删除吗？', function(index) {
+            adminAjax('Get', '{:url('delete')}', util.jsonToUrlStr({"id":id}), false, function () {
+                $(obj).parents("tr").remove();
+                layer.msg('已删除!', {
+                    icon: 1,
+                    time: 1000
+                });
+            })
+        });
+    }
+
+    function openPanle(type, id, fn){
+        if(type == 'add'){
+            //清空input
+            $(".add_menber input[type$='text']").each(function(n) {
+                $(this).val('');
+            });
+        }else{
+            adminAjax('Get', '{:url('getactivelybyid')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+                var data = res.data;
+                
+                for (var k in data) {
+                    $(".add_menber input").each(function(n) {
+	                    if(k == $(this).attr('name')){
+	                        if($(this).attr('type') == 'text' || $(this).attr('type') == 'hidden')$(this).val(data[k]);
+	                        if($(this).attr('type') == 'radio'){
+	                            if($(this).val() == data[k]){
+	                                $(this).prop('checked', 'checked');
+	                            }else{
+	                                $(this).prop('checked', false);
+	                            }
+	                        }
+	                    }
+                    });
+                    $(".add_menber select").each(function (index, ele) {
+                        if(k == $(this).attr('name')){
+		                        $(this).val(data[k])
+                        }
+                    });
+                }
+                
+                
+
+                fn&&fn();
+            });
+        }
+    }
+</script>
+
+</body>
+
+</html>

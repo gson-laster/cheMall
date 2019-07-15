@@ -1,0 +1,276 @@
+
+{extend name="public/base"}
+{block name='title'}提现记录{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/wallet.css" />
+<link rel="stylesheet" href="__HOME_STATIC__/css/reset.css" />
+{/block}
+{block name="content"}
+{php}
+  $arr = array(1 => '购物币', '6' => '分红收入', '5' => '推广收入');
+{/php}
+<div id="pjax-container" class="box">
+  <div onclick="cancel(event)" style="display: none;" class="bgblack">
+  	<div class="selectT">
+  		<div class="table">
+  			<div class="table_row"><div class="table_cell">	请选择年</div><div class="table_cell"> 请选择月</div>  	</div>
+			  <div class="table_row"><div class="table_cell"><select onclick="stop(event)" onchange="date.oy(this, event)" id="year"></select></div><div class="table_cell"> <select onclick="stop(event)" onchange="date.om(this, event)" id="month"></select></div> </div>
+			  <div class="table_row"><div class="table_cell">	<div onclick="timeConfirm(false, event)" class="btn">取消</div></div><div class="table_cell"> <div onclick="timeConfirm(true)" class="btn confirm">确定 </div></div>  	</div>
+  		</div>
+  	</div>
+  </div>
+    <div class="con scrollload-container">
+        <header class="dis-box header-menu  color-whie">
+            <!-- <div onclick="shuanxuantype()" class="shuaixuan triangle">筛选</div> -->
+            <h3 class="box-flex">提现记录明细</h3>
+            <!-- <div onclick="shuaixuanshow()" class="shuaixuanriqi triangle">日期</div> -->
+        </header>
+        <div style="display: none;" class="typelist">
+          {volist name="arr" id = "a"}
+            <div onclick="typeSelect({$key}, event)" data-type="{$key}">
+            {$a}
+            </div>
+          {/volist}
+        </div>
+      <div class="contentbox">
+        <!--<div class="income">2017年5月<span>收入￥500&nbsp;&nbsp;&nbsp;支出￥500</span> </div>-->
+        <ul class="n-user-acc-log scrollload-content">
+          {volist name="list" id="li"}  
+          <li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">
+              <a href="{:url('home/user/widthdraw_detail')}?id={$li['id']}">
+                <div class="dis-box">
+                    <div class="box-flex widthdraw">
+                        {switch name="li.isok"}
+                        {case value="1"}<h5 class="f-05 col-7">提现审核：已支付</h5>{/case}
+                        {default/}<h5 class="f-05 col-7">提现审核：未支付</h5>
+                        {/switch}
+                        <h6 class="f-05 col-7  m-top04">{:date('Y-m-d',$li.createtime)}</h6>
+                    </div>
+                    <div class="box-flex">
+                        <p class="f-05 text-right minus widthdraw-arrow">
+                           {$li.sqtxprice}
+                        </p>
+                    </div>
+                </div>
+              </a>
+            </li>
+          {/volist}
+        </ul>
+      </div>
+    </div>
+</div>
+{/block}
+
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script type="text/javascript">
+  //设置月份
+  (function () {
+    var m = '';
+    var da = new Date()
+    var nowm = da.getMonth() + 1;
+    for (var i = 1; i < 13; i ++) {
+      var sel = nowm = i ? 'selected="selected"' : ''
+    	m = m + '<option ' + sel + ' value="' + i + '">'+ i +'月</option>'
+    }
+    $("#month").append(m);
+    var y = '';
+    var year = da.getFullYear();
+    while (year > 2015) {
+    	y = y + '<option value="' + year + '">'+ year +'年</option>';
+    	year --;
+    }
+    $("#year").append(y)
+  })()
+  Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+      "M+": this.getMonth() + 1, //月份
+      "d+": this.getDate(), //日
+      "h+": this.getHours(), //小时
+      "m+": this.getMinutes(), //分
+      "s+": this.getSeconds(), //秒
+      "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+      "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+  }
+</script>
+<script type="text/javascript">
+  $(document).ready(function () {
+//  let page =1,pageSize=10;
+//  new Scrollload({
+//    container:document.querySelector('.scrollload-container'),
+//    content:document.querySelector('.scrollload-content'),
+//    loadMore:function (me) {
+//      page++;
+//      $.ajax({
+//        url:'{:url("home/User/detail")}?page='+page+'&pageSize='+pageSize,
+//        type:'GET',
+//        dataType:'json',
+//        async:false,
+//        success:function (res) {
+//          if(res.code==1002){
+//            let data=res['url']['data'],content='';
+//            content= htmlFn(data);
+//            $('.scrollload-content').append(content);
+//            if(res['url']['current_page']>parseInt(res['url']['total']/parseInt(res['url']['per_page']))){
+//              me.lock();
+//              me.noMoreData();
+//            }else{
+//              me.unLock();
+//            }
+//          }else{
+//            me.noMoreData();
+//          }
+//        },
+//        error:function (xhr,type) {
+//          console.log('ajax错误');
+//          me.throwException();
+//        }
+//      })
+//    }
+//  });
+  })
+  //      拼接
+//function htmlFn(data) {
+//  let html='';
+//  for (let i=0;i<data.length;i++){
+//    let text='';
+//    if(data[i]['type']==2){
+//      text='减少';
+//    }else{
+//      text='增加';
+//    }
+//    html+='<li class="dis-shop-list p-r padding-all m-top1px b-color-f"><div class="dis-box"><div class="box-flex"> <h5 class="f-05 col-7">'+new Date(data[i]['createtime']*1000).Format('yyyy-MM-dd hh:mm:ss')+'</h5>' +
+//      '<h6 class="f-05 col-7 m-top04">'+data[i]['note']+'</h6></div><div class="box-flex"><p class="f-05 color-red text-right">'+data[i]['user_money']+'</p><h6 class="f-05 col-3 text-right m-top04">'+text+'</h6></div></div></li>'
+//  }
+//  return html;
+//}
+  //筛选$type = '', $coin_type = '', $from = '', $time = ''
+  var  bgblack = $(".bgblack"), 
+  selectT = $(".selectT"),
+  typelist = $(".typelist"),
+  contentbox = $(".contentbox"),
+  date = {
+    y: null,
+    m: null,
+    init: function() {
+      var d = new Date();
+      this.y = d.getFullYear();
+      this.m = d.getMonth() + 1;
+    },
+    oy: function(obj, e){
+      e.stopPropagation();
+      this.y = $(obj).val();
+    },
+    om: function (obj, e) {
+      e = e || window.event;
+      e.stopPropagation();
+      this.m = $(obj).val();
+    }
+  }, 
+  parameter = {
+    type: '',
+    coin_type: '',
+    from: '',
+    time: ''
+  };
+  date.init();
+  function shuanxuantype(){
+    selectT.addClass('none')
+    bgblack.css('display', 'flex');
+    typelist.css('display', 'block')
+  }
+  function shuaixuanshow () {
+    selectT.removeClass('none');
+    bgblack.css('display', 'flex');
+  }
+  function typeSelect (fm, event){
+     var e = event || window.event;
+    e.preventDefault();
+    if (fm == 1) {
+      parameter.from = '';
+      parameter.coin_type = fm;
+    } else {
+      parameter.from = fm;
+      parameter.coin_type = '';
+    }
+    parameter.time = '';
+    //bgblack.css('display', 'none')
+    purchase();
+  }
+  function timeConfirm(c, e) {
+//  stop(e);
+    if (c) {
+	    parameter.time = date.y + '-' + date.m;
+      purchase()
+    }
+    //bgblack.css('display', 'none')
+  }
+  purchase();
+  function purchase(){
+    cancel();
+    // contentbox.empty();
+    $.ajax({
+    	type:"post",
+    	url:"{:url('purchasehis')}",
+    	async:true,
+    	data: parameter,
+    	success: function(res) {
+    	  if (res.code == 2000) {
+      	  var data = res.data;
+      	  console.log(data);
+      	  var str = '';
+      	  if (data.length == 0) {
+      	  	contentbox.html('<div style="text-align:center; line-height: 36px;">没有更多数据了...</div>')
+      	  }
+      	  for (var i = 0; i < data.length; i ++) {
+            str +=  '<div class="income">' + data[i].date + '<span>收入￥' + data[i].income + '&nbsp;&nbsp;&nbsp;支出￥' + data[i].expenses + '</span> </div>'+
+             '<ul class="n-user-acc-log scrollload-content">';
+            var result = data[i].data;
+            for (var j = 0; j < result.length; j ++) {
+              var type = '';
+              if (result[j].type == 1) {
+              	type = '+';
+              } else {
+              	type = '-';
+              }
+          result[j]['user_money'] = result[j]['user_money'] ? result[j]['user_money'] : 0;
+              str +=
+                '<li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">' +
+                      '<div class="dis-box">'+
+                          '<div class="box-flex">'+
+                              '<h5 class="f-05 col-7">' + new Date(result[j]['createtime'] * 1000).Format('yyyy-MM-dd hh:mm:ss')+'</h5>'+
+                              '<h6 class="f-05 col-7  m-top04">' + result[j]['note'] + '</h6>'+
+                          '</div>'+
+                          '<div class="box-flex">' +
+                              '<p class="f-05 color-red text-right">'+ type + result[j]['user_money'] +
+                              '</p>'+
+                          '</div>'+
+                      '</div>'+
+                  '</li>';
+            }
+            str += '</ul>'
+      	  }
+      	  contentbox.append(str);
+      	}
+  	  }
+    	  
+    });
+  }
+function stop (e) {
+    e = e || window.event;
+    e.stopPropagation();
+//  e.preventDefault();
+}
+  function cancel (event) {
+//  console.log(event)
+//  event.preventDefault();
+//  stop(event);
+    typelist.css('display', 'none');
+    bgblack.css('display', 'none');
+  }
+</script>

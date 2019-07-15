@@ -1,0 +1,216 @@
+<body>
+  <style>
+  .onoff {
+    font-size: 0;
+    position: relative;
+    overflow: hidden;
+    display: block;
+  }
+
+  .onoff label {
+    vertical-align: top;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    cursor: pointer;
+  }
+  .onoff .cb-enable,
+  .onoff .cb-disable {
+    color: #777;
+    font-size: 12px;
+    line-height: 20px;
+    background-color: #ECF0F1;
+    padding: 1px 9px;
+    border-style: solid;
+    border-color: #BEC3C7;
+  }
+
+  .onoff .cb-enable {
+    border-width: 1px 0 1px 1px;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .onoff .cb-disable {
+    border-width: 1px 1px 1px 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .delete-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 28px;
+    line-height: 28px;
+    display: block;
+    text-align: center;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    cursor: pointer;
+  }
+  .addimg{
+  	width: 200px;
+  }
+  .addimg img{
+  	margin-left: 160px;
+  	margin-top: 40px;
+  	width: 100%;
+  }
+  .col-sm-1{
+  	width: 12% !important;
+  }
+  </style>
+  <div class="margin clearfix">
+    <div class="stystems_style">
+      <div class="tabbable">
+        <ul class="nav nav-tabs" id="myTab">
+          <li class="active">
+            <a data-toggle="tab" href="#shop_info"><i class="green fa fa-home bigger-110"></i>&nbsp;公众号信息</a></li>
+        </ul>
+		     <form action="{:url('wechatconfig')}" method="post" name="weichat_info">
+		        <div class="tab-content">
+		          <div id="shop_info" class="tab-pane active" data-type="weichat_info">
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>微信回调地址： </label>
+                  <div class="col-sm-9">
+                    <input value="{$result.url}" readonly type="text" data-text="appid"   class="col-xs-10 " data-role='add'>
+                  </div>
+            </div>
+		                <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>请输入appid： </label>
+		                  <div class="col-sm-9">
+		                    <input id="appid" value="{$result.appid}" type="text" name="site_title" data-text="appid"   class="col-xs-10 " data-role='add'>
+		                  </div>
+		         		</div>
+
+		         		   <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>请输入appsecret： </label>
+		                  <div class="col-sm-9">
+		                    <input value="{$result.appsecret}" id="appsecret" type="text" name="site_title" data-text="appsecret"  class="col-xs-10 " data-role='add'>
+		                  </div>
+		         		</div>
+
+		         		   <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>请输入token： </label>
+		                  <div class="col-sm-9">
+		                    <input value="{$result.token}" id="token" type="text" name="site_title" data-text="token"  class="col-xs-10 " data-role='add'>
+		                  </div>
+		         		</div>
+
+		         		 <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>请填写商户ID： </label>
+		                  <div class="col-sm-9">
+		                    <input value="{$result.pay_id}" id="shopId" type="text" name="site_title" data-text="shopID"   class="col-xs-10 " data-role='add'>
+		                  </div>
+		         		</div>
+
+		         		 <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>请填写商户key： </label>
+		                  <div class="col-sm-9">
+		                    <input value="{$result.pay_key}" id="key" type="text" name="site_title" data-text="key"  class="col-xs-10 " data-role='add'>
+		                  </div>
+		         		</div>
+
+		         		 <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>请填写公众号名称： </label>
+		                  <div class="col-sm-9">
+		                    <input value="{$result.wx_name}" id="publicName" type="text" name="site_title" data-text="publicName" id="website-title"  class="col-xs-10 " data-role='add'>
+		                  </div>
+		         		</div>
+					 		 <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>请填写公众号订阅消息： </label>
+		                  <div class="col-sm-9">
+		                    <textarea style="height: 140px;" id="subscribe" type="text" name="site_title" data-text="publicName" id="website-title"  class="col-xs-10 " data-role='add'>{$result.subscribe}</textarea>
+		                  </div>
+		         		</div>
+		         		 <div class="form-group">
+		                  <label class="col-sm-1 control-label no-padding-right">二维码：</label>
+		                  <div class="col-sm-9">
+		                    {if condition='$result.qr_code eq ""'}<label for="code" class="btn">添加二维码</label>{else/}<label for="code" class="btn">修改二维码</label>{/if}<label onclick="removecode()" class="btn">删除二维码</label><input style="display: none;" onchange="addcode(this)" id="code" type="file"  class="col-xs-10 ">
+		                  </div>
+		                  <div class="addimg">
+		                  		{if condition='$result.qr_code eq ""'}{else/}<img id="old_img" src="{$result.qr_code}"/>{/if}
+		                  </div>
+		         		</div>
+				  </div>
+				</div>
+				  <div class="Button_operation">
+                  <a class="btn btn-primary radius" onclick="config_save()">确认保存</a>
+                </div>
+			</form>
+   		 </div>
+  	</div>
+  </div>
+</body>
+</body>
+</html>
+<script>
+	//保存配置
+var oldimg=$("#old_img").attr("src");
+var result=null;
+var url=null;
+function config_save() {
+	   if (result) {
+	   	   $.ajax({
+	        url: '{:url("api/UploadFiles/saveBase64Image")}?to_dir=Weichat',
+	        type: 'POST',
+	        async: false,
+	        data: {formFile: result},
+	        success: function (data) {
+	       	 url=data.url;
+       		 }
+     	 })
+	   }
+	var appid=$("#appid").val();
+	var appsecret=$("#appsecret").val();
+	var token=$("#token").val();
+	var shopId=$("#shopId").val();
+	var key=$("#key").val();
+	var publicName=$("#publicName").val();
+	var subscribe=$("#subscribe").val();
+	var data={'appid':appid,'appsecret':appsecret,'token':token,'pay_id':shopId,'pay_key':key,'wx_name':publicName,'subscribe':subscribe,'qr_code':url};
+    adminAjax('Post', "{:url('wechatconfig')}", data,false, function (res) {
+        if (res.code>0) {
+        	 layer.msg(res.msg);
+        	 if (oldimg) {
+        	 		 	$.ajax({
+					  			type:"Post",
+					  			url:'{:url('api/UploadFiles/delImg')}',
+									data:{'path':oldimg},
+					  			async:true,
+					  			success:function(data){
+					  			}
+				  		});
+        	 }
+        	 setTimeout(function(){location.href=res.url},1500)
+        }
+    }, function (err) {
+        layer.msg(err);
+    })
+};
+//添加二维码
+function addcode(obj){
+    var img = obj.files[0];
+    if (!/image\/\w+/.test(img.type)) {
+      layer.msg('请选择图片');
+      return false;
+    }
+    var fileder = new FileReader();
+    fileder.readAsDataURL(img);
+    fileder.onload = function (e) {
+    	var addimg=$(".addimg");
+	        	addimg.empty();
+	     	  	addimg.append('<img src="'+this.result+'" />');
+	     	  	result=this.result;
+    }
+};
+//删除二维码
+function removecode(){
+		layer.confirm('确认要删除吗？', function(index) {
+		$(".addimg").empty();
+		url=null;
+		result=null;
+		layer.close(index);
+	})
+}
+</script>

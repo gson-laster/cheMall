@@ -1,0 +1,52 @@
+{extend name='/public/base'/}
+{block name='title'}查看物流{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/checkTransport.css"/>
+{/block}
+{block name='content'}
+<div class="transport_header">
+    <div class="transport_header_container">
+        <div class="right">
+            <div>物流状态:&nbsp;&nbsp;<span class="received">
+                 {if condition="$kdinfo['State'] eq 3"}
+                    交易成功
+                  {elseif  condition="$kdinfo['State'] eq 0"/}
+                    暂无物流信息
+                  {elseif condition="$kdinfo['State'] eq 2"}
+                    正在派送中
+                  {/if}
+            </span>
+            </div>
+            <div>承运来源:&nbsp;&nbsp;<span>{$kdinfo.ShipperCode}</span></div>
+            <div>运单编号:&nbsp;&nbsp;<span>{$kdinfo.LogisticCode}</span></div>
+            <div>官方电话:&nbsp;&nbsp;<span class="official_phone">{$kdinfo.EBusinessID|default='暂无'}</span></div>
+        </div>
+    </div>
+</div>
+<div class="transport_detail">
+    <div class="detail_header">
+        <!--<p>本数据由菜鸟裹裹提供</p>-->
+    </div>
+    <div class="detail_bottom">
+        <div class="transport_list">
+            <ul>
+                {empty name='kdinfo["Traces"]'}
+                <li><p class="no_update"> 暂无物流更新</p></li>
+                {else /}
+                {php}
+                for($i=(count($kdinfo['Traces']) -1); $i > 0; $i-- ){
+                echo '<li class="item"><div class="right"><p>'.$kdinfo['Traces'][$i]['AcceptStation'].'</p><span class="date">'.$kdinfo['Traces'][$i]['AcceptTime'].'</span></div></li>';
+                }
+                {/php}
+                {/empty}
+            </ul>
+        </div>
+    </div>
+</div>
+<!--<div class="transport_ser">
+    <div class="tran_btn_container">
+        <button class="btn">物流客服</button>
+        <button class="btn">派送评价</button>
+    </div>
+</div>-->
+{/block}

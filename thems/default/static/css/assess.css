@@ -1,0 +1,114 @@
+.box{
+    background: #F3F3F3;
+}
+.assess .one{
+    border-bottom: 1px solid #DBDBDB;
+}
+.assess .one li{
+    float: left;
+    width: 20%;
+    text-align: center;
+    color: #0E0E0E;
+    padding: 0.08rem 0;
+}
+.assess .warry{
+    background: white;
+    margin-top: 0.12rem;
+}
+.assess .user_box{
+    position: relative;
+    height: 0.35rem;
+    line-height: 0.35rem;
+    color: #B5B5B5;
+    border-bottom: 1px solid #DBDBDB;
+    margin-left: 0.12rem;
+    padding: 0.1rem 0;
+}
+.assess .user_img{
+    position: absolute;
+    left: 0;
+    width: 0.35rem;
+    height: 0.35rem;
+}
+.assess .user_img img{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    top: -0.02rem;
+    border-radius: 50%;
+}
+.assess .user_name{
+    margin-left: 0.43rem;
+}
+.assess_time{
+    position: absolute;
+    right: 0.2rem;
+    top: 0.1rem;
+    height: 100%;
+}
+.assess .content{
+    padding-left: 0.12rem;
+    border-bottom: 1px solid #DBDBDB;
+}
+.assess .stars img{
+    height: 0.14rem;
+}
+.assess .status{
+    color: #A2A2A2;
+    font-size: 0.125rem;
+    font-weight: 300;
+    padding-bottom: 0.04rem;
+}
+.assess .status span{
+    margin-right: 0.12rem;
+}
+.assess .context{
+    padding: 0.06rem 0;
+    color: #0E0E0E;
+}
+.assess_img img{
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-right: 0.06rem;
+}
+.assess_img{
+    margin-top: 0.05rem;
+    margin-bottom: 0.04rem;
+}
+.assess .five_footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 640px;
+    background: white;
+    height: 0.52rem;
+    z-index: 100;
+}
+.assess .five_footer li{
+    float: left;
+    text-align: center;
+}
+.assess .five_footer>ul>li{
+    width: 50%;
+}
+.assess .five_item_1 li{
+    width: 33.3333%;
+    color: #A7A7A7;
+}
+.assess .five_item_1 img{
+    height: 0.18rem;
+    padding-top: 0.1rem;
+    padding-bottom: 0.02rem;
+}
+.assess .five_item_2 li{
+    width: 50%;
+    line-height: 0.52rem;
+    color: white;
+}
+.assess .five_item_2 li:first-child{
+    background: #FFB267;
+}
+
+.assess .one li.red{
+    color:#DD2727;
+}

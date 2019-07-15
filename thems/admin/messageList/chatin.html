@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>消息管理</title>
+	<style type="text/css">
+		html,
+		body {
+			min-height: 100%;
+			height: 100%;
+		}
+
+		div,ul,li,input {
+			margin: 0;
+			padding: 0;
+			list-style-type: none;
+		}
+
+		.box {
+			position: relative;
+			min-height: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+
+		.messagelist {
+			position: absolute;
+			left: 0;
+			top: 0;
+			padding-top: 100px;
+			background: #438EB9;
+			width: 120px;
+			min-height: 100%;
+			height: 100%;
+		}
+
+		.messagelist li {
+			text-align: center;
+			color: white;
+			line-height: 60px;
+			font-size: 16px;
+		}
+
+		.userbox {
+			position: absolute;
+			left: 120px;
+			top: 0;
+			width: 340px;
+			min-height: 100%;
+			height: 100%;
+			border-right: 1px solid #CCCCCC;
+		}
+
+		.seach_box {
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.seach {
+			padding: 20px 0;
+			position: relative;
+			background: #F3F3F3;
+			border-bottom: 1px solid #CCCCCC;
+		}
+
+		.seach input {
+			line-height: 26px;
+			box-sizing: border-box;
+			width: 230px;
+		}
+
+		.dialog_ {
+			margin-left: 460px;
+			min-height: 100%;
+			height: 100%;
+			position: relative;
+		}
+
+		.seachbtn {
+			position: absolute;
+			right: 40px;
+			top: 20px;
+			background: #FFB752;
+			width: 60px;
+			height: 38px;
+			background-image: url('__ADMIN_STATIC__/images/messageseach.png');
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: auto 30px;
+			border: 1px solid #CCCCCC;
+		}
+
+		.dialogheader {
+			line-height: 78px;
+			font-size: 16px;
+			color: #333333;
+			padding-left: 20px;
+			background: #F3F3F3;
+			border-bottom: 1px solid #CCCCCC;
+		}
+
+		.dialogsend {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 250px;
+			border-top: 1px solid #DEDEDE;
+		}
+
+		.dialogsendhead {
+			height: 48px;
+		}
+
+		.dialogsendbox {
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+
+		.dialogsendhead li {
+			padding-left: 20px;
+			padding-top: 10px;
+			padding-bottom: 8px;
+		}
+
+		.dialogsendhead li img {
+			height: 28px;
+		}
+
+		.textarea {
+			width: 100%;
+			height: 200px;
+			background: #F3F3F3;
+		}
+
+		.textarea textarea {
+			width: 100%;
+			height: 100%;
+			border: none;
+			outline: none;
+			background: transparent;
+			resize: none;
+			font-size: 16px;
+			font-family: "微软雅黑";
+		}
+
+		.send {
+			position: absolute;
+			bottom: 20px;
+			right: 20px;
+			background: #FFB752;
+			line-height: 40px;
+			color: white;
+			width: 100px;
+			text-align: center;
+			font-size: 17px;
+		}
+		/*消息列表*/
+
+		.dialog {
+			display: inline-block;
+			background: #E2E2E2;
+			padding: 6px 10px;
+			margin-left: 94px;
+			margin-top: 27px;
+			border-radius: 5px;
+			position: relative;
+			min-height: 20px;
+		}
+
+		.dialog:after {
+			content: '';
+			position: absolute;
+			left: -10px;
+			top: 13px;
+			width: 0;
+			height: 0;
+			border-style: solid dashed dashed;
+			border-color: #e2e2e2 transparent transparent;
+			overflow: hidden;
+			border-width: 10px;
+		}
+
+		.sendcontent {
+			border-radius: 5px;
+			display: inline-block;
+			background: #60B878;
+			float: right;
+			padding: 6px 10px;
+			position: relative;
+			margin-right: 120px;
+			margin-top: 30px;
+		}
+
+		.sendcontent:after {
+			content: '';
+			position: absolute;
+			right: -10px;
+			top: 13px;
+			width: 0;
+			height: 0;
+			border-style: solid dashed dashed;
+			border-color: #60B878 transparent transparent;
+			overflow: hidden;
+			border-width: 10px;
+		}
+
+		.content {
+			overflow-y: scroll;
+			padding-bottom: 40px;
+		}
+		/*搜索列表*/
+		.user_list {
+			position: relative;
+			min-height: 80px;
+			border-bottom: 1px solid #F3F3F3;
+			z-index: -2;
+		}
+
+		.userimg {
+			position: absolute;
+			left: 10px;
+			top: 10px;
+			width: 60px;
+			height: 60px;
+			overflow: hidden;
+		}
+
+		.userimg img {
+			height: 60px;
+			min-width: 60px;
+			border-radius: 5px;
+			border: 1px solid #CCCCCC;
+		}
+
+		.user_list {
+			padding-top: 12px;
+		}
+
+		.user_list p {
+			margin-left: 86px;
+			line-height: 14px;
+			padding-top: 10px;
+			height: 24px;
+		}
+
+		.name {
+			font-size: 16px;
+		}
+		.userlist li{
+			position: relative;
+		}
+		.circle{
+			position: absolute;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: red;
+			right: 12px;
+			top: 12px;
+		}
+		.none{
+			display: none;
+		}
+		.user_list p:last-child {
+			color: #888888;
+		}
+
+		.chat {
+			position: relative;
+		}
+
+		.selfimg {
+			position: absolute;
+			right: 20px;
+		}
+
+		.selftime {
+			position: absolute;
+			right: 100px;
+		}
+
+		.clear {
+			clear: both;
+		}
+
+		.chat {
+			margin-top: 20px;
+		}
+
+		.active {
+			background-color: rgba(243, 243, 243, 0.3);
+		}
+
+		.sendtime {
+			position: absolute;
+			right: 110px;
+			top: 0;
+		}
+
+		.sendimg {
+			position: absolute;
+			right: 30px;
+			top: 0px;
+		}
+
+		.otherimg {
+			position: absolute;
+			left: 12px;
+			top: 0;
+		}
+
+		.otherimg img {
+			width: 60px;
+			height: 60px;
+			border-radius: 5px;
+		}
+
+		.dialogtime {
+			position: absolute;
+			left: 90px;
+			top: 0;
+		}
+
+		.issendimg img {
+			width: 400px;
+			margin-left: 100px;
+			margin-top: 38px;
+		}
+
+		.service img {
+			width: 400px;
+			float: right;
+			margin-right: 120px;
+			margin-top: 30px;
+		}
+
+		.select_box {
+			line-height: 36px;
+			margin-right: -10px;
+			height: 36px;
+			margin-left: 12px;
+		}
+		.liactive{
+			background-color:#FFB752 ;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="box">
+		<div class="messagelist">
+			<ul>
+				<li data-value="" class="liactive" onclick="newchat()">最近联系</li>
+				<li data-value="1">代理商</li>
+				<li data-value="2">经销商</li>
+				<!--<li data-value="3">县级代理</li>
+				<li data-value="4">经销商</li>-->
+				<li data-value="-1">VIP客户</li>
+			</ul>
+		</div>
+		<div class="userbox">
+			<div class="seach_box">
+				<div class="seach">
+					<input placeholder="请输入关键词" class="seachtext" type="text" />
+					<div onclick="seach()" class="seachbtn">
+					</div>
+				</div>
+				<ul class="userlist" style="height:100%;overflow-y:scroll">
+				</ul>
+			</div>
+		</div>
+		<div class="dialog_">
+			<div class="dialogheader">
+			</div>
+			<div id="content" class="content">
+
+			</div>
+			<div class="dialogsend">
+				<div class="dialogsendbox">
+					<div class="dialogsendhead">
+						<ul>
+							<li><label for="sendimg"><img src="__ADMIN_STATIC__/images/pic.png"/></label></li>
+						</ul>
+					</div>
+					<div class="textarea">
+						<textarea></textarea>
+					</div>
+					<div onclick="send()" class="send">
+						发送
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<input type="file" id="sendimg" style="display: none;" onchange="getpicture(this)" />
+			<!--消息提醒-->
+	<audio src="__ADMIN_STATIC__/audio/hint.mp3" preload  controls id="reminder" style="width: 0; height: 0;"></audio>
+</body>
+<script type="text/javascript">
+	var content = $(".content"),body = $("body"),messagelist=$(".messagelist"),seachtype="",select_box=$(".select_box");
+	var audio=document.getElementById('reminder');
+	content.height(body.height() - 330);
+	//聊天
+	var uid = "-2";
+	var dialog_id = ""; //对话id
+	var dialogheader = $(".dialogheader");
+	//接受消息
+	var dialoglist = $(".dialoglist ul");
+  var ws = new WebSocket("ws://123.207.54.45:7272");
+	ws.onopen = function (evt) {
+		onOpen(evt)
+	};
+	ws.onclose = function (evt) {
+		onClose(evt)
+	};
+	ws.onmessage = function (evt) {
+		onMessage(evt)
+	};
+	ws.onerror = function (evt) {
+		onError(evt)
+	};
+	var seachtext = $(".seachtext"); //搜索联系人
+	var userlist = $(".userlist"); //联系人列表
+	newchat(); //最近联系人
+	userlist.on('click', function (evt) {
+		var target = evt.target;
+		if (target.nodeName.toLowerCase() == "li") {
+			var target = $(target);
+			dialog_id = target.attr('data-id');
+			dialog();
+			target.addClass('active');
+			target.siblings().removeClass('active');
+			target.find('.circle').addClass('none');
+			var name = target.attr('data-name'), phone = target.attr('data-phone'), nickname = nick(name, phone),text='';
+			if(name!="null"){
+				text =name
+			}else{
+				text=phone;
+			}
+			dialogheader.html(text);
+		}
+	})
+	messagelist.on('click', function (evt) {
+		var target = evt.target;
+		if (target.nodeName.toLowerCase() == "li") {
+			var target = $(target);
+			seachtype=target.attr('data-value');
+			dialog_id = target.attr('data-id');
+			target.addClass('liactive');
+			target.siblings().removeClass('liactive');
+			userlist.empty();
+			newchat(seachtype);
+		}
+	})
+	function nick(name, phone) {
+		if (name && name != "") {
+			var nickname = name;
+		} else {
+			var nickname = phone;
+		}
+		return nickname;
+	}
+	function seach() {
+		// 选择要查询的类别：
+		var seach = seachtext.val();
+		var searchData ={};
+		var url='{:url("Message/chatlist")}';
+		searchData.keyword=seach;
+			$.ajax({
+				type: "Post",
+				url: url,
+				data: searchData,
+				success: function (data) {
+					userlist.empty();
+					if (data.code == 2000) {
+						var data = data.data;
+						if (data) {
+							// 拼接多条数据：
+							var seachlist = '';
+							for(var i in data){
+						    if(typeof data[i] != 'function'){
+				          seachlist+=returnlist(data[i].headimgurl, data[i].nickname, data[i].phone, 'active',data[i].id);
+                  if(i==0){
+                    dialog_id=data[i].id;
+                    dialog();
+                  }
+						    }
+							}
+							userlist.append(seachlist);
+						} else {
+							layer.msg('未查询到结果');
+						}
+					}
+				}
+			});
+		}
+//最近联系人
+	function newchat(type) {
+		var json={};
+		if (type) {
+			json.agent_type=type;
+		}
+		$.ajax({
+			type: "Post",
+			data:json,
+			url: '{:url("admin/Message/newchat")}',
+			async: true,
+			success: function (data) {
+				if (data.code == 2000) {
+					userlist.empty();
+					var data = data.data;
+					if (data.length == 0) {
+						layer.msg("没有最近联系人");
+					}
+					if (data) {
+						var first = true; //第一联系人对话列表
+						for (var i in data) {
+					    if(typeof data[i] != 'function'){
+  							var id = "";
+  							var active = "";
+  							id = data[i].id;
+  							if (first) {
+  								var nickname = nick(data[i].nickname, data[i].phone);
+  								dialogheader.html(nickname);
+  								active = "active";
+  								dialog_id = id;
+  								dialog();
+  								first = false;
+  							} else {
+  								active = "";
+  							}
+  							var seachlist = returnlist(data[i].headimgurl, data[i].nickname, data[i].phone, active, id);
+  							userlist.append(seachlist);
+							}
+						}
+					}
+				}
+			}
+		})
+	}
+	//列表
+	function returnlist(url, name, phone, active, id) {
+		var img = testimg(url);
+		var name=name?name:"";
+		var seachlist = '<li id="chat'+id+'" data-name="' + name + '"data-phone="' + phone + '" data-id="' + id + '" class= "' + active +
+			'" ><div class="user_list"><div class="userimg">' + img + '</div><P class="name">' + name + '</P><P>' + phone +
+			'</P></div><div class="circle none"></div></li>'
+		return seachlist;
+	}
+	function onOpen() {}
+	//
+	var tex = $(".textarea textarea"); //文本域
+	function send(url) {
+		var json = {};
+		var img = '<div class="selfimg"><img src="/thems/default/static/img/message_index_08.png" /></div>';
+		var time = returntime();
+		if (url && url != "") {
+			var val = '<img src="' + url + '"/>';
+			var co = '<div class="chat"><div class="selftime">' + time + '<span style="padding-left:2em">我</span></div>' + img +
+				'<div class="service">' + val + '</div><div class="clear"></div></div>';
+			json.minitype = 2;
+			val = url
+			
+		} else {
+			var val = tex.val();
+			if (val.trim() == "") {
+				return false;
+			}
+			var co = '<div class="chat"><div class="selftime">' + time + '<span style="padding-left:2em">我</span></div>' + img +
+				'<div class="sendcontent">' + val + '</div><div class="clear"></div></div>';
+			json.minitype = 1;
+		}
+		json.msg = val;
+		json.consignee_id = dialog_id;
+		json.sender_id = uid;
+		content.append(co);
+		tex.val('');
+		$.ajax({
+			type: "Post",
+			data: json,
+			url: '{:url("api/Message/sendMsg")}',
+			async: true,
+			success: function (data) {}
+		});
+		scrollt();
+	}
+	//时间
+	function returntime(second) {
+		if (second) {
+			var tamp = second * 1000;
+			var time = new Date(tamp);
+		} else {
+			var time = new Date();
+		}
+		var year = time.getFullYear();
+		var month = time.getMonth() + 1;
+		var day = time.getDate();
+		var hours = time.getHours();
+		var minuter = time.getMinutes();
+		var sec = time.getSeconds();
+		return year + '-' + textnum(month) + '-' + textnum(day) + '&nbsp' + hours + ':' + textnum(minuter) + ':' + textnum(
+			sec);
+	}
+
+	function textnum(num) {
+		if (num < 10) {
+			return '0' + num;
+		} else {
+			return num;
+		}
+	}
+	//获取消息列表
+	var page = 1;
+	var readered = ""; //已读消息
+	function dialog() {
+		$.ajax({
+			type: 'Post',
+			url: '{:url("api/message/dialogList")}',
+			data: {
+				consignee_id: dialog_id,
+				page: page
+			},
+			async: true,
+			success: function (data) {
+				content.empty();
+				column(data);
+			}
+		});
+	}
+
+	function column(data) {
+		var userinfo = data.data.userInfo;
+		var data = data.data.msg_data;
+		var msg_data = data.data;
+		msg_data.reverse();
+		for (var i = 0; i < msg_data.length; i++) {
+			var time = returntime(msg_data[i].send_time);
+			if (msg_data[i].sender_id == uid) {
+				var img = '<div class="sendimg"><img src="/thems/default/static/img/message_index_08.png" /></div>'
+				if (msg_data[i].minitype == 1) {
+					var co = '<div class="chat"><div class="sendtime">' + time + '<span style="padding:2em">我</span></div>' + img +
+						'<div class="sendcontent">' + msg_data[i].content + '</div><div class="clear"></div></div>';
+				} else if (msg_data[i].minitype == 2) {
+					var co = '<div class="chat"><div class="sendtime">' + time + '<span style="padding:2em">我</span></div>' + img +
+						'<div class="service"><img class="onloadimg" src="' + msg_data[i].content + '"/></div><div class="clear"></div></div>';
+				}
+				content.append(co);
+			} else {
+				var img = userinfo.userimg != '' ? userinfo.userimg : userinfo.headimgurl;
+				var name = "";
+				if (userinfo.nickname != '') {
+					name = userinfo.nickname;
+				} else {
+					name = userinfo.phone;
+				}
+
+				if (msg_data[i].minitype == 1) {
+					var tex = '<div class="chat"><div class="dialogtime">' + time +
+						'<span style="padding-left:2em" class="dialogname">' + name + '</span></div><div class="otherimg">' +
+						testimg(img) + '</div><div class="dialog">' + msg_data[i].content + '</div><div class="clear"></div></div>';
+
+				} else if (msg_data[i].minitype == 2) {
+					var tex = '<div class="chat"><div class="dialogtime">' + time +
+						'<span style="padding-left:2em" class="dialogname">' + name + '</span></div><div class="otherimg">' +
+						testimg(img) + '</div><div class="issendimg"><img class="onloadimg" src="' + msg_data[i].content +
+						'"/></div><div class="clear"></div></div>';
+				}
+				content.append(tex);
+				readered = readered + msg_data[i].message_id + ",";
+			}
+		}
+		scrollt();
+		readered = readered.slice(0, -1);
+		readmsg(readered);
+	}
+	$(document).on('keyup', function (event) {
+		var ev = event || window.event;
+		if (ev.keyCode == 13) {
+			send();
+		}
+	})
+
+	function onMessage(evt) {
+		var data = eval("(" + evt.data + ")");
+		var type = data.type || '';
+		switch (type) {
+			// Events.php中返回的init类型的消息，将client_id发给后台进行uid绑定
+			case 'init':
+				// 利用jquery发起ajax请求，将client_id发给后端进行uid绑定
+				$.ajax({
+					type: 'Post',
+					url: '{:url("Message/bindUid")}',
+					data: {
+						client_id: data.client_id
+					},
+					success: function (data) {}
+				});
+				break;
+			default:
+				left(data);
+				// 当mvc框架调用GatewayClient发消息时直接alert出来
+		}
+	}
+
+	function left(data) {
+		musicplay();//播放提示音
+		if(data.sender_id!=dialog_id){
+			var id="chat"+data.sender_id;
+			$('#'+id).find('.circle').removeClass('none');
+			userlist.children('li:first-child').before($('#'+id));
+			return false;
+		}
+		var img = testimg(data.sender_img);
+		var name = "";
+		if (data.sender_nickname) {
+			name = data.sender_nickname;
+		} else {
+			name = data.sender_phone;
+		}
+		var time = returntime(data.time);
+		if (data.minitype == 1) {
+			var tex = '<div class="chat"><div class="dialogtime">' + time + '<span class=dialogname>' + name +
+				'</span></div><div class="otherimg">' + img + '</div><div class="dialog">' + data.content +
+				'</div><div class="clear"></div></div>';
+		} else if (data.minitype == 2) {
+			var tex = '<div class="chat"><div class="dialogtime">' + time + '<span class=dialogname>' + name +
+				'</span></div><div class="otherimg">' + img + '</div><div class="issendimg"><img src="' + data.content +
+				'"/></div><div class="clear"></div></div>';
+		}
+		content.append(tex);
+	}
+	//头像
+	function testimg(img) {
+		if (img && img != "") {
+			return '<img src="' + img + '" />';
+		} else {
+			return '<img src="/thems/default/static/img/defalut_userimg.jpg" />'
+		}
+	}
+	//设置未读消息为已读
+	function readmsg(ids) {
+		$.ajax({
+			type: "Post",
+			data: {
+				msg_id: ids
+			},
+			async: true,
+			url: '{:url("api/Message/readMsg")}',
+			success: function (data) {}
+		});
+	}
+	//发送图片
+	//获取的本地图片
+	function getpicture(event) {
+		var img = event.files;
+		for (var i = 0; i < img.length; i++) {
+			if (!/image\/\w+/.test(img[i].type)) {
+				alert("请选择图片");
+				return false;
+			}
+			var t = "";
+			var reader = new FileReader();
+			var file = reader.readAsDataURL(img[i]);
+			reader.onload = function (event) {
+				$.ajax({
+					type: 'Post',
+					data: {
+						formFile: this.result
+					},
+					url: "{:url('api/UploadFiles/saveBase64Image')}?to_dir=chat&compress=true",
+					success: function (data) {
+						send(data.url);
+					}
+				})
+
+			}
+		}
+	}
+
+	function scrollt() {
+		var img=$(".onloadimg");
+		img.each(function(){
+			$(this).load(function(){
+				$('#content').scrollTop( $('#content')[0].scrollHeight);
+			})
+		});
+		$('#content').scrollTop( $('#content')[0].scrollHeight);
+	}
+	function onError(evt){
+		
+	}
+	function onClose(evt){
+		
+	}
+function musicplay(){
+	audio.play();
+}
+</script>
+
+</html>

@@ -1,0 +1,392 @@
+
+  <!--添加用户层-->
+  <!--接收临时会话消息-->
+  <div class="layui-layer layui-layer-page layui-box layui-layim-chat layer-anim" id="dialog_pancle" type="page" times="55"
+    showtime="0" contype="string" style="display:none;z-index: 19891069; width: 800px; top: 199px; left: 324.5px; min-width: 500px; min-height: 420px; background-image: url(http://res.layui.com/layui/build/css/modules/layim/skin/3.jpg);" >
+    <div class="layui-layer-title" style="cursor: move;">​</div>
+    <div id="layui-layim-chat" class="layui-layer-content">
+      <ul class="layui-unselect layim-chat-list" style="height: 483px; display: block;" id="contact-show">
+      </ul>
+      <div class="layim-chat-box" style="margin-left: 200px;" id="message_list">
+      
+      </div>
+    </div><span class="layui-layer-setwin">
+    <!--<a class="layui-layer-min" href="javascript:;"><cite></cite></a>-->
+    <!--<a class="layui-layer-ico layui-layer-max" href="javascript:;"></a>-->
+    <a class="layui-layer-ico layui-layer-close layui-layer-close1" onclick="closepancle()" href="javascript:;"></a></span>
+    <span class="layui-layer-resize"></span></div>
+
+  <!--底部提示  -->
+  <div class="layui-layer layui-layer-page layui-box layui-layim-min layer-anim-06 " id="layui-layer63" type="page" times="63" showtime="0" contype="string" style="z-index: 19891077; width: 182px; height: 50px; top: 868px; left: 533.5px; display:none">
+    <div id="" class="layui-layer-content" style="height: 40px;">
+      <img id="layui-layim-min" src="//tva1.sinaimg.cn/crop.7.0.736.736.50/bd986d61jw8f5x8bqtp00j20ku0kgabx.jpg" style="cursor: move;">
+      <span>收到新消息</span>
+    </div>
+    <span class="layui-layer-setwin"></span>
+  </div>
+  <script>
+    function closepancle(){
+      $("#dialog_pancle").hide()
+    }
+    function send_message(consignee_id){
+        var $msg = $("#textarea_msg").val()
+        var warrp_dialog = $("#dialog_list_warrp");
+        
+        $.post('/api/message/sendmsg', {
+            msg: $msg,
+            sender_id: -2,
+            consignee_id: consignee_id,
+        }, function (res) {
+          if(res.code == 2000){
+              var html = '<li class="layim-chat-mine"><div class="layim-chat-user"><img src="/thems/default/static/img/message_index_08.png"><cite><i>'+returntime()+'</i>我</cite></div><div class="layim-chat-text">'+$msg+'</div></li>';
+              $("#dialog_list_warrp").append(html)
+              $('.layim-chat-main').scrollTop($("#dialog_list_warrp").height())
+              $("#textarea_msg").val('')
+          }else{
+              layer.msg('消息发送失败')
+          }
+        }, 'json')
+    }
+    
+    function check2arrval(arr, key, val){
+        for (var i =0, l = arr.length; i <l; i++){
+            for(var k in arr[i]){
+                if(k === key && arr[i][k] == val){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    $(document).ready(function () {
+
+      var layimChat = $('.layim-chat-box').find('.layim-chat');
+      var aLis = $('.layim-chat-list').find('li');
+      var index;
+      aLis.on('click', function (e) {
+        index = $(this).index();
+        $(this).addClass('layim-this').siblings().removeClass('layim-this');
+        $(layimChat[index]).addClass('layui-show').siblings().removeClass('layui-show');
+      });
+
+      // 关闭按钮
+      $('.layui-layer-ico.layui-layer-close.layui-layer-close1').on('click', function (e) {
+
+      });
+      
+      // 消息及通知
+      var new_message_tips, no_read_message_list, curr_user = {}, curr_dialog_user_info=[], curr_tab_index=0;
+      var ws = new WebSocket("ws://123.207.54.45:7272");
+
+      ws.onopen = function (evt) { onOpen(evt) };
+      ws.onclose = function (evt) { onClose(evt) };
+      ws.onmessage = function (evt) { onMessage(evt) };
+      ws.onerror = function (evt) { onError(evt) };
+      
+      function onOpen(evt){
+          console.log('open')
+          get_no_read_uid(function (res) {
+            if(res.length !== 0){
+                no_read_message_list = res;
+                new_message_tips = message_tips_show(res[res.length - 1]);
+            }else{
+                return '';
+            }
+          })
+      }
+      
+      function onClose(evt){
+          console.log('close')
+      }
+      
+      function onMessage(evt){
+          var response_data = JSON.parse(evt.data);
+          console.log(response_data)
+          if(response_data.type == 'init'){
+              $.get('/admin/message/bindUid', {client_id: response_data.client_id, uid: -2}, function (res){
+              }, 'json')
+          }else if(response_data.type == 'msg'){
+              // tips
+              if($("#dialog_pancle").css('display') != 'none' &&new_message_tips && curr_user.hasOwnProperty('sender_id')) {
+                   // 处理对话
+                  if(curr_user.sender_id == response_data.sender_id){
+                      var html = '<li><div class="layim-chat-user"><img src="'+curr_user.user_img+'"><cite>'+curr_user.name+'<i>'+returntime(response_data.time)+'</i></cite></div><div class="layim-chat-text">'+response_data.content+'</div></li>';
+                      $("#dialog_list_warrp").append(html)
+                      $('.layim-chat-main').scrollTop($("#dialog_list_warrp").height())
+                      read_msg(response_data.msg_id)
+                  }
+              }else{
+                  if(new_message_tips) layer.close(new_message_tips)
+                  new_message_tips = message_tips_show(response_data);
+              }
+              if(!check2arrval(curr_dialog_user_info, 'sender_id',response_data.sender_id )) {
+                  curr_dialog_user_info.push({
+                      nickname: response_data.sender_nickname,
+                      phone: response_data.sender_phone,
+                      sender_id: response_data.sender_id,
+                      userimg: response_data.sender_img !='' ? response_data.sender_img : '/thems/default/static/img/defalut_userimg.jpg'
+                  })
+
+                  contact_list = render_contact(curr_dialog_user_info);
+                  $("#contact-show").html(contact_list);
+                  $('#contact-show li').eq(curr_tab_index).addClass('layim-this')
+              }
+          }
+      }
+      
+      function onError(evt){
+          console.log(evt)
+      }
+      
+      // 显示未读消息弹窗
+      function message_tips_show(response_data){
+          console.log('weidu',response_data)
+          var user_img = '';
+          if(response_data.userimg && response_data.userimg != ''){
+              user_img = response_data.userimg
+          }else if(response_data.sender_img && response_data.sender_img != ''){
+              user_img = response_data.sender_img
+          }else {
+              user_img = '/thems/default/static/img/defalut_userimg.jpg'
+          }
+          var tips_html = '<img id="layui-layim-min" src="'+user_img+'" style="cursor: move; margin-right: 8px;"><span>收到新消息</span>';
+          var tips_index = layer.msg(tips_html,{
+              area: ['160px', '50px'],
+              offset: [(window.innerHeight - 70) + 'px', ((window.innerWidth - 182) / 2) + 'px'],
+              time: false,
+              anim: 6,
+              shift: 6,
+              id: 'message_tips'
+          })
+          
+          // 绑定点击
+          $('#message_tips').on('click', function (e) {
+          	gotoMessage();
+          	return false;
+              var contact_list, dialog_list;
+              if(!no_read_message_list){
+                  get_no_read_uid(function (res) {
+                      no_read_message_list = res
+                      contact_list = render_contact(no_read_message_list);
+                      $("#contact-show").html(contact_list);
+                      // 对话
+                      get_dialog_list(no_read_message_list[0]);
+                      curr_user = {
+                          sender_id: no_read_message_list[0].sender_id,
+                          user_img: no_read_message_list[0].userimg != '' ? no_read_message_list[0].userimg : '/thems/default/static/img/defalut_userimg.jpg',
+                          name: no_read_message_list[0].nickname != '' ? no_read_message_list[0].nickname : no_read_message_list[0].phone,
+                      }
+                      $('#contact-show li').eq(0).addClass('layim-this')
+                      //dialog_list = render_dialog(no_read_message_list[0], null);
+                      //$("#message_list").html(dialog_list);
+
+                      $("#dialog_pancle").show();
+                      layer.close(tips_index)
+                  })
+              }else{
+                  contact_list = render_contact(no_read_message_list);
+                  $("#contact-show").html(contact_list);
+                  // 对话
+                  get_dialog_list(no_read_message_list[0]);
+                  curr_user = {
+                      sender_id: no_read_message_list[0].sender_id,
+                      user_img: no_read_message_list[0].userimg != '' ? no_read_message_list[0].userimg : '/thems/default/static/img/defalut_userimg.jpg',
+                      name: no_read_message_list[0].nickname != '' ? no_read_message_list[0].nickname : no_read_message_list[0].phone,
+                  }
+                  $('#contact-show li').eq(0).addClass('layim-this')
+                  //dialog_list = render_dialog(no_read_message_list[0], null);
+                  //$("#message_list").html(dialog_list);
+
+                  $("#dialog_pancle").show();
+                  layer.close(tips_index)
+              }
+              curr_dialog_user_info = no_read_message_list
+          })
+          return tips_index;
+      }
+      
+      
+      
+      // 获取未读消息人列表
+      function get_no_read_uid (succ_cb) {
+          $.get('/admin/message/get_not_read_message', {}, function (res) {
+              if(res.code == 2000){
+                  succ_cb&&succ_cb(res.data)
+              }
+          }, 'json')
+      }
+      
+      // 获取对话列表
+      var $page = 1;
+      function get_dialog_list(consignee_data, $page, cb) {
+          $.get('/api/message/dialogList', {consignee_id: consignee_data['sender_id'], page: $page}, function (res) {
+            if(res.code == 2000){
+                console.log('dialogdata',res.data)
+               if(cb){
+                    cb(res)
+               }else{
+                   var pencle_html = '';
+                   pencle_html = render_dialog(consignee_data, res.data);
+                   $("#message_list").html(pencle_html);
+
+
+                   document.querySelector('.layim-chat-main').addEventListener('scroll',function () {
+                       if(this.scrollHeight-this.scrollTop===this.clientHeight){
+                           console.log("到达底部");
+                       }
+
+                   }, false)
+                   $('.layim-chat-main').scrollTop($("#dialog_list_warrp").height())
+               }
+            }
+          }, 'json')
+      }
+      
+      function read_msg (msg_ids) {
+           $.get('/api/message/readMsg', {'msg_id': msg_ids}, function (res) {}, 'json')
+      }
+      
+      // 渲染联系人列表
+      function render_contact(contact_list){
+        var html = '';
+        
+        for (var i=0, l = contact_list.length; i < l; i++) {
+            var username = contact_list[i].nickname == '' ? contact_list[i].phone : contact_list[i].nickname;
+            var userimg = contact_list[i].userimg == '' ? '/thems/default/static/img/defalut_userimg.jpg' : contact_list[i].userimg;
+            html += '<li class="layim-friend76543 layim-chatlist-friend76543" layim-event="tabChat" data-config="'+JSON.stringify(contact_list[i]).replace(/\"/g,"'")+'"><img src="'+userimg+'"><span>'+username+'</span><i class="layui-icon" layim-event="closeChat">ဇ</i></li>';
+        }
+        return html;
+      }
+        /**
+         * 渲染对话列表
+         * @returns {string}
+         */
+      function render_dialog(consignee_data, dialog_data){
+          var html, consignee_name, consignee_img;
+          consignee_name = consignee_data['nickname'] != '' ? consignee_data['nickname'] : consignee_data['phone']
+          consignee_img = consignee_data['userimg'] != '' ? consignee_data['userimg'] : '/thems/default/static/img/defalut_userimg.jpg';
+          html ='<div class="layim-chat layim-chat-friend layui-show">' +
+              '<div class="layui-unselect layim-chat-title">' +
+              '<div class="layim-chat-other"><img class="layim-friend76543" src="'+consignee_img+'">' +
+              '<span class="layim-chat-username" layim-event="">'+consignee_name+' </span>' +
+              '<p class="layim-chat-status"></p>' +
+              '</div>' +
+              '</div>' +
+              '<div class="layim-chat-main" style="height: 262px;">' +
+              '<div class="layim-chat-system"><span layim-event="chatLog">查看更多记录</span></div>'+
+              '<ul id="dialog_list_warrp">';
+              
+              html += render_dialog_msg(dialog_data)
+             
+              html += '</ul>' +
+              '</div>' +
+              '<div class="layim-chat-footer">' +
+              '<div class="layim-chat-textarea"><textarea id="textarea_msg"></textarea></div>' +
+              '<div class="layim-chat-bottom">' +
+              '<div class="layim-chat-send"><span class="layim-send-close" layim-event="closeThisChat" onclick="closepancle()">关闭</span><span class="layim-send-btn" layim-event="send" onclick="send_message('+consignee_data.sender_id+')">发送</span>' +
+              '<span class="layim-send-set" layim-event="setSend" lay-type="show"><em class="layui-edge"></em></span>'+
+              '<ul class="layui-anim layim-menu-box">' +
+              '<li class="layim-this" layim-event="setSend" lay-type="Enter"><i class="layui-icon"></i>按Enter键发送消息</li>'+
+              '<li layim-event="setSend" lay-type="Ctrl+Enter"><i class="layui-icon"></i>按Ctrl+Enter键发送消息</li>' +
+              '</ul>' +
+              '</div>' +
+              '</div>' +
+              '</div>' +
+              '</div>';
+          
+          return html;
+      } 
+      
+      function render_dialog_msg(dialog_data) {
+          var user_info = dialog_data.userInfo, html = '', msg_ids = '';
+          for (var l = dialog_data.msg_data.data.length, i=l - 1; i >= 0; i--){
+            var item = dialog_data.msg_data.data[i];
+            var item_name = user_info.nickname == '' ? user_info.phone : user_info.nickname
+            var item_img = user_info.userimg == '' ? '/thems/default/static/img/defalut_userimg.jpg' : user_info.userimg
+            var send_time=returntime(item.send_time);
+            if(item.sender_id === -2){
+                html +=  '<li class="layim-chat-mine"><div class="layim-chat-user"><img src="/thems/default/static/img/message_index_08.png"><cite><i>'+send_time+'</i>我</cite></div><div class="layim-chat-text">'+item.content+'</div></li>';
+            }else{
+                html += '<li><div class="layim-chat-user"><img src="'+item_img+'"><cite>'+item_name+'<i>'+send_time+'</i></cite></div><div class="layim-chat-text">'+item.content+'</div></li>';
+                msg_ids += item.message_id + ','
+            }
+          }
+          read_msg(msg_ids.substring(0, msg_ids.length - 1));
+          return html
+      }
+      
+      // 切换消息
+        $('#contact-show').on('click', function (e) {
+          var target = e.target, tga;
+          console.log(e)
+          if(target.nodeName.toLowerCase() == 'li' ){
+              tga = $(target);
+             
+          }else if ($(target).parent().get(0).nodeName.toLowerCase() == 'li') {
+              tga = $(target).parent();
+          }
+
+            $(tga).addClass('layim-this');
+            $(tga).siblings('li').removeClass('layim-this');
+            curr_tab_index =  $(tga).index()
+            var consignee_id = $(tga).data('config');
+            $page = 1;
+            var config = JSON.parse(consignee_id.replace(/\'/g,'"'));
+            get_dialog_list(config, $page);
+            curr_user = {
+                sender_id: config.sender_id,
+                user_img: config.userimg != '' ? config.userimg : '/thems/default/static/img/defalut_userimg.jpg',
+                name: config.nickname != '' ? config.nickname : config.phone,
+            }
+        })
+        
+        // 获取更多消息
+        $("#layui-layim-chat").on('click', function (e) {
+            var target = e.target;
+            if($(target).attr('layim-event') == 'chatLog'){
+                $page ++
+                get_dialog_list(curr_user, $page, function (res) {
+                    if(res.code == 2000){
+                        var html = render_dialog_msg(res.data), height = $("#dialog_list_warrp").height()
+                        $('#dialog_list_warrp').prepend(html)
+                        $('.layim-chat-main').scrollTop(height)
+                    }else{
+                        layer.msg('没有更多消息了')
+                    }
+                })
+            }
+            //if(target.)
+        })
+        
+       
+    });
+    //时间
+    function returntime(second){
+				    	if (second) {
+				    		var tamp=second*1000;
+		          	var time=new Date(tamp);
+				    	}
+				    	else{
+		          	var time=new Date();
+				    	}
+		          var year=time.getFullYear();
+		          var month=time.getMonth()+1;
+		          var day=time.getDate();
+		          var hours=time.getHours();
+		          var minuter=time.getMinutes();
+		          var sec=time.getSeconds();
+		          return year+'-'+textnum(month)+'-'+textnum(day)+'&nbsp'+hours+':'+textnum(minuter)+':'+textnum(sec);
+    }
+    function textnum(num){
+    	if (num<10) {
+    		return '0'+num;
+    	}
+    	else{
+    		return num;
+    	}
+    }
+    function gotoMessage(){
+    	location.href='{:url('message/chatin')}';
+    }
+  </script>

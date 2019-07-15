@@ -1,0 +1,71 @@
+.Login .warry{
+	margin: 0 0.12rem;
+}
+.Login .item{
+	background: white;
+	margin-bottom: 0.4rem;
+	border-bottom: 1px solid #DBDBDB;
+}
+.Login .item li{
+	float: left;
+	width: 50%;
+	text-align: center;
+	color: #797979;
+	padding: 0.14rem 0;
+	position: relative;
+	top: 2px;
+}
+.Login .border_bottom{
+	color: #D70030 !important;
+	border-bottom: 3px solid #D70030;
+}
+.OtherLogin .name{
+	position: absolute;
+	left: 0;
+	top: 0.08rem;
+	height: 0.24rem;
+	line-height: 0.24rem;
+	text-align: center;
+	width: 0.5rem;
+	color: #090909;
+	border-right: 1px solid #DBDBDB;
+}
+.OtherLogin .pad_left{
+	padding-left: 0.62rem !important;
+}
+.OtherLogin .otherLogin_footer{
+	text-align: center;
+	position: fixed;
+	max-width: 640px;
+	width: 100%;
+	bottom: 0;
+	border-top: 1px solid #DBDBDB;
+	background: #F0EFED;
+}
+.OtherLogin .circle{
+	width: 0.45rem;
+	height: 0.45rem;
+	border-radius: 50%;
+	background: white;
+	margin: 0 auto;
+	margin-top: -0.19rem;
+}
+.OtherLogin .circle img{
+	height: 0.11rem;
+	margin-top: 0.17rem;
+}
+.OtherLogin .other{
+	color: #949494;
+	padding: 0.16rem 0;
+}
+.OtherLogin .weixinLogin img{
+	height: 0.55rem;
+}
+.OtherLogin .wenxin{
+	padding-top: 0.1rem;
+	padding-bottom: 0.16rem;
+	color: #626262;
+}
+.OtherLogin .OtherLogin_space{
+	height:2rem;
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css">
+  <link rel="Stylesheet" href="__HOME_STATIC__/css/common.css">
+  <link rel="Stylesheet" href="__HOME_STATIC__/css/extend.css">
+  <script src="__HOME_STATIC__/js/zepto.js">    
+  </script>
+  <title>推广中心</title>
+  <style>
+    #img{
+      text-align: center;
+      position: relative;
+      height: 100%;
+    }
+    #img img {
+      width: 100%;
+    }
+    .btn{
+    	position: absolute;
+    	width: 100%;
+    }
+    .btn span{
+    	display: inline-block;
+    	background: #FFF799;
+    	color: #C90132;
+    	line-height: 32px;
+    	border-radius: 32px;
+    	padding: 0 22px;
+    	font-size: 16px;
+    	font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <section class="box extend">
+    <div id="img">
+    <!--<div class="btn">
+    	<a href='{:url('home/index/index')}'><span class="none">进入福满星商城</span></a>
+    </div>-->
+    </div>
+    <!--<div class="bottom-line">
+      <img src="__HOME_STATIC__/img/extend_bottom.png" alt="">
+      <p>长按图片保存到手机</p>
+    </div>-->
+  </section>
+  <script>
+    window.onload = function () {
+        var bg_img = "__HOME_STATIC__/img/code.jpg";
+        var code_box="__HOME_STATIC__/img/code_box_03.png";
+        var icon_img = '';
+        var host = location.host;
+        var user_img = "{php}
+            //dump(cache_data('site_config')['logo']);
+            if(session('userInfo')['userimg'] != ''){
+                echo session('userInfo')['userimg'];
+            }else{
+            }
+            {/php}";
+        
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        context.scale(2,2);
+        var winW = window.innerWidth>640?640:window.innerWidth;
+        canvas.width = winW;
+        canvas.height = (winW * 1129) / 750;
+        
+        // 绘制背景
+        loadImage(bg_img, function () {
+            context.drawImage(this, 0, 0, this.width, this.height, 0, 0, canvas.width, canvas.height);
+
+            // 绘制顶部图标或者头像
+            if(user_img.indexOf('http') != -1){
+                //网络图片为微信头像
+                var real_user_img = getImgFromWebSite('user_wx_img', user_img);
+            }else{
+                // 为本地头像或者网站logo
+                var real_user_img = user_img || '__HOME_STATIC__/img/defalut_userimg.jpg';
+            }
+            loadImage(real_user_img, function() {
+                // 二维码
+                var qrcode_top = (canvas.height * 892) / 1129;
+                var qrcode_width = (winW * 170) / 750;
+                var qrcode_left = 482 * winW / 750;
+                var url = encodeURI('http://' + host + "/home/login/reg/uid/{$uid}");
+                var qr_code_url = "/home/weichat/create_wx_qrcode/uid/542.html?url="+url
+                $.get(qr_code_url, {},function(res){
+                  var qrcode_img = getImgFromWebSite('qr_code_',res.data);
+                  loadImage(qrcode_img, function () {
+                    context.drawImage(this, qrcode_left, qrcode_top, qrcode_width, qrcode_width);
+                    loadImage(code_box, function () {
+                        var result_image = canvas.toDataURL("image/jpeg", 1.0);
+                        var result_imgObj = new Image();
+                        result_imgObj.src = result_image;
+                        document.querySelector("#img").appendChild(result_imgObj)
+                    })
+                  })
+                }, 'json')
+            })
+        })
+    }
+    
+    /**
+     * 判断图片是否onload
+     */
+    function loadImage(url, callback) {
+        var img = new Image();
+        img.src = url;
+        if(img.complete) {
+            callback.call(img);
+            return;
+        }
+        img.onload = function () {
+            callback.call(img);
+        };
+    };
+    
+    function checkImageLoad(url){
+      return new Promise(function (resolve, reject) {
+        try {
+          var img = new Image();
+          img.src = url;
+
+          if(img.complete){
+            resolve(img)
+          }
+          img.onload = function () {
+            resolve(img)
+          }
+        }catch ($e){
+          reject($e)
+        }
+      })
+    }
+
+    /**
+     * 获取外站图片
+     */
+    function getImgFromWebSite(rename, url){
+        var path = '';
+        $.ajax({
+            url: "{:url('api/UploadFiles/downloadImg')}",
+            data: {
+                re_name: rename,
+                url: url
+            },
+            async: false,
+            success: function (res) {
+                if (res.code == 2000) {
+                    path = res.file_path;
+                } else {
+                    alert('获取图片失败');
+                }
+            }
+        })
+        
+        return path;
+    }
+  </script>
+  <img src="{:cache_data('site_config')['site_wechat_default_pic']}" id="wxShare-img" style="display:none !important;"/>
+   <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script>
+  //分享代码weichat_config
+  wx.config({$weichat_config->config(array('onMenuShareQQ','onMenuShareWeibo','onMenuShareQZone','onMenuShareTimeline','onMenuShareAppMessage'), false)});
+  wx.ready(function (){
+
+    var options = {
+          title: '世星商城',
+          desc: '累积点滴不断改进，才能创造出！',
+        }
+    util.wxShare(options, shareSucc, shareFail);
+    function shareSucc(data){
+      alert('分享成功-_-');
+    }
+    function shareFail(data){
+      alert('分享失败-_-');
+    }
+  })
+</script>
+</body>
+</html>

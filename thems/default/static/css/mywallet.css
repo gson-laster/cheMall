@@ -1,0 +1,104 @@
+.mywallet-lists .item {
+  height: 70px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 16px;
+  padding: 0 10px;
+  background-color: #fff;
+  margin-bottom: 8px;
+}
+
+.mywallet-lists .left {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+.mywallet-lists .left .icon {
+  flex: none;
+}
+
+.mywallet-lists .remainder .icon {
+  width: 26px;
+  height: 26px;
+  background: url('../img/icon.png') no-repeat 0 -52px;
+  background-size: 100%;
+  margin-top: 5px;
+}
+
+.mywallet-lists .point .icon {
+  width: 26px;
+  height: 26px;
+  background: url('../img/icon.png') no-repeat 0 0px;
+  background-size: 100%;
+  margin-top: 5px;
+}
+
+.mywallet-lists .coupon .icon {
+  width: 26px;
+  height: 22px;
+  background: url('../img/icon.png') no-repeat 0 -104px;
+  background-size: 100%;
+  margin-top: 5px;
+}
+
+.mywallet-lists .achive .icon {
+  width: 26px;
+  height: 26px;
+  background: url('../img/icon.png') no-repeat 0 -127px;
+  background-size: 100%;
+  margin-top: 5px;
+}
+
+.mywallet-lists .remainder .title {
+  color: #ef923e;
+}
+
+.mywallet-lists .point .title {
+  color: #44b978;
+}
+
+.mywallet-lists .coupon .title {
+  color: #3a98c4;
+}
+
+.mywallet-lists .achive .title {
+  color: #f7686c;
+}
+
+.mywallet-lists .content {
+  color: #a6a6a6;
+  font-size: 14px;
+}
+
+.mywallet-lists .left .context {
+  margin-left: 8px;
+}
+
+.mywallet-lists .content {
+  margin-top: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.mywallet-lists .right .text {
+  color: #a6a6a6;
+  font-size: 14px;
+  padding-right: 14px;
+  background: url('../img/user_center_03.png') no-repeat center right;
+}

@@ -1,0 +1,71 @@
+.myachive{
+  width: 100%;
+  height: 136px;
+  background-color: #f6bb43;
+  color: #fff;
+}
+.myachive .myachive-header{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 16px;
+}
+.myachive .myachive-header .text{
+  font-size: 24px;
+  margin-top: 10px;
+}
+.myachive .content .item{
+  box-sizing: border-box;
+  width:50%;
+  border-right: 1px solid #dbdbdb;
+  border-bottom:1px solid #dbdbdb;
+  height: 100px;
+  text-align: center;
+  background-color: #fff;
+  position: relative;
+}
+.myachive .content .item:nth-child(2n){
+  border-right: none;
+}
+.myachive .content .item:last-of-type{
+  border-bottom: none;
+}
+.myachive .content .item:nth-of-type(3){
+  border-bottom: none;
+}
+
+.myachive .content .lists{
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.myachive .content .item .number{
+  color: #f6bb43;
+  font-size: 20px;
+}
+.myachive .content .item .text{
+  color: #666666;
+  margin-top: 15px;
+  font-size: 16px;
+}
+.myachive .content .item a{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

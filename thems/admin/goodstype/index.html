@@ -1,0 +1,312 @@
+<!-- page specific plugin scripts -->
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<!--<script type="text/javascript" src="__ADMIN_STATIC__/js/Hfumanxdmin.js"></script>-->
+
+<body>
+    <div class="page-content clearfix">
+        <div id="Member_Ratings">
+            <div class="d_Confirm_Order_style">
+                <!---->
+                <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加商品模型</a>
+                      <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('delete')}"><i class="icon-trash"></i>批量删除</a>
+                     </span>
+                    <span class="r_f">共：<b></b>条</span>
+                </div>
+                <!---->
+                <div class="table_menu_list">
+                    <table class="table table-striped table-bordered table-hover" id="sample-table">
+                        <thead>
+                            <tr>
+                                <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                                <th width="80">ID</th>
+                                <th width="100">模型名称</th>
+                                <th width="180">加入时间</th>
+                                <th width="180">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {volist name="list" id="u"}
+                            <tr>
+                                <td><label><input type="checkbox" name="ids[]" value="{$u.id}" class="ace"><span class="lbl"></span></label></td>
+                                <td>{$u.id}</td>
+                                <td><u style="cursor:pointer" class="text-primary" onclick="member_show('张三','member-show.html','10001','500','400')"> {$u.name}</u></td>
+                                <td>{$u.createtime}</td>
+                                <td>  <a title="编辑" onclick="member_edit({$u.id})" href="javascript:;" class="btn btn-xs btn-info"><i class="icon-edit bigger-120"></i></a>
+                                  <a title="删除" href="javascript:;" onclick="member_del(this,{$u.id})" class="btn btn-xs btn-warning"><i class="icon-trash  bigger-120"></i></a></td>
+                            </tr>
+                          {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--添加用户图层-->
+  <div class="add_menber" id="add_menber_style" style="display:none">
+    <ul class=" page-content">
+        <li class="adderss"><label class="label_name">模型名称：</label><span class="add_name"><input name="name" type="text"  class="text_add" style=" width:350px" required data-title="分类名称" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+    </ul>
+</div>
+<script>
+    jQuery(function($) {
+        var oTable1 = $('#sample-table').dataTable({
+            "aaSorting": [
+                [1, "desc"]
+            ], //默认第几个排序
+            "bStateSave": true, //状态保存
+            "aoColumnDefs": [
+                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                {
+                    "orderable": false,
+                    "aTargets": [0, 2, 4]
+                } // 制定列不参与排序
+            ]
+        });
+
+
+        $('table th input:checkbox').on('click', function() {
+            var that = this;
+            $(this).closest('table').find('tr > td:first-child input:checkbox')
+                .each(function() {
+                    this.checked = that.checked;
+                    $(this).closest('tr').toggleClass('selected');
+                });
+
+        });
+
+
+        $('[data-rel="tooltip"]').tooltip({
+            placement: tooltip_placement
+        });
+
+        function tooltip_placement(context, source) {
+            var $source = $(source);
+            var $parent = $source.closest('table')
+            var off1 = $parent.offset();
+            var w1 = $parent.width();
+
+            var off2 = $source.offset();
+            var w2 = $source.width();
+
+            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+            return 'left';
+        }
+    })
+    /*用户-添加*/
+    $('#member_add').on('click', function() {
+      openPanle('add', null);
+        layer.open({
+            type: 1,
+            title: '添加分类',
+            maxmin: true,
+            shadeClose: true, //点击遮罩关闭层
+            area: ['800px', ''],
+            content: $('#add_menber_style'),
+            btn: ['提交', '取消'],
+            yes: function(index, layero) {
+                var num = 0;
+                var str = "";
+                //不能为空
+                $(".add_menber input[type$='text']").each(function(n) {
+                    if ($(this).attr('name') == 'name' && $(this).val() == "") {
+
+                        layer.alert(str += "" + $(this).attr("data-title") + "不能为空！\r\n", {
+                            title: '提示框',
+                            icon: 0,
+                        });
+                        num++;
+                        return false;
+                    }
+                });
+                if (num > 0) {
+                    return false;
+                } else {
+                  var data = serializeData();
+                  console.log(data)
+                  util.ajaxPost("{:url('add')}", data).done(function (res) {
+                      if(res.code > 0){
+                        layer.close(index);
+                        layer.msg(res.msg)
+                        setTimeout(function () {  window.location.href = res.url;},2000)
+                      }else{
+                        layer.msg(res.msg)
+                      }
+
+                  }).fail(function (err) {
+                    layer.msg(err.status+"服务器发生错误")
+                  });
+                }
+            }
+        });
+    });
+    function serializeData(type){
+      var _type = type || 'add';
+      var eles = $("*[data-role='add']");
+      var data = [];
+      var str = '';
+      for (var i = 0; i < eles.length; i++) {
+        var _d = $(eles[i]);
+        if(_d.attr('type') == 'radio'){
+          if(_d.prop('checked')){
+            data[_d.attr('name')] = _d.val();
+            str += _d.attr('name') + '=' + _d.val() + '&';
+          }
+        }else{
+          data[_d.attr('name')] = _d.val();
+          str += _d.attr('name') + '=' + _d.val() + '&';
+        }
+      }
+      return str.substring(0, str.length -1 );
+    }
+    /*用户-查看*/
+    function member_show(title, url, id, w, h) {
+        layer_show(title, url + '#?=' + id, w, h);
+    }
+    /*用户-停用*/
+    function member_stop(obj, id) {
+        layer.confirm('确认要停用吗？', function(index) {
+
+
+            adminAjax('Post','{:url('update')}', util.jsonToUrlStr({"id":id,'status': '禁用'}), false, function () {
+              layer.msg('已停用!', {
+                  icon: 5,
+                  time: 1000
+              });
+              $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs " onClick="member_start(this,'+id+')" href="javascript:;" title="正常"><i class="icon-ok bigger-120"></i></a>');
+              $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius">已停用</span>');
+              $(obj).remove();
+            })
+
+        });
+    }
+
+    /*用户-启用*/
+    function member_start(obj, id) {
+        layer.confirm('确认要启用吗？', function(index) {
+
+            adminAjax('Post','{:url('update')}', util.jsonToUrlStr({"id":id,'status': '正常'}), false, function () {
+
+              layer.msg('已启用!', {
+                  icon: 6,
+                  time: 1000
+              });
+              $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs btn-success" onClick="member_stop(this,'+id+')" href="javascript:;" title="停用"><i class="icon-ok bigger-120"></i></a>');
+              $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">正常</span>');
+              $(obj).remove();
+            })
+
+        });
+    }
+    /*用户-编辑*/
+    function member_edit(id) {
+      openPanle('edit', id, function () {
+        layer.open({
+            type: 1,
+            title: '修改用户信息',
+            maxmin: true,
+            shadeClose: false, //点击遮罩关闭层
+            area: ['800px', ''],
+            content: $('#add_menber_style'),
+            btn: ['提交', '取消'],
+            yes: function(index, layero) {
+                var num = 0;
+                var str = "";
+                $(".add_menber input[type$='text']").each(function(n) {
+                    if ($(this).val() == "") {
+
+                        layer.alert(str += "" + $(this).attr("name") + "不能为空！\r\n", {
+                            title: '提示框',
+                            icon: 0,
+                        });
+                        num++;
+                        return false;
+                    }
+                });
+                //校验密码
+                if($("input[name='password']").val() != $("input[name='password_confirm']").val()){
+                  layer.alert('两次输入的密码不一样', {
+                    title: '提示框',
+                    icon: 0
+                  });
+                  num ++;
+                  return false;
+                }
+                if (num > 0) {
+                    return false;
+                } else {
+                  var data = serializeData();
+                  // console.log(data)
+                  util.ajaxPost("{:url('update')}", data+"&id="+id).done(function (res) {
+                      if(res.code > 0){
+                        layer.close(index);
+                        layer.msg(res.msg)
+                        setTimeout(function () {  window.location.href = res.url;},2000)
+                      }else{
+                        layer.msg(res.msg)
+                      }
+                  }).fail(function (err) {
+                    layer.msg(err.status+"服务器发生错误")
+                  });
+                }
+            }
+        });
+      })
+
+    }
+    /*用户-删除*/
+    function member_del(obj, id) {
+        layer.confirm('确认要删除吗？', function(index) {
+          adminAjax('Get', '{:url('delete')}', util.jsonToUrlStr({"id":id}), false, function () {
+            $(obj).parents("tr").remove();
+            layer.msg('已删除!', {
+                icon: 1,
+                time: 1000
+            });
+          })
+        });
+    }
+
+    function openPanle(type, id, fn){
+      if(type == 'add'){
+        //清空input
+        $(".add_menber input[type$='text']").each(function(n) {
+            $(this).val('');
+        });
+      }else{
+        adminAjax('Get', '{:url('getCateById')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+          var data = res.data;
+          $(".add_menber input").each(function(n) {
+            for (var k in data) {
+              if(k == $(this).attr('name')){
+                if($(this).attr('type') == 'text')$(this).val(data[k]);
+                if($(this).attr('type') == 'radio'){
+                  console.log($(this))
+                  if($(this).val() == data[k]){
+                    $(this).prop('checked', 'checked');
+                  }else{
+                    $(this).prop('checked', false);
+                  }
+                }
+              }
+            }
+          });
+          $(".add_menber select").find("option").each(function (index, ele) {
+            if($(this).val() == data['pid']){
+                $(this).prop('selected', 'selected')
+            }
+          });
+
+          fn&&fn();
+        });
+      }
+    }
+</script>
+
+</body>
+
+</html>

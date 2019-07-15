@@ -1,0 +1,274 @@
+{extend name='/public/base' /}
+{block name='title'}商家充值记录{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/wallet.css" />
+<style type="text/css">
+  .shuaixuanriqi{
+    position: absolute;
+    right:26px;
+    color: #fff;
+  }
+  .shuaixuanriqi::after{
+    border-top-color: #fff;
+  }
+</style>
+{/block}
+{block name="content"}
+{php}
+  $arr = array(1 => '购物币', '6' => '分红收入', '5' => '推广收入');
+  $status = ['未处理', '已入账', '驳回'];
+{/php}
+<div id="pjax-container" class="box">
+  <div onclick="cancel(event)" style="display: none;" class="bgblack">
+    <div class="selectT">
+      <div class="table">
+        <div class="table_row"><div class="table_cell"> 请选择年</div><div class="table_cell"> 请选择月</div>   </div>
+        <div class="table_row"><div class="table_cell"><select onclick="stop(event)" onchange="date.oy(this, event)" id="year"></select></div><div class="table_cell"> <select onclick="stop(event)" onchange="date.om(this, event)" id="month"></select></div> </div>
+        <div class="table_row"><div class="table_cell"> <div onclick="timeConfirm(false, event)" class="btn">取消</div></div><div class="table_cell"> <div onclick="timeConfirm(true)" class="btn confirm">确定 </div></div>    </div>
+      </div>
+    </div>
+  </div>
+    <div class="con scrollload-container">
+        <header class="dis-box header-menu  color-whie">
+            <!--<div onclick="shuanxuantype()" class="shuaixuan triangle">筛选</div>-->
+            <div onclick="shuaixuanshow()" class="shuaixuanriqi triangle">日期</div>
+        </header>
+      <div class="contentbox">
+        {volist name="list" id="li"}
+        <div class="income">{$li.date}<span>￥{$li.total}</span> </div>
+        <ul class="n-user-acc-log scrollload-content">
+            {volist name="li.data" id="item"}
+            <li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">
+              <a href="{:url('ServiceCenter/applyRechargeDetail')}?id={$item['id']}">
+                <div class="dis-box">
+                    <div class="box-flex widthdraw">
+                        <h5 class="f-05 col-7">充值状态：{$status[$item['status'] - 1]}</h5>
+                        <h6 class="f-05 col-7  m-top04">{:date('Y-m-d m:i:s', $item['createtime'])}</h6>
+                    </div>
+                    <div class="box-flex">
+                        <p class="f-05 text-right minus widthdraw-arrow">
+                           {$item['money']}
+                        </p>
+                    </div>
+                </div>
+              </a>
+            </li>
+            {/volist}
+        </ul>
+        {/volist}
+      </div>
+    </div>
+</div>
+{/block}
+
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script type="text/javascript">
+  //设置月份
+  (function () {
+    var m = '';
+    var da = new Date()
+    var nowm = da.getMonth() + 1;
+    for (var i = 1; i < 13; i ++) {
+      var sel = nowm = i ? 'selected="selected"' : ''
+      m = m + '<option ' + sel + ' value="' + i + '">'+ i +'月</option>'
+    }
+    $("#month").append(m);
+    var y = '';
+    var year = da.getFullYear();
+    while (year > 2015) {
+      y = y + '<option value="' + year + '">'+ year +'年</option>';
+      year --;
+    }
+    $("#year").append(y)
+  })()
+  
+</script>
+<script type="text/javascript">
+  var status = ['未处理', '已入账', '驳回']
+  $(document).ready(function () {
+    let page =1,pageSize=10;
+    new Scrollload({
+      container:document.querySelector('.scrollload-container'),
+      content:document.querySelector('.scrollload-content'),
+      loadMore:function (me) {
+        page++;
+        $.ajax({
+          url:'{:url("applyrechargelist")}?page='+page+'&pageSize='+pageSize,
+          type:'GET',
+          dataType:'json',
+          async:false,
+          success:function (res) {
+            if(res.code==1002){
+              let data=res['data'],content='';
+              content= htmlFn(data);
+              $('.scrollload-content').append(content);
+              if(res['url']['current_page']>parseInt(res['url']['total']/parseInt(res['url']['per_page']))){
+                me.lock();
+                me.noMoreData();
+              }else{
+                me.unLock();
+              }
+            }else{
+              me.noMoreData();
+            }
+          },
+          error:function (xhr,type) {
+            console.log('ajax错误');
+            me.throwException();
+          }
+        })
+      }
+    });
+  })
+  //      拼接
+function htmlFn(data) {
+  let html='';
+  for (let i=0;i<data.length;i++){
+    let _d = data[i], subHtml = ''
+    html += '<div class="income">'+_d['date']+'<span>￥'+_d['total']+'</span> </div>' +
+      '<ul class="n-user-acc-log scrollload-content">';
+    
+      for(var j = 0; j < _d['data']; j ++) {
+        var _dd = _d['data'][j]
+        subHtml += '<li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">' +
+          '<a href="{:url('ServiceCenter/applyRechargeDetail')}?id='+_dd['id']+'">' +
+        '<div class="dis-box">' +
+        '<div class="box-flex widthdraw">' +
+          '<h5 class="f-05 col-7">充值状态：'+status[_dd['status'] - 1]+'</h5>' +
+        '<h6 class="f-05 col-7  m-top04">'+new Date(_dd['createtime'] * 1000).Format('yyyy-MM-dd hh:mm:ss')+'</h6>' +
+        '</div>' +
+        '<div class="box-flex">' +
+        '<p class="f-05 text-right minus widthdraw-arrow">'+_dd['note']+'</p></div></div></a></li>'
+      }
+      
+    html += '</ul>'
+  }
+  return html;
+}
+  //筛选$type = '', $coin_type = '', $from = '', $time = ''
+  var  bgblack = $(".bgblack"),
+  selectT = $(".selectT"),
+  typelist = $(".typelist"),
+  contentbox = $(".contentbox"),
+  date = {
+    y: null,
+    m: null,
+    init: function() {
+      var d = new Date();
+      this.y = d.getFullYear();
+      this.m = d.getMonth() + 1;
+    },
+    oy: function(obj, e){
+      e.stopPropagation();
+      this.y = $(obj).val();
+    },
+    om: function (obj, e) {
+      e = e || window.event;
+      e.stopPropagation();
+      this.m = $(obj).val();
+    }
+  },
+  parameter = {
+    type: '',
+    coin_type: '',
+    from: '',
+    time: ''
+  };
+  date.init();
+  function shuanxuantype(){
+    selectT.addClass('none')
+    bgblack.css('display', 'flex');
+    typelist.css('display', 'block')
+  }
+  function shuaixuanshow () {
+    selectT.removeClass('none');
+    bgblack.css('display', 'flex');
+  }
+  function typeSelect (fm, event){
+     var e = event || window.event;
+    e.preventDefault();
+    if (fm == 1) {
+      parameter.from = '';
+      parameter.coin_type = fm;
+    } else {
+      parameter.from = fm;
+      parameter.coin_type = '';
+    }
+    parameter.time = '';
+    //bgblack.css('display', 'none')
+    purchase();
+  }
+  function timeConfirm(c, e) {
+//  stop(e);
+    if (c) {
+      parameter.time = date.y + '-' + date.m;
+      purchase()
+    }
+    //bgblack.css('display', 'none')
+  }
+  function purchase(){
+    cancel();
+    // contentbox.empty();
+    $.ajax({
+      type:"post",
+      url:"{:url('applyrechargelist')}",
+      async:true,
+      data: parameter,
+      success: function(res) {
+        if (res.code == 2000) {
+          var data = res.data;
+          console.log(data);
+          var str = '';
+          if (data.length == 0) {
+            contentbox.html('<div style="text-align:center; line-height: 36px;">没有更多数据了...</div>')
+          }
+          for (var i = 0; i < data.length; i ++) {
+            str +=  '<div class="income">' + data[i].date + '<span>收入￥' + data[i].income + '&nbsp;&nbsp;&nbsp;支出￥' + data[i].expenses + '</span> </div>'+
+             '<ul class="n-user-acc-log scrollload-content">';
+            var result = data[i].data;
+            for (var j = 0; j < result.length; j ++) {
+              var type = '';
+              if (result[j].type == 1) {
+                type = '+';
+              } else {
+                type = '-';
+              }
+          result[j]['user_money'] = result[j]['user_money'] ? result[j]['user_money'] : 0;
+              str +=
+                '<li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">' +
+                      '<div class="dis-box">'+
+                          '<div class="box-flex">'+
+                              '<h5 class="f-05 col-7">' + new Date(result[j]['createtime'] * 1000).Format('yyyy-MM-dd hh:mm:ss')+'</h5>'+
+                              '<h6 class="f-05 col-7  m-top04">' + result[j]['note'] + '</h6>'+
+                          '</div>'+
+                          '<div class="box-flex">' +
+                              '<p class="f-05 color-red text-right">'+ type + result[j]['user_money'] +
+                              '</p>'+
+                          '</div>'+
+                      '</div>'+
+                  '</li>';
+            }
+            str += '</ul>'
+          }
+          contentbox.append(str);
+        }
+      }
+      
+    });
+  }
+function stop (e) {
+    e = e || window.event;
+    e.stopPropagation();
+//  e.preventDefault();
+}
+  function cancel (event) {
+//  console.log(event)
+//  event.preventDefault();
+//  stop(event);
+    typelist.css('display', 'none');
+    bgblack.css('display', 'none');
+  }
+</script>
+{/block}

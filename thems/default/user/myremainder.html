@@ -1,0 +1,57 @@
+{extend name='/public/base'/} {block name='title'}会员中心-我的余额{/block} {block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/wallet.css" />
+<link rel="stylesheet" href="__HOME_STATIC__/css/iconfont/iconfont.css" />
+{/block} {block name="content"}
+<body style=" background-color: #EFEFEF;">
+<div class="box">
+    <div class="myremainder" style="padding-bottom: 60px;">
+        <section class="purse-header-box text-center purse-f">
+            <p>预存款余额</p>
+            <h2>{$user_vb}</h2>
+        </section>
+        <section class="menu-select">
+            <ul class="lists">
+            <li class="item" id="gotoWithdraw">
+                <span class="widthdraw"></span>
+                <p>提现</p>
+            </li>
+            <li class="item" id="gotoRecharge">
+                <span class="recharge"></span>
+                <p>充值</p>
+            </li>
+            </ul>
+        </section>
+        <section class="my-nav-box">
+            <a href="{:url('detail')}">
+                <div class="dis-box  my-bottom">
+                    <h3 class="text">账户余额明细</h3>
+                </div>
+            </a>
+            <a href="{:url('/home/user/recharge_details')}">
+                <div class="dis-box my-bottom">
+                    <h3 class="text">充值明细</h3>
+                </div>
+            </a>
+            <a href="{:url('withdrawrows')}">
+                <div class="dis-box my-bottom">
+                    <h3 class="text">提现记录</h3>
+                </div>
+            </a>
+        </section>
+    </div>
+{block name='footermenu'} {include file="thems/default/public/Footer/footer.html"} {/block}
+</div>
+</body>
+{/block}
+{block name="footerjs"}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var $gotoWithdraw = $('#gotoWithdraw'),$gotoRecharge = $('#gotoRecharge')
+    $gotoWithdraw.on('click',function(){
+     window.location.href = '{:url("Usersqtx/tousersqtx")}'
+    })
+    $gotoRecharge.on('click',function(){
+     window.location.href = '{:url("User/recharge", array("type" => "user"))}'
+    })
+</script>
+{/block}

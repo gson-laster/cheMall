@@ -1,0 +1,135 @@
+.ShopMain .one img{
+	width: 100%;
+}
+.ShopMain .two{
+	background: #F5F5F5;
+	padding-top: 0.12rem;
+}
+.ShopMain .two_input{
+	position: relative;
+	height: 0.26rem;
+	line-height: 0.26rem;
+	margin: 0 0.12rem;
+	padding-bottom: 0.15rem;
+}
+.ShopMain .two_input input{
+	width: 90%;
+	height: 100%;
+	border: 1px solid #DBDBDB;
+	outline: none;
+	padding-left: 0.3rem;
+	font-size:0.14rem;
+	font-family: "微软雅黑";
+	border-radius: 0.04rem;
+}
+.ShopMain .two_img{
+	position: absolute;
+	left: 0.1rem;
+}
+.ShopMain .two_img img{
+	height: 0.17rem;
+}
+.ShopMain .two_hotseach{
+	margin: 0 0.12rem;
+	color: #333333;
+	padding-bottom: 0.15rem;
+}
+.ShopMain .two_hotseach span{
+	color: #AEAEAE;
+	padding-left: 0.1rem;
+}
+.ShopMain .three_item{
+	height: 0.45rem;
+	background: url(../img/shopMain_02.png);
+	background-size: 100% 100%;
+	line-height: 0.45rem;
+	border-bottom: 1px solid #FBA6A6;
+}
+.ShopMain .three_item li{
+	width: 20%;
+	float: left;
+	text-align: center;
+	position: relative;
+	height: 0.45rem;
+}
+.ShopMain .three_item li:first-child{
+	color: #DF3F3F;
+}
+.ShopMain .three_item li span{
+	display: inline-block;
+	height:100% ;
+	position: relative;
+	box-sizing: border-box;
+}
+.ShopMain .bor_bottom{
+	position: absolute;
+	width: 100%;
+	height: 0.03rem;
+	background: #DF3F3F;
+	bottom: 0;
+}
+.ShopMain .bor_right{
+	position: absolute;
+	width: 1px;
+	background: #DBDBDB;
+	height: 0.21rem;
+	top: 0.12rem;
+	right: 0;
+}
+.ShopMain .four_content{
+	margin: 0.12rem 0.12rem;
+	
+}
+.ShopMain .four_warry{
+	border: 1px solid #DBDBDB;
+}
+.ShopMain .four_warry>img{
+	width: 100%;
+}
+.ShopMain .four_box{
+	position: relative;
+}
+.ShopMain .scarebuying{
+	position: absolute;
+	right: 0.12rem;
+	top: 0;
+	height: 100%;
+	text-align: center;
+}
+.ShopMain .scarebuying img{
+	height: 0.14rem;
+	position: relative;
+	top: -2px;
+}
+.ShopMain .scarebuying p{
+	background: #DF3F3F;
+	color: white;
+	padding: 0.06rem 0.16rem;
+	border-radius: 0.05rem;
+	margin-top: 0.02rem;
+}
+.ShopMain .scarebuying div{
+	color:#DC3B39;
+	font-size: 0.15rem;
+}
+.ShopMain .four_text{
+	margin-top: 0.18rem;
+	margin-left: 0.24rem;
+	margin-right: 0.86rem;
+}
+.ShopMain .four_text p{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+.ShopMain .four_text p:first-child{
+	color: #333333;
+	font-size: 0.17rem;
+}
+.ShopMain .four_text p:last-child{
+	padding-top: 0.04rem;
+	color: #DF3F3F;
+	margin-bottom: 0.3rem;
+}

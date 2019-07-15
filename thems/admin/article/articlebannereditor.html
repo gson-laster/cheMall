@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="renderer" content="webkit|ie-comp|ie-stand">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link href="__ADMIN_STATIC__/assets/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="__ADMIN_STATIC__/css/style.css" />
+  <link href="__ADMIN_STATIC__/assets/css/codemirror.css" rel="stylesheet">
+  <link rel="stylesheet" href="__ADMIN_STATIC__/assets/css/ace.min.css" />
+  <link rel="stylesheet" href="__ADMIN_STATIC__/font/css/font-awesome.min.css" />
+  <!--[if lte IE 8]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+  <script src="__ADMIN_STATIC__/js/jquery-1.9.1.min.js"></script>
+  <script src="__ADMIN_STATIC__/assets/js/bootstrap.min.js"></script>
+  <script src="__ADMIN_STATIC__/assets/js/typeahead-bs2.min.js"></script>
+  <script src="__ADMIN_STATIC__/assets/layer/layer.js" type="text/javascript"></script>
+  <script src="__ADMIN_STATIC__/assets/laydate/laydate.js" type="text/javascript"></script>
+  <script src="__ADMIN_STATIC__/js/H-ui.js" type="text/javascript"></script>
+  <style>
+    .delete-img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: block;
+      text-align: center;
+      width: 88px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff !important;
+      cursor: pointer;
+    }
+
+    #upload img {
+      width: 88px;
+      max-height: 75px;
+    }
+
+    .Button_operation {
+      margin-left: 20px;
+      margin-top: 20px;
+    }
+  </style>
+  <title>添加轮播图</title>
+</head>
+<body>
+  <div id="addsort_style" style="display:block" class="article_style">
+    <form action="{:url('addarticlebanner')}" method="post">
+      <div class="add_content" id="form-article-add">
+        <ul>
+           <li class="clearfix Mandatory"><label class="label_name"></label>
+            <span class="formControls w_txt"><input value="{$article.id}" name="id" hidden type="text" readonly data-role="addcla" id="form-field-1" class="col-xs-7 col-sm-5 "></span>
+          </li>
+          <li class="clearfix Mandatory"><label class="label_name"><i>*</i>标题</label>
+            <span class="formControls w_txt"><input value="{$article.title}" name="title" type="text" data-role="addcla" id="form-field-1" class="col-xs-7 col-sm-5 "></span>
+          </li>
+          <li class="clearfix Mandatory"><label class="label_name">url</label>
+            <span class="formControls w_txt"><input value="{$article.url}" name="url" type="text" data-role="addcla" id="form-field-1" class="col-xs-7 col-sm-5 "></span>
+          </li>
+          <li class="clearfix"><label class="label_name"><i>*</i>所属分类</label>
+            <span class="formControls w_txt">
+              <select value="" style="margin-left: 10px;width: 210px;" id="parentclass" name="classid">
+                <option value="">---请选择分类---</option>
+                {volist name="artclass" id="ar"}
+                <option value="{$ar['id']}">{$ar['title']}</option>
+                {/volist}
+              </select>
+            </span>
+          </li>
+           <li class="clearfix Mandatory"><label class="label_name">排序</label>
+            <span class="formControls w_txt"><input value="{$article.zid}" name="zid" type="text" data-role="addcla" id="form-field-1" class="col-xs-7 col-sm-5 " style="width:84px;"></span>
+          </li>
+          <li class="clearfix Mandatory"><label class="label_name">作者</label>
+            <span class="formControls w_txt"><input value="{$article.author}" name="author" type="text" data-role="addcla" id="form-field-1" class="col-xs-7 col-sm-5 " style="width:84px;"></span>
+          </li>
+          <li class="clearfix"><label class="label_name"><i>*</i>轮播图</label><span class="formControls col-10">
+          <div class="logobox"><div class="resizebox" id="upload" onclick="document.getElementById('paymentLogo').click()" style="position:relative"><img src="{$article.pic|default=__ADMIN_STATIC__/images/image.png}"  alt="" ><i class="delete-img" data-src="">删除</i></div></div>
+               <div class="logoupload">
+                  <div class="btnbox"><a id="uploadBtnHolder" class="uploadbtn" href="javascript:;" onclick="document.getElementById('paymentLogo').click()">上传替换</a></div>
+              </div>
+              <input type="hidden" name="pic" value="{$article.pic}" id="picurl" data-role='add'/></span></li>
+          <li class="clearfix"><label class="label_name">是否显示</label> &nbsp;&nbsp;&nbsp;&nbsp;
+            <label><input name="isok" type="radio"  data-role="addcla" class="ace" value="1" {eq name="$article.isok" value="1"}checked{/eq}><span class="lbl">显示</span></label>&nbsp;
+            <label><input name="isok" type="radio"   data-role="addcla" class="ace"  value="0" {eq name="$article.isok" value="0"}checked{/eq}><span class="lbl">不显示</span></label></span>
+          </li>
+        </ul>
+      </div>
+       <div class="Button_operation">
+      <button id="submitForm" class="btn btn-primary radius" type="submit">保存并提交</button>
+      <button id="restForm" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+  </div>
+    </form>
+    <input type="file" name="paymentLogo" id="paymentLogo" onchange="fileSelect(this)" style="display:none" />
+  </div>
+ 
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+<script>
+  // 照片异步上传;
+  function fileSelect(o){
+     $.ajaxFileUpload({
+        url:'{:url('api/UploadFiles/uploadAjax',array('file'=>'paymentLogo','to_dir'=>'articlePic'))}',
+      type: 'post',
+      secureuri :false,
+      fileElementId :'paymentLogo',
+      dataType : 'json',
+      success : function (res){
+      if(res.code == 1){
+        layer.msg('上传成功')
+        console.log(res);
+        $('#upload').find('img').eq(0).attr('src',res.path);
+        $('.delete-img').attr('data-src',res.path);
+        $('#picurl').val(res.path); 
+      }else{
+        layer.msg('上传失败')
+      }
+    },
+    error: function(data, status, e){   //提交失败自动执行的处理函数
+      // alert('error',e);
+//    console.log(data)
+//    console.log(status)
+//    console.log(e)
+    }
+  })
+  }
+  //   点击删除图片;
+      $('#upload').find('.delete-img').eq(0).on('click',function(e){
+            if($(this).data('src').length>0){
+                util.ajaxPost('{:url("api/UploadFiles/delImg")}',{path:$(this).attr('data-src')}).done(function(res){
+                    if(res.code==1){
+                        layer.msg(res.msg);
+                         $('#upload').find('img').attr('src','__ADMIN_STATIC__/images/image.png');
+                         $('.delete-img').data('src','');
+                        $('#picurl').val('');
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }).fail();
+            }
+         e.stopPropagation();
+      });  
+</script>
+</body>
+</html>

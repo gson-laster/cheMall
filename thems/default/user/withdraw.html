@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/tool.css"/>
+    <link rel="stylesheet" href="__HOME_STATIC__/css/cash.css"/>
+    <title>用户提现</title>
+    <style type="text/css">
+    	input{
+    		color: black !important;
+    	}
+    </style>
+</head>
+<body>
+  {php}
+    $da = date("w"); 
+  {/php}
+<div class="box">
+<div style="background: #ED5564; line-height: 60px; height: 60px;" style="text-align: center;" class="recharge_header">
+	<div style="justify-content: center; display: flex; width: 100%;">
+		当前余额: {:session('userInfo')['user_vb']}
+	</div>
+</div>
+<div class="user_recharge">
+    <div class="header">
+        <span>提现金额</span> <input style="width: 76%;" id="money_count" type="number" required name="money" value="" placeholder="提现金额/只能输入数字"/>
+    </div>
+</div>
+<div class="pay_way">
+    <div class="header clear">
+        <div class="left"> <span>提现收款方式</span></div>
+        <div class="right"> <span id="payname">银行卡</span><span class="up_arrow"></span></div></div>
+</div>
+
+<div class="recharge_bottom">
+    <!--<div class="bottom_item clear">
+        <div class="left "><img src="__HOME_STATIC__/img/AliPay.png" alt="" style="margin-right:0.05rem;">支付宝</div>
+        <div class="right none" data-way="3"></div>
+    </div>
+
+    <div class="bottom_item clear">
+        <div class="left active"><img src="__HOME_STATIC__/img/wechatpay.png" alt="" style="margin-right:0.05rem;">微信支付</div>
+        <div class="right" data-way="2"></div>
+    </div>-->
+    <div class="bottom_item clear">
+        <div class="left "><img src="__HOME_STATIC__/img/bank-relation.png" alt="" style="margin-right:0.05rem;" />银行卡</div>
+        <div class="right none" data-way="1"></div>
+    </div>
+</div>
+<div style="margin-top: 20px;margin-bottom: 20px;margin-left: 12px; color: red;" class="explain">
+
+</div>
+<input type="hidden" id="payway" name="payway" value='1' />
+<div  style="color: red; margin-bottom: 20px; margin-left: 12px;">
+	余额提现需扣除1.5%的税费，2-3个工作日内到账
+</div>
+{if condition="$da == 1"}
+<input style="color: white !important;" type="submit" class="recharge_submit  issubbtn" value="提交申请"/>
+{else /}
+<input style="color: white !important;" type="submit" class="recharge_submit" value="只允许每周一提现"/>
+{/if}
+</div>
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script>
+  window.alert=function (message,duration) {
+    let time = duration||2;
+    layer.open({
+      content:message,
+      skin:'msg',
+      time:time
+    })
+  }
+</script>
+<script>
+	var data_;
+  $(function () {
+    $('.recharge_bottom .bottom_item').click(function (evt) {
+      if($(this).find('.right').eq(0).hasClass('none')){
+        $(this).find('.right').eq(0).removeClass('none');
+        $(this).find('.left').eq(0).addClass('active');
+        $(this).siblings('.bottom_item').find('.right').addClass('none');
+        $(this).siblings('.bottom_item').find('.left').removeClass('active');
+        $("#payname").text($(this).find('.left').eq(0).text());
+        $("#payway").val($(this).find('.right').eq(0).attr('data-way'));
+      }
+    });
+    $(".pay_way").click(function(event) {
+      if($('.recharge_bottom').hasClass('none')){
+        $('.recharge_bottom').removeClass('none')
+        $(this).find('.up_arrow').css('transform', 'rotate(0deg)');
+      }else{
+        $('.recharge_bottom').addClass('none')
+        $(this).find('.up_arrow').css('transform', 'rotate(180deg)');
+      }
+    });
+
+//    验证提现
+    $('.issubbtn').click(function () {
+      let moneyCount=$('#money_count').val();
+      let userVb ={:session("userInfo")["user_vb"]};
+//    let data={};
+      let payWay=$('#payway').val();
+      if(!moneyCount){
+        alert("请输入正确的金额");
+        return false;
+      }else{
+//            判断是否为小数;
+        if(moneyCount.indexOf('.')>(-1)){
+          alert("请输入整数");
+          return false;
+        }else if(parseInt(moneyCount)>userVb){
+          alert("余额不足,请重新填写");
+          return false;
+        }else{
+//          发送请求;
+          $.ajax({
+            url:'{:url("home/Usersqtx/addusersqtx")}',
+            data:{
+            'userid':{:session("qt_userId")},
+            'sqtxprice':moneyCount,
+            'sqtxfs':payWay
+        },
+            type:'Post',
+            dataType:'json',
+            async:false,
+            success:function (res) {
+            	console.log(res)
+              if(res.code>0){
+                alert(res['msg']);
+                setTimeout(function () {
+                  window.location.href='{:url("home/User/mywallet")}';
+                },1000)
+              }else{
+                alert(res['msg']);
+                setTimeout(function () {
+                  window.location.href=res.url;
+                },1000);
+              }
+            },
+            error:function (xhr,type) {
+              console.log('ajax错误');
+            }
+          })
+        }
+      }
+    });
+  });
+
+</script>
+</body>
+</html>

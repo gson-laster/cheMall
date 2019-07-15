@@ -1,0 +1,289 @@
+{include file='thems/default/public/Header/login_header.html'}
+<style>
+  .inputone .avatar {
+    text-align: center;
+    width: 100px;
+    overflow: hidden;
+    padding: 10px;
+    margin: 0 auto;
+  }
+
+  .inputone .avatar p {
+    text-align: center;
+  }
+
+  .SignUp .warry input {
+    margin-bottom: 28px;
+    font-size: 14px;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+  }
+</style>
+<div class="bindWx box Login SignUp OtherLogin">
+  <div class="wx_header">
+    <p>绑定账号</p>
+  </div>
+
+  <!--绑定账号-->
+  <section class="two_box none" id="login">
+    <div class="warry">
+      <div class="inputone pad_right">
+        <div class="name" style="">
+
+        </div>
+        <input id="band_count" class="pad_left" type="text" readOnly value="{$nickname}" style="" />
+      </div>
+      <div class="inputone pad_right">
+        <div class="name">
+
+        </div>
+        <input id="phone" class="pad_left" type="text" placeholder="请输入手机号" />
+      </div>
+      <div class="inputone pad_right">
+        <div class="name">
+
+        </div>
+        <input id="test" class="pad_left" type="password" placeholder="请输入密码" />
+      </div>
+      <div class="submit">
+        <button onclick="textuser()">登录</button>
+      </div>
+      <div class=tologin>
+        还没有账号?<a href="javascrip:;" onclick="toRegister('#register')">立即注册</a>
+      </div>
+    </div>
+  </section>
+  
+
+  <!--注册账号-->
+  <section class="two_box" id="register">
+    <div class="warry">
+      <div class="inputone pad_right">
+        <div class="name avatar" style="">
+          <img src="{$userimg}" alt="userimg" />
+          <p>{$nickname}</p>
+        </div>
+        <!--<input class="pad_left" type="text" readOnly value="{$nickname}" style="" />-->
+      </div>
+      <div class="inputone">
+        <!--<div class="name"></div>-->
+        <input id="input_one" type="text" placeholder="请输入手机号" />
+      </div>
+      <div class="inputone pad_right">
+        <!--<div class="name"></div>-->
+        <input id="input_three" type="password" placeholder="请输入密码" />
+      </div>
+      <div class="inputone pad_right" style="position:relative">
+        <!--<div class="name"></div>-->
+        <input id="input_two" type="text" placeholder="请输入验证码" />
+        <input id="send_code" type="button" class="send" value="发送验证码" style="padding-left:0;border-left:0;border-top:0;border-bottom:0;"></input>
+      </div>
+
+      <div class="inputone pad_right">
+        <!--<div class="name"></div>-->
+        <input id="input_four" type="number" data-name="推荐人" placeholder="请输入推荐人手机号(必填)" />
+      </div>
+
+      <!--<div class="inputone pad_right">
+        <div class="name"></div>
+        <input onblur="inputblur()" id="input_four" type="password" placeholder="请再次输入密码" />
+      </div>-->
+
+      <div class="submit">
+        <button onclick="confirmInput()">注册</button>
+      </div>
+      <div class=tologin>
+        已经有账号?<a hrf="javascript:;" onclick="toRegister('#login')">立即绑定!</a>
+      </div>
+    </div>
+  </section>
+  <!--注册账号-->
+
+</div>
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script>
+	var tjr_uid='{$tjr_uid}';
+	if (tjr_uid) {
+		$.ajax({
+			type:"Post",
+			data:{id:tjr_uid},
+			url:'{:url('api/base/getUser')}',
+			async:true,
+			success:function(data){
+				$("#input_four").val(data.phone);
+			}
+		});
+	}
+  window.alert = function (message) {
+    layer.open({
+      content: message,
+      skin: 'msg',
+      time: 2
+    })
+  }
+</script>
+<script>
+  function toRegister(id) {
+    $(".two_box").addClass('none');
+    $(id).removeClass('none');
+  }
+
+  function textuser() {
+    var phone = $("#phone").val();
+    var test = $("#test").val();
+    if (phone == '') {
+      alert('请输入电话号码');
+      return false;
+    }
+    if (test == '') {
+      alert('请输入密码');
+      return false;
+    }
+
+    $.ajax({
+      url: '{:url("weichat2site")}',
+      data: {
+        phone: phone,
+        password: test
+      },
+      type: 'POST'
+    }).done(function (res) {
+      if (res.code > 0) {
+        		 window.location.href = res.url;
+      }
+      else{
+      	alert("登录失败");
+      }
+    }).fail(function (err) {
+      alert(err.status + '服务器错误');
+    });
+
+  }
+
+  $(document).ready(function () {
+    // 发送验证码倒计时
+    $('#send_code').click(function () {
+      if (!$('#input_one').val().match(/^\d{11}$/)) {
+        alert('请输入正确的手机号');
+        return false;
+      } else {
+        //调用发送验证码的方法; 
+        sendSms();
+
+        var countdown = 60;
+        setTime($('#send_code'));
+
+        function setTime(obj) {
+          if (countdown === 0) {
+            obj.removeAttr('disabled');
+            obj.val('发送验证码');
+            countdown = 60;
+            return;
+          } else {
+            obj.attr('disabled', 'disabled');
+            obj.val('重新发送(' + countdown + ')');
+            countdown--;
+          }
+          timer = setTimeout(function () {
+            setTime(obj);
+          }, 1000)
+        }
+      }
+    });
+  })
+
+
+  // 手机号，密码，验证码,进行验证：
+  function confirmInput() {
+    var data = '';
+    //手机号;
+    var telPhone = $('#input_one').val();
+    //验证码;
+    var code = $('#input_two').val();
+    // 密码;
+    var password = $('#input_three').val();
+    //推荐人手机号;
+    var recPhone = $('#input_four').val();
+    if (!telPhone.match(/^\d{11}$/)) {
+      alert('请输入正确的手机号');
+      return false;
+    }
+    if (code.length <= 0) {
+      alert('请输入正确的验证码');
+      return false;
+    }
+    if(recPhone == '') {
+      alert('请输入推荐人手机号');
+      return false;
+    }
+    if (!recPhone.match(/^\d{11}$/)) {
+      alert('请输入正确的手机号');
+      return false;
+    }
+    if (password.length < 6 || !password) {
+      alert('密码不能少于6位');
+      return false;
+    } 
+    submit_text(telPhone, code, password, recPhone);
+  }
+  // 发送验证码;
+  function sendSms() {
+    var telPhone = $('#input_one').val();
+    if (!telPhone.match(/^\d{11}$/)) {
+      alert('请输入正确的手机号');
+      return false;
+    } else {
+      util.ajaxSyncGet('{:url("home/login/ajaxSendSms")}?mobile=' + telPhone, {}).done(function (res) {
+        if (res.code == 1002) {
+          window.sms_code = res.data.code;
+        }
+        if (res.code == 0) {
+          alert(res.msg);
+        }
+      }).fail(function (err) {
+        alert(err.status + '服务器错误');
+      });
+    }
+  }
+
+  // 点击注册成功;
+  function submit_text(phone, code, password, recommendPhone) {
+    $.ajax({
+      type: 'POST',
+      url: '{:url("weichat2site")}',
+      async: true,
+      dataType: 'json',
+      data: {
+        'phone': phone,
+        'code': code,
+        'password': password,
+        'agent_phone': recommendPhone
+      },
+      success: function (res) {
+        if (res.code > 0) {
+          alert('恭喜注册成功');
+          setTimeout(function () {
+            window.location.href = res.url;
+          }, 1000);
+        } else if (res.code == 0) {
+          alert(res.msg);
+          return false;
+        }
+      },
+      error: function (xhr, type) {
+        alert(xhr.status + '注册异常');
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

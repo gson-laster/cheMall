@@ -1,0 +1,127 @@
+body{
+    background: #F3F3F3;
+}
+a{
+    display: inline-block;
+    color: #000000 !important;
+    text-decoration: none;
+}
+.DeliveryAdress.box {
+    background-color: #f3f3f3;
+}
+
+.wrapper {
+    background-color: #fff;
+    margin-bottom: 10px;
+    color: #0E0E0E;
+    position: relative;
+}
+
+.wrapper .delivery_top {
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.wrapper .delivery_top .name {
+    display: inline-block;
+}
+
+.wrapper .delivery_top .phone {
+    display: inline-block;
+    padding-left: 6px;
+}
+
+.wrapper .delivery_top .address {
+    width: 100%;
+}
+
+.wrapper .address_container {
+    width: 100%;
+    margin: 0 auto;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.wrapper .address_container p {
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.phone span{
+    background: #FF9174;
+    color: #fff;
+    padding: 0px 6px;
+    margin-left: 12px;
+}
+.address img{
+    height: 18px;
+    vertical-align: middle;
+}
+/*.wrapper:after{
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-top: 1px solid #939393;
+  border-right: 1px solid #939393;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: rotate(45deg) translateY(-50%);
+}*/
+.content{
+    padding: 20px;
+    margin-top: 10%;
+}
+.inputBox{
+    height: 60px;
+    margin-top: 15px;
+}
+.inputBox input{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    line-height: 100px;
+    border: 1px solid #DBDBDB;
+    padding-left: 20px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+input::-webkit-input-placeholder{
+    color: #BABABA;
+}
+.dangqianjuan{
+    color: #999999;
+    padding-top: 15px;
+}
+.queding{
+    margin-top: 35px;
+    background: #44D0B5;
+    color: #FEF8EC;
+    line-height: 36px;
+    border-radius: 4px;
+    text-align: center;
+}
+.addressbox{
+    background: #44D0B4;
+    color: #FFFFFF;
+    position: relative;
+    line-height: 62px;
+    padding-left: 20px;
+}
+.chongzhijilu{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid #fff;
+    border-radius: 4px;
+    line-height: 22px;
+    padding: 0 4px;
+    color: #fff;
+}
+.beizhu{
+    color: #999999;
+    padding-top: 35px;
+    text-align: center;
+}

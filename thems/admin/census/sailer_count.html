@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link href="__ADMIN_STATIC__/assets/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="__ADMIN_STATIC__/css/style.css" />
+  <link rel="stylesheet" href="__ADMIN_STATIC__/assets/css/font-awesome.min.css" />
+  <link href="__ADMIN_STATIC__/assets/css/codemirror.css" rel="stylesheet">
+  <link rel="stylesheet" href="__ADMIN_STATIC__/font/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="__ADMIN_STATIC__/css/census.css">
+  <script src="__ADMIN_STATIC__/assets/js/ace-extra.min.js"></script>
+  <script src="__ADMIN_STATIC__/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+  <!--<script src="__ADMIN_STATIC__/js/echarts.min.js"></script>-->
+  <script src="__ADMIN_STATIC__/assets/js/bootstrap.min.js"></script>
+  <style>
+    .show-container {
+      width:626px;
+      border: 1px solid #666;
+      box-sizing: border-box;
+    }
+
+    .show-container li {
+      width: 208px;
+      height: 120px;
+      text-align: center;
+      line-height: 120px;
+      display: block;
+      float: left;
+    }
+
+    .show-container li>div {
+      height: 30px;
+    }
+
+    .show-container li span {
+      color: #ff0000;
+      font-size: 16px;
+    }
+
+
+    .bg-white {
+      background-color: #fff;
+    }
+
+    .bg-gray {
+      background-color: #f3f3f3;
+    }
+  </style>
+  <title>分成统计</title>
+</head>
+<body>
+  <div class=" page-content clearfix">
+    <div class="transaction_style">
+      <ul class="state-overview clearfix">
+        <a href="{:url('Census/sailer_count')}">
+          <li class="Info green" style="color:#fff;">
+            销售统计
+            <span class="icon"></span>
+          </li>
+        </a>
+        <a href="{:url('Census/devide_detail')}">
+          <li class="Info blue" style="color:#fff;">
+            分成明细
+            <span class="icon"></span>
+          </li>
+        </a>
+        <!--<li class="Info yellow" style="color:#fff;">
+          服务质量
+          <span class="icon"></span>
+        </li>-->
+       <a href="{:url('Census/goodsanalyse')}">
+         <li class="Info red" style="color:#fff;">
+          商品分析
+          <span class="icon"></span>
+        </li>
+        </a>  
+      </ul>
+    </div>
+    <div class="select-time-container">
+      <form class="" action="{:url('Census/sailer_count')}" method="">
+        <div class="search_style">
+          <ul class="search_content clearfix">
+            <li><label class="l_f">开始时间</label><input value=""  class="inline laydate-icon" id="start" name="start" style=" margin-left:10px;cursor:pointer"></li>
+            <li><label class="l_f">结束时间</label><input class="inline laydate-icon" id="end" name="end" style=" margin-left:10px;cursor:pointer"></li>
+            <li style="width:90px;"><button id="submit" type="submit" class="btn_search"><i class="fa fa-search"></i>查询</button></li>
+          </ul>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="show-container clearfix">
+    <div class="show-item">
+      <ul>
+        <li class="bg-gray">
+          <div>
+            收入(元)
+          </div> <span>{$total_money}</span></li>
+        <!--<li class="bg-white">
+          <div>
+            访客数
+          </div> <span>暂无</span></li>-->
+        <li class="bg-white">
+          <div>
+            支付买家数
+          </div>
+          <span>{$buy_user_count}</span>
+        </li>
+        <!--<li class="bg-white">
+          <div>
+            浏览量
+          </div> <span>暂无</span></li>-->
+        <li class="bg-gray">
+          <div>
+            订单数
+          </div> <span>{$total_order}</span>
+        </li>
+        <!--<li class="bg-gray">
+          <div>
+            支付转化率
+          </div> <span>暂无</span></li>-->
+        <li class="bg-white">
+          <div>
+            支出
+          </div> <span>{$out_count}</span>
+        </li>
+        <li class="bg-gray">
+          <div>
+            结余
+          </div> <span>{$company_account}</span></li>
+      </ul>
+    </div>
+  </div>
+  <!--<div class="t_Record">
+    <div id="main" style="height:400px; overflow:hidden; width:840px; overflow:auto"></div>
+  </div>-->
+  <script>
+   
+  </script>
+  <script>
+    $(".t_Record").width($(window).width() - 60);
+    //当文档窗口发生改变时 触发
+    $(window).resize(function () {
+      $(".t_Record").width($(window).width() - 60);
+    });
+
+    // var myChart = echarts.init(document.getElementById('main'));
+
+
+    // 组装成12个月份的数据
+    function concat12Month(o) {
+      // 获取当前月;
+      var date = new Date();
+      var monthIndex = date.getMonth();
+      var arrLast = [];
+      for (var i = 0; i < 11; i++) {
+        arrLast[i] = 0;
+      }
+      arrLast[monthIndex] = o;
+      return arrLast;
+    }
+
+    // 总收入;
+    var total_money = concat12Month({$total_money});
+    // 支付买家数：
+    var buy_user_count = concat12Month({$buy_user_count});
+    // 订单数：
+    var total_order = concat12Month({$total_order});
+    option = {
+      title: {
+        show: false, //标题
+        text: '月购买订单交易记录',
+        subtext: '实时获取用户订单购买记录'
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        data: ['收入', '支付买家数', '订单数']
+      },
+      toolbox: { //工具箱配置;
+        show: true,
+        feature: {
+          mark: {
+            show: true
+          },
+          dataView: {
+            show: true,
+            readOnly: false
+          },
+          magicType: {
+            show: true,
+            type: ['line', 'bar']
+          },
+          restore: {
+            show: true
+          },
+          saveAsImage: {
+            show: true
+          }
+        }
+      },
+      // calculable: true,
+      xAxis: [{
+        type: 'category',
+        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+      }],
+      yAxis: [{
+        type: 'value'
+      }],
+      series: [{
+          name: '收入',
+          type: 'bar',
+          data: total_money,
+          markPoint: {
+            data: [{
+                type: 'max',
+                name: '最大值'
+              },
+              {
+                type: 'min',
+                name: '最小值'
+              }
+            ]
+          }
+        },
+        {
+          name: '支付买家数',
+          type: 'bar',
+          data: buy_user_count,
+          markPoint: {
+            data: [{
+                name: '年最高',
+                type: 'max'
+                //                                  value: orderNum_arr_clone[orderNum_arr_clone.length-1],
+                //                                  xAxis: 7,
+                //                                  yAxis: 1182,
+                //                                  symbolSize: 18
+              },
+              {
+                name: '年最低',
+                type: 'min'
+                //                                  value: orderNum_arr_clone[0], 
+                //                                  xAxis: 11,
+                //                                  yAxis: 3
+              }
+            ]
+          },
+
+
+        }, {
+          name: '订单数',
+          type: 'bar',
+          data: total_order,
+          markPoint: {
+            data: [{
+                name: '年最高',
+                type: 'max'
+                //                                  value: refen_arr_clone[refen_arr_clone.length-1],
+                //                                  xAxis: 7,
+                //                                  yAxis: 172,
+                //                                  symbolSize: 18
+              },
+              {
+                name: '年最低',
+                type: 'min'
+                //                                  value: refen_arr_clone[0],
+                //                                  xAxis: 11,
+                //                                  yAxis: 3
+              }
+            ]
+          },
+        }
+      ]
+    };
+    // myChart.setOption(option);
+
+    //时间选择
+    laydate({
+      elem: '#start',
+      event: 'focus'
+    });
+    laydate({
+      elem: '#end',
+      event: 'focus'
+    });
+  </script>
+</body>
+
+</html>

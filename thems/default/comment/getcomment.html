@@ -1,0 +1,219 @@
+{extend name='/public/base' /}
+{block name='title' }全民商城-评价{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/comment.css"/>
+<style>
+.one ul{
+  display: flex;
+  justify-content: space-around;
+}
+.assess .one li{
+  width: 50%;
+}
+.one{
+  position: relative;
+}
+.goBack{
+  position: absolute;
+  background: transparent;
+  width: 10px;
+  height: 10px;
+  left: 15px;
+  top: 50%;
+  border-bottom: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+  transform: rotate(45deg) translateY(-50%);
+}
+</style>
+{/block}
+{block name='content'}
+<body bgcolor="#F3F3F3">   
+<div class="assess box">
+    <section>
+        <div class="one" style="padding:0px 10px;">
+          <span onclick="javascript: window.history.go(-1)" class="goBack"></span>
+            <ul>
+                <!--全部评价-->
+                {if condition='($commentall eq "0")'}
+                <li><a href="javascript:void(0)">全部评价({$commentall})</a></li>
+                {else /}
+                <li class="{if condition='($evaluate eq "") AND ($is_img eq "")'}red{/if}"><a href="{:url('home/comment/getcomment',['goods_id'=>$comment[0]['goods_id']])}">全部评价({$commentall})</a></li>
+                {/if}
+                <!--有图评价-->
+                {if condition='($commentimg1 eq "0")' }
+                <li><a href="javascript:void(0)">有图评价<span>({$commentimg1})</span></a></li>
+                {else /}
+                <li data-role="is_img" data-action="1" class="{if condition='($is_img eq 1) AND ($evaluate eq "")'}red{/if}"><a href="{:url('home/comment/getcomment',['goods_id'=>$comment[0]['goods_id'],'is_img'=>1])}">有图评价<span>({$commentimg1})</span></a></li>
+                {/if}
+            </ul>
+            <div class="clear">
+            </div>
+        </div>
+    </section>
+    <div class="scrollload-container" style="padding-bottom: 0.6rem;display: block">
+        <section class="scrollload-content">
+            {foreach $comment as $com}
+            <div class="warry">
+                <div class="user_box">
+                    <div class="user_img">
+                        {if condition="isset($com['headimgurl']) AND !is_null($com['headimgurl'])"}
+                        <img src="{$com['headimgurl']}" alt="">
+                        {elseif condition ="isset($com['userimg']) AND !is_null($com['userimg'])"}
+                        <img src="{$com['userimg']}" alt="">
+                        {else/}
+                        <img src="__HOME_STATIC__/img/avatar.png" alt="">
+                        {/if}
+                    </div>
+                    <div class="user_name">
+                     {if condition="isset($com['nickname'])"}
+                     {:urldecode($com['nickname'])}
+                     {elseif condition="isset($com['username'])"}
+                     {:urldecode($com['username'])} 
+                     {else}
+                     ***
+                     {/if} 
+                    </div>
+                    <div class="assess_time">{$com["add_time"]|date="Y-m-d",###}</div>
+                </div>
+                <div class="content">
+                    <div class="stars">
+                        {php}
+                        for($i=0;$i<$com['goods_rank'];$i++){
+                            echo '<img src="__HOME_STATIC__/img/assess_07.png">';
+                        }
+                        {/php}
+                        {php}
+                        for($j=0;$j<(5-$com['goods_rank']);$j++){
+                            echo '<img src="__HOME_STATIC__/img/assess_09.png">';
+                        }
+                        {/php}
+                    </div>
+                    <div class="context">{$com['content']}</div>
+                    <div class="status">{$com['spec_key_name']}</div>
+                    <div class="assess_img">
+                        {foreach name='com["img"]' item='i'}
+                        <img src="{$i}" alt=""/>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+            {/foreach}
+        </section>
+        {block name='footermenu'}
+            {include file="thems/default/public/Footer/footer.html"}
+        {/block}
+    </div>
+</div>
+</body>
+{/block}
+{block name='footerjs'}
+<script type="text/javascript" src="__HOME_STATIC__/js/zepto.js"></script>
+<script type="text/javascript" src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script type="text/javascript">
+//Date.prototype.Format = function (fmt) { //author: meizz
+//  var o = {
+//    "M+": this.getMonth() + 1, //月份
+//    "d+": this.getDate(), //日
+//    "h+": this.getHours(), //小时
+//    "m+": this.getMinutes(), //分
+//    "s+": this.getSeconds(), //秒
+//    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+//    "S": this.getMilliseconds() //毫秒
+//  };
+//  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+//  for (var k in o)
+//    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+//  return fmt;
+//}
+</script>
+<script type="text/javascript">
+//
+//let arrLis = $('.one li');
+//for (let i=0;i<arrLis.length;i++){
+//  let _e =arrLis[i];
+//  if($(_e).hasClass('red')){
+//    let key=$(_e).data('role'),val=$(_e).data('action');
+//    refreshFn(key,val);
+//  }
+//}
+//function refreshFn(key,val){
+//  let page=1,pageSize=10;
+//  let goods_id=util.getUrlParms("goods_id");
+//  new Scrollload({
+//    container:document.querySelector('.scrollload-container'),
+//    loadMore:function (me) {
+//      let commonUrl='{:url("home/Comment/getcomment")}?goods_id='+goods_id,url;
+//      if(!key&&!val){
+//        url=commonUrl+'&page='+page+'&pageSize='+pageSize;
+//      }else{
+//        url=commonUrl+'&page='+page+'&pageSize='+pageSize+'&'+key+'='+val;
+//      }
+//      page++;
+//      $.ajax({
+//        url:url,
+//        type:'POST',
+//        dataType:'json',
+//        async:false,
+//        success:function (res) {
+//          if(res.code>1001){
+//            let data = htmlFn(res.data.comment.data),comment=res.data.comment;
+//            $(me.contentDom).append(data);
+//            if(comment.current_page>=(parseInt(comment.total/comment.per_page))){
+//              me.lock();
+//              me.noMoreData();
+//            }else{
+//              me.unLock();
+//            }
+//          }
+//          else{
+////              没有更多数据
+//            me.noMoreData();
+//          }
+//        },
+//        error:function (xhr,type) {
+//          me.throwException();
+//        }
+//      })
+//    }
+//  })
+//}
+//function htmlFn(data) {
+//  let html = '';
+//  for (let i = 0; i < data.length; i++) {
+//    let goodStar = '', badStar = '', evaImg = '',username='',userimg='',addtime='';
+//    for (let j = 0; j < data[i]["goods_rank"]; j++) {
+//      goodStar += '<img src="__HOME_STATIC__/img/assess_07.png">';
+//    }
+//    for (let k = 0; k < 5 - data[i]["goods_rank"]; k++) {
+//      badStar += '<img src="__HOME_STATIC__/img/assess_09.png">';
+//    }
+//    if (data[i]["img"].length > 0) {
+//      for (let n = 0; n < data[i]["img"].length; n++) {
+//        evaImg += '<img src="' + data[i]["img"][n] + '" alt=""/>'
+//      }
+//    }
+////      判断是否有头像图片、用户名、格式化日期;
+//     if(data[i]['headimgurl'].length>0){
+//        userimg = data[i]['headimgurl'];
+//     }else if(data[i]['userimg'].length>0){
+//        userimg = data[i]['userimg'];
+//     }else{
+//       userimg="__HOME_STATIC__/img/avatar.png"
+//     }
+//
+//     if(data[i]['nickname'].length>0){
+//        username = data[i]['nickname'];
+//     }else if(data[i]['username'].length>0){
+//        username = data[i]['username'];
+//     }else{
+//       username ="***";
+//     }
+//    
+//    html += '<div class="warry"><div class="user_box"><div class="user_img"><img src="' +userimg + '" alt=""/></div><div class="user_name">' + username + '</div><div class="assess_time">' + new Date(data[i]['add_time']*1000).Format('yyyy-MM-dd') + '</div></div>' +
+//      '<div class="content"><div class="stars">' + goodStar + badStar + '</div><div class="context">' + data[i]["content"] + '</div><div class="status">' + data[i]["spec_key_name"] + '</div><div class="assess_img">' + evaImg + '</div></div></div>'
+//  }
+//  return html;
+//}
+</script>
+{/block}

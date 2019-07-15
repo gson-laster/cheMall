@@ -1,0 +1,335 @@
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+
+
+<body>
+<style>
+    .delete-img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        cursor: pointer;
+    }
+    .add_menber li .add_name{
+        width: 48%;
+    }
+    .logoupload .btnbox a{
+        text-align: center;
+        display: block;
+        width: 100%;
+    }
+    #add_menber_style i{
+    	color: red;
+    }
+    .label_name{
+    	width: 180px !important;
+    }
+	.f0 td{
+    	background: #F9F9F9 !important;
+    	color: black !important;
+    }
+    .f0:hover td{
+    	background: #f0f0f0 !important;
+    }
+    .white td{
+    	background: white !important;
+    	color: black !important;
+    }
+  	.white:hover td{
+    	background: #f0f0f0 !important;
+    }
+</style>
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <!---->
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加系统菜单</a>
+                      <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('deleteMenu')}"><i class="icon-trash"></i>批量删除</a>
+                    </span>
+                <span class="r_f">共：<b></b>条</span>
+            </div>
+            <!---->
+            <div class="table_menu_list">
+   				            <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                      <th width="25">选择</th>
+                        <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                        <th width="100">菜单名</th>
+                        <th width="200">所属组</th>
+                        <th width="200">控制器名</th>
+                        <th width="200">包含的模块/控制器/方法</th>
+                        <th width="150">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+		                {volist name='list' id='u'}
+			                <tr {if condition="$u.level neq 1"}class="white parent_id_{$u.pid}"{else /}class="f0 parent_id_{$u.pid}"{/if} data-id='{$u.id}'  data-level="{$u['level']}" parent_id_path="{$u.parent_path}"  nctype="0" {if condition="$u['level'] gt 1"} style="display:none;"{/if}>
+                        <td class="sign">
+                        {if condition="$u['level'] lt 3"}
+                          <div style="text-align: center; width: 24px;">
+                            <img onClick="treeClicked(this,{$u.id},'{$u.parent_path}')" nc_type="flex" status="close" fieldid="{$u.id}" src="__ADMIN_STATIC__/images/tv-expandable.gif">
+                          </div>
+                        {/if}
+			                    <td><label><input type="checkbox" name="ids[]" value="{$u.id}" class="ace"><span class="lbl"></span></label></td>
+			                    <td style="text-align:left">  {if condition="$u.level neq 1"}|
+                                {php}for($i=1;$i< $u[ 'level'];$i++){echo ' ----';}{/php}
+                            {/if} {$u.name}</td>
+			                    <td align="left">{$u.group}</td>
+			                    <td align="left">{$u.controller_name}</td>
+			                    <td align="left">{$u.url}</td>
+			                    <td class="td-manage">
+			                        <a title="编辑" onclick="member_edit({$u.id})" href="javascript:;" class="btn btn-xs btn-info"><i class="icon-edit bigger-120"></i></a>
+			                        <a title="删除" href="javascript:;" onclick="member_del({$u.id},this)" class="btn btn-xs btn-warning"><i class="icon-trash  bigger-120"></i></a>
+			                    </td>
+			                </tr>
+		                {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+    <ul class=" page-content" style="height:100px">
+          <li class="adderss">
+            <label class="label_name">菜单名：</label><span class="add_name"><input id="name" name="keyword" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss">
+            <label class="label_name">所属组：</label><span class="add_name">
+	            <select id="group" name="text" type="text" class="text_add" style=" width:350px; margin-left: 10px;" required data-title="url" data-role="add">
+                {foreach  name="group" item="gl" key="k"}
+  	            	<option value="{$k}">{$gl[1]}</option>
+                {/foreach}
+	            </select>
+            </span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss">
+            <label class="label_name">所属菜单：</label><span class="add_name">
+	            <select id="pid" name="text" type="text" class="text_add" style=" width:350px; margin-left: 10px;" required data-title="url" data-role="add">
+                <option value="0">一级菜单</option>
+	            	{volist name="list" id="t"}
+	            		<option value="{$t.id}">{if condition="$t.level neq 1"}|
+                        {php}for($i=1;$i
+                            < $t[ 'level'];$i++){echo ' ----';}{/php}
+                    {/if}{$t.name}</option>
+	            	{/volist}
+	            </select>
+            </span>
+            <div class="prompt r_f"></div>
+        </li>
+         <li class="adderss">
+            <label class="label_name">控制器名：</label><span class="add_name"><input id="controller_name" name="text" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+         <li class="adderss">
+            <label class="label_name">包含的模块/控制器/方法：</label><span class="add_name"><input id="url" name="text" type="text" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+    </ul>
+</div>
+<input type="file" name="paymentLogo" id="paymentLogo" onchange="fileSelect(this)" style="display:none"/>
+<script type="text/javascript">
+function treeClicked(obj,cat_id,parent_id_path){
+
+		 var src = $(obj).attr('src');
+		 if(src == '__ADMIN_STATIC__/images/tv-expandable.gif')
+		 {
+			 $(".parent_id_"+cat_id).show();
+			 $(obj).attr('src','__ADMIN_STATIC__/images/tv-collapsable-last.gif');
+		 }else{
+		     $("tr[parent_id_path^='"+parent_id_path+"_']").hide().find('img').attr('src','__ADMIN_STATIC__/images/tv-expandable.gif');
+			 $(obj).attr('src','__ADMIN_STATIC__/images/tv-expandable.gif');
+		 }
+	 }
+
+
+      /*添加菜单-start*/
+
+    $('#member_add').on("click",function () {
+    	/*第一次点击添加菜单的时候清空input*/
+	var input_=$("#add_menber_style").find('input');
+	var option_=$("#group").find('option');
+	var option_1=$("#pid").find('option');
+	input_.each(function(){
+		$(this).val('');
+	});
+		option_.each(function(){
+			$(this).attr("selected",false);
+		});
+		option_1.each(function(){
+			$(this).attr("selected",false);
+		});
+      layer.open({
+        type:1,
+        title:'添加系统菜单',
+        maxmin:true,
+        shadeClose:true,
+        area:['800px',''],
+        content:$('#add_menber_style'),
+        btn:['提交','取消'],
+        yes:function (index,layero) {
+            /*发送ajax请求*/
+ 			  var json_=gain();
+        	if(json_){
+        	 util.ajaxPost('{:url("addEditMenu")}',json_).done(function (res) {
+            if(res.code>0){
+              layer.close(index);
+              layer.msg(res.msg);
+              setTimeout(function () {
+                window.location.href=res.url;
+              },1000);
+            }else{
+              layer.msg(res.msg);
+            }
+          }).fail(function (error) {
+            layer.msg(error.status+"服务器发生错误");
+          })
+        	}
+
+        },
+        cancel:function () {
+
+        },
+        end:function () {
+
+        }
+      })
+
+    })
+      /*添加回复文本-end*/
+
+//})
+  /*文本回复删除-start*/
+  function member_del(id,obj) {
+    layer.confirm('确认要删除吗？', function(index) {
+      adminAjax('Post', '{:url('deleteMenu')}', util.jsonToUrlStr({"id":id}), false, function () {
+        $(obj).parents("tr").remove();
+        layer.msg('已删除!', {
+          icon: 1,
+          time: 1000
+        });
+      })
+    });
+  }
+	function member_edit(id) {
+		var data_;
+    	adminAjax('Post', '{:url('getMenuById')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+          /*返回数据成功*/
+      if(res.code>0){
+        var data =res.data;
+		var input_=$("#add_menber_style").find('input');
+		var option_=$("#group").find('option');
+		var option_1=$("#pid").find('option');
+		input_.each(function(){
+			var id_=$(this).attr("id");
+			$(this).val(data[id_]);
+		});
+		option_.each(function(){
+			if($(this).val()==data.group){
+				$(this).attr("selected","selected");
+			}
+			else{
+				$(this).attr("selected",false);
+			}
+		});
+		option_1.each(function(){
+			if($(this).val()==data.pid){
+				$(this).attr("selected","selected");
+			}
+			else{
+				$(this).attr("selected",false);
+			}
+		});
+        layer.open({
+          type:1,
+          title:'修改系统菜单信息',
+          maxmin:true,
+          shadeClose:true,
+          area:['800px',''],
+          content:$('#add_menber_style'),
+          btn:['提交','取消'],
+          yes:function (index,layero) {
+			data_=gain();
+			data_.id=data.id;
+           if(data_){
+           	  util.ajaxPost('{:url("addEditMenu")}',data_).done(function (res) {
+              if(res.code>0){
+                layer.close(index);
+                layer.msg(res.msg);
+                setTimeout(function () {
+                  window.location.href=res.url;
+                },1000);
+              }else{
+                layer.msg(res.msg);
+              }
+            }).fail(function (error) {
+              layer.msg(error.status+"服务器发生错误");
+            })
+           }
+          }
+        })
+      }
+    })
+  };
+  //批量删除
+  function deletes(){
+  	   layer.confirm('确认要删除吗？', function(index) {
+	  	   	layer.close(index);
+			var input_check=$("input[type=checkbox]");
+	  		input_check.each(function(){
+	  		if ($(this).prop('checked')) {
+				var id=$(this).parents('tr').attr('data-id');
+				var data_={'id':id};
+				if (id) {
+					       util.ajaxPost('{:url("deleteMenu")}',data_).done(function (res) {
+			              if(res.code>0){
+			                layer.msg(res.msg);
+			                setTimeout(function () {
+			                  window.location.href=res.url;
+			                },1000);
+			              }else{
+			                layer.msg(res.msg);
+			              }
+			            }).fail(function (error) {
+			              layer.msg(error.status+"服务器发生错误");
+			            })
+						}
+		  			}
+	  			})
+  		  });
+  };
+  //获取文本值
+  function gain(){
+  	var json_={};
+  		var input_box=$("#add_menber_style").find('input');
+			 	input_box.each(function(){
+			 		var key=$(this).attr('id');
+			 		var vul=$(this).val();
+			 		json_[key]=vul;
+			 	});
+			  var value=$("#group").val();//group
+			  var pid_val=$("#pid").val();//pid
+			  json_.group=value;
+			  json_.pid=pid_val;
+			  return json_;
+ 		 };
+
+</script>
+</body>

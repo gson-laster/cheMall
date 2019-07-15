@@ -1,0 +1,125 @@
+input[type="text"] {
+  padding: 6px 8px;
+  outline: none;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.point-to-remainder {
+  width: 100%;
+}
+
+.point-to-remainder .point-to-remainder-header {
+  height: 110px;
+  background-color: #ec87bf;
+  color: #fff;
+  position: relative;
+}
+
+.point-to-remainder .point-to-remainder-header .point-wrapper {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.point-to-remainder-header .point-wrapper .content {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.point-number {
+  height: 96px;
+  background-color: #fff;
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.point-number .left {
+  width: 90px;
+  box-sizing: border-box;
+  flex: none;
+}
+
+.point-number .right {
+  flex: 1;
+  position: relative;
+}
+
+.point-number .right input[type="text"] {
+  width: 100%;
+}
+
+.point-number .right .percent {
+  color: #4242bf;
+  margin-top: 10px;
+}
+
+.point-to-remainder .btn {
+  margin: 20px;
+  text-align: center;
+  padding: 14px 0px;
+  background-color: #ec87bf;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.point-to-goods .point-to-goods-top {
+  width: 100%;
+  background-color: #fff;
+  height: 36px;
+  line-height: 36px;
+  box-sizing: border-box;
+  padding-left: 16px;
+}
+
+.point-to-goods .item {
+  margin-top: 22px;
+  margin-left: 18px;
+  margin-right: 18px;
+  color: #999999;
+  position: relative;
+}
+.point-to-goods .item .dollars{
+  position: absolute;
+  top: 54%;
+  left:12px;
+  color: #000;
+  font-size: 20px;
+}
+
+
+
+.point-to-goods input[type="text"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 24px 8px;
+  border: 1px solid #eee;
+  border-radius: 0px;
+  margin-top: 12px;
+}
+.point-to-goods .item .remainder{
+  padding-left:40px;
+}
+
+.point-to-goods .hint {
+  color: #999;
+  margin-left: 18px;
+  margin-top: 12px;
+}
+
+.point-to-goods .btn {
+  margin: 20px;
+  text-align: center;
+  padding: 14px 0px;
+  background-color: #ec87bf;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 16px;
+}

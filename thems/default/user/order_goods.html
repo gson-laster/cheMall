@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>会员充值</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/userRecharge.css"/>
+        <link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/paypassword.css"/>
+    <script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="box">
+      {php}
+        $canUseNumber = 1;
+      {/php}
+      <section>
+        <div class="title">
+          注意事项:已经订货不能撤销
+        </div>
+        <div style="margin-top: 30px;" class="content">
+          <span class="minititle">订货量</span>
+          <div class="input">
+            <input onchange="change(this, 'order_amount')" type="text" placeholder="请输入订货金额" name="" id="" value="" />
+          </div>
+          <div class="dangqian">
+          <p style="padding-bottom: 4px;">
+                                最低500元起订
+          </p>
+            当前可充值额度{:session('userInfo')['user_vb']}元
+          </div>
+        </div>
+      </section>
+      <section>
+        {if condition="$canUseNumber != 0"}
+        <div style="background: #118EEA;" onclick="sub()" class="btn">
+          确定订货
+        </div>
+        {/if}
+      </section>
+       <div class="passwordcontent" style="display: none;">
+      <div class="password_box">
+        <div class="payexplain">
+          <span onclick="cancelpassword()">x</span>
+          请输入6位支付密码
+        </div>
+        <div class="paycode_box">
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix onepayinput" autofocus="autofocus" readonly style="border-left:1px solid #ccc"/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+        </div>
+        <!--唤起数字键盘-->
+        <input type="tel" name="" value="" class="pwd-input" id="pwd-input" unselectable="on">
+        <button onclick="confirmTransfer()">确认</button>
+      </div>
+    </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    var ajaxurl = '{:url("user/check_password")}'
+    var click = 1;
+  </script>
+<script src="__HOME_STATIC__/js/checkpassword.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+         {php}
+        $password = session('userInfo')['pay_password'];
+      {/php}
+        {empty name="password"}
+        layer.open({
+          content: '您还未设置支付密码,前往设置吗？'
+          ,btn: ['确定', '不要']
+          ,yes: function(index){
+            location.href = '{:url('user/checkpaypassword')}?to=1'
+          }
+        });
+        {/empty}
+    var paramer = {
+      user_id: {:input('uid')},
+      order_amount: ''
+    }
+       {if condition="$canUseNumber == 0"}
+        layer.open({
+          content: '当前没有可充值额度,跳转至商家充值吗？'
+          ,btn: ['确定', '不要']
+          ,yes: function(index){
+            location.href = "{:url('index/index')}"
+          }
+        });
+       {/if}
+       var click = 1;
+    function sub(){
+      if (click) {
+      	click = 0;
+      	
+      if (paramer.order_amount == '' || paramer.order_amount < 500) {
+        layer.open({
+          content: '金额不能为空且不能小于500'
+          ,skin: 'msg'
+          ,time: 2 //2秒后自动关闭
+        });
+        click = 1;
+        return
+      }
+passwordshow();      
+      
+
+    
+      }
+    }
+    function callback(){
+            $.ajax({
+        type:"post",
+        url:"{:url('Integral/orderGoodes')}",
+        data: paramer,
+        async:true,
+        success: function(res){
+          console.log(res)
+          if (res.code == 2000) {
+            layer.open({
+              content: '订货成功'
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+            });
+            setTimeout(function(){
+              location.href = '{:url('index')}'
+            }, 1500)
+          } else {
+             layer.open({
+              content: '订货失败'
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+            });
+            click = 1;
+          }
+        }
+      });
+    }
+    function change(o, t){
+      paramer[t] = $(o).val();
+    }
+  </script>
+</html>

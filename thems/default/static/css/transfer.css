@@ -1,0 +1,91 @@
+.content{
+  color: #F65B0D;
+  text-align: center;
+  padding-top: 100px;
+  font-size: 18px;
+}
+.transfer{
+  text-align: center;
+  padding-top: 20px;
+}
+.transfer input{
+  border: 1px solid #E0E0E0;
+  outline: none;
+  line-height: 36px;
+  width: 230px;
+  padding-left: 12px;
+}
+.transfer div{
+  display: inline-block;
+}
+.btn{
+  background: #F65B0D;
+  color: #fff;
+  line-height: 36px;
+  width: 66px;
+  border-radius: 4px;
+}
+.userInfo{
+  min-height: 140px;
+  background: linear-gradient(#FF6606, #FF8F79);
+}
+.img{
+  width: 76px;
+  height: 76px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.userInfo{
+  padding-top: 40px;
+}
+.phoneName{
+  text-align: center;
+  color: #fff;
+  padding-top: 10px;
+}
+.money{
+  position: relative;
+  background: #EFEFEF;
+  line-height: 40px;
+  font-size: 16px;
+  border-bottom: 1px solid #D1D1D1;
+}
+.title{
+  color: #303030;
+  position: absolute;
+  left: 12px;
+  display: inline-block;
+  width: 60px;
+}
+.money div{
+  margin-left: 80px;
+}
+.money input{
+  width: 100%;
+  font-size: 16px;
+  font-family: "微软雅黑";
+  border: none;
+  outline: none;
+  background: transparent;
+}
+.shuoming{
+  background: #F4F4F4;
+  border-bottom: 1px solid #D1D1D1;
+  padding: 20px 12px;
+  color: #525252;
+}
+.shuoming span{
+  color: #F4864E;
+}
+.confirm{
+  background: #FF6501;
+  color: #fff;
+  text-align: center;
+  line-height: 48px;
+  font-size: 16px;
+  position: fixed;
+  bottom: 0;
+  max-width: 640px;
+  width: 100%;
+}

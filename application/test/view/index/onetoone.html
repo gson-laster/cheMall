@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <textarea name="name" rows="8" cols="80" id="text"></textarea>
+  <input type="button" value="发送" id="btn">
+  <div id="content">
+
+  </div>
+  <script type="text/javascript" src="/public/static/js/zepto.js"></script>
+  <script type="text/javascript" src="/thems/default/static/js/layer.js"></script>
+  <script type="text/javascript" src="/public/static/js/util.js"></script>
+  <script type="text/javascript">
+    ws = new WebSocket("ws://127.0.0.1:7272");
+    var isConnect = false;
+    ws.onopen = function (evt) { onOpen(evt) };
+    ws.onclose = function (evt) { onClose(evt) };
+    ws.onmessage = function (evt) { onMessage(evt) };
+    ws.onerror = function (evt) { onError(evt) };
+
+    $("#btn").click(function () {
+      $.post('/home/message/sendMsg', {msg: encodeURIComponent($("#text").val()), consignee_id: util.getUrlParms('toUid')}, function (data) {
+        var html = '',  _temp = [
+            '<div><span>用户'+ {:session('userInfo')['phone']} +'</span>:','<div>'+$("#text").val()+'</div>','</div>'
+          ];
+          $('#content').append(_temp.join(''));
+      }, 'json')
+    })
+
+    function renderMsgList (list) {
+      var html = [];
+
+      for (var i = 0; i < list.length; i++) {
+        var _d = list[i];
+        var _temp = [];
+        _temp = [
+          '<div><span>用户'+ _d['phone'] +'</span>:','<div>'+decodeURIComponent(_d['content'])+'</div>','</div>'
+        ];
+        html.push(_temp.join(''));
+      }
+
+      return html.join('')
+    }
+
+    function onOpen(evt) {
+        console.log("连接服务器成功");
+        $.get('/home/message/dialogList', {consignee_id: util.getUrlParms('toUid')}, function (data) {
+          console.log(data)
+          console.log(data)
+          var html = renderMsgList(data.data.data);
+          console.log(html)
+          $('#content').html(html);
+        }, 'json')
+        // isConnect = true;
+        // var name = $('#name').val();
+        // var photo = $('#photo').val();
+        // var json = {type:'name',name:name,photo:photo};
+        // ws.send(JSON.stringify(json));
+    }
+
+    function onClose(evt) {
+    }
+
+    function onMessage(evt) {
+      console.log(evt)
+      // json数据转换成js对象
+      var data = eval("("+evt.data+")");
+      var type = data.type || '';
+      switch(type){
+          // Events.php中返回的init类型的消息，将client_id发给后台进行uid绑定
+          case 'init':
+              // 利用jquery发起ajax请求，将client_id发给后端进行uid绑定
+              $.post('/home/message/bindUid', {client_id: data.client_id}, function(data){
+                console.log(data)
+              }, 'json');
+              break;
+          // 当mvc框架调用GatewayClient发消息时直接alert出来
+          default :
+          var html = '';
+          var  _temp = [
+              '<div><span>用户'+ data.sender_phone +'</span>:','<div>'+decodeURIComponent(data.content)+'</div>','</div>'
+            ];
+            $('#content').append(_temp.join(''));
+      }
+    }
+    function onError(){}
+  </script>
+</body>
+</html>

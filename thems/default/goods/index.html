@@ -1,0 +1,539 @@
+
+{extend name='/public/base' /}
+{block name="meta"}
+<meta name="keywords" content="{$ginfo.keywords}"/>
+<meta name="description" content="{$ginfo.description}"/>
+{/block}
+{block name='title'}商品详情-{$ginfo.title}{/block}
+{block name='headcss'}
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/swiper-3.4.2.min.css"/>
+<link rel="stylesheet" href="__HOME_STATIC__/css/goods.css"/>
+<style>
+   .swiper-container .swiper-button-prev,.swiper-button-next{
+   	width: 30px;
+   	height: 30px;
+   	background-color: rgba(0,0,0,0.4);
+   	opacity: 0.3;
+   	border-radius: 50%;
+   	background-size: 12px;
+   	background-image:url("/thems/default/static/img/left_arrow.png");
+   }
+   .swiper-button-next{
+   	transform: rotate(180deg);
+   }
+</style>
+{/block}
+{block name='content'}
+<body bgcolor="#F3F3F3">      
+<div class="shade" style="position: fixed;top: 0;left: 0"></div>
+<div class="box GoodsDetails">
+    <section>
+        <div class="one">
+            <!--轮播-->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    {volist name='goods_images' id='gi'}
+                    <div class="swiper-slide"> <img src="{$gi['image_url']}" /></div>
+                    {/volist}
+                </div>
+                <!-- 如果需要分页器 -->
+                <div class="swiper-pagination"></div>
+
+                <!--如果需要导航按钮-->
+                	<div class="swiper-button-prev"></div>
+                	<div class="swiper-button-next"></div>
+            </div>
+
+        </div>
+    </section>
+    <section>
+        <div class="two" style="border-bottom: 1px solid #DBDBDB;">
+            <div class="two_box" style="border: none;">
+                <div class="two_content text_overflow">
+                    {$ginfo.title}
+                    <div class="two_pos" id="collect" data-collect="{eq name='is_collect' value='true'}delete{else/}add{/eq}">
+                        <img src="__HOME_STATIC__/img/sucesstoshopping_01_05.png" />
+                        <p id="collect_text">{eq name="is_collect" value="true"}取消收藏{else/}马上收藏{/eq}</p>
+                    </div>
+                </div>
+                <div class="two_context">
+                    会员价:￥{$ginfo.shop_price}<span style="padding-left: 10px;text-decoration:line-through; color: #cccccc;font-size: 14px;">市场价: ￥{$ginfo.mkt_price}</span>
+                    <div class="two_sales">
+                        销量:{$ginfo.buy_num|default="0"}
+                    </div>
+                </div>
+                <div class="two_context border_1" style="border: none;">
+                    <div class="two_freight">
+                        <!-- 运费:0.00 -->
+                        <div class="two_address">
+                            <!-- 广西&nbsp;南宁 -->
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="two_payclass">
+                    {volist name="payment_list" id="pl"}
+                    <div class="two_inline_block">
+                        <img src="__HOME_STATIC__/img/sucesstoshopping_6_03.png" />{$pl.name}
+                    </div>{/volist}
+                </div>-->
+            </div>
+        </div>
+            <div class="space" style="border: none;">
+            </div>
+    </section>
+    <section>
+        <div class="three">
+            <a href="javascript:;">
+                <div class="three_warry" id="goods_config">
+                    商品参数
+                    <div class="three_img">
+                        <img src="__HOME_STATIC__/img/sucesstoshopping_7_07.png" />
+                    </div>
+                </div>
+            </a>
+
+            <!--商品参数弹层-start-->
+            <div class="shade-container" style="display:none;width: 100%">
+                <div class="GoodsParameter box" id="GoodsParameter" style="min-height: 50%;z-index:300;height: 300px;overflow: auto">
+                    <section>
+                        <div class="content">
+                            商品参数
+                        </div>
+                        <div class="context" style="margin-bottom: 0.1rem;">
+                            <p>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌:<span>{$goods_brand.name}</span></p>
+                            <p>货&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号:<span>{$ginfo.artnum}</span></p>
+                            {volist name="goods_attr" id="attr"}
+                            <p>{$attr.attr_name}:<span>{$attr.attr_value}</span></p>
+                            {/volist}
+                            <p>上架时间:<span>{$ginfo.on_time|date="Y年m月d日",###}</span></p>
+                        </div>
+                    </section>
+                    <section class="space">
+                        <div class="GoodsParameter_footer">
+                            完成
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!--商品参数弹层-end-->
+
+            <a href="javascript:;">
+                <div style="border: none;" class="three_warry" onclick="goods_model()">
+                    请选择型号
+                    <div class="three_img">
+                        <img src="__HOME_STATIC__/img/sucesstoshopping_7_07.png" />
+                    </div>
+                </div>
+            </a>
+
+            <!--选择型号弹层-start-->
+            <div class="select-container" style="width: 100%;display: none;max-width: 640px; margin: 0 auto;">
+                <div class="box ChoicseSize" style="background-color: #fff">
+                    <section>
+                        <div class="one" style=" max-height: 3rem;overflow: scroll;">
+                            <div class="warry">
+                                <div class="content">
+                                    <div class="img_1">
+                                        <img src="{$ginfo.id|goods_thum_images=200,200}" />
+                                    </div>
+                                    <div class="count">
+                                        <p>￥<span id="price">{$ginfo.shop_price}</span></p>
+                                        <p>库存: <span id="store_count">{$ginfo.store_count}</span></p>
+                                    </div>
+                                    <div class="close">
+                                        <img src="__HOME_STATIC__/img/ChoiceSize_03.png" />
+                                    </div>
+                                </div>
+                                {php}
+                                  foreach($goods_spec as $spec){
+                                    $str = '';
+                                    foreach($spec_itm as $item){
+                                      if ($spec['id'] == $item['spec_id']) {
+                                        $str = $str.'<span class="choice" onclick="choice(this)" data-id="'.$item["id"].'">'.$item["item"].'</span>';
+                                      }
+                                    }
+                                    if ($str != '') {
+                                      $str = '<div class="color" data-id="'.$spec["id"].'"><p class="title">'.$spec["name"].'</p><p>'.$str.'</p></div>';
+                                      echo $str;
+                                    }
+                                  }
+                                {/php}
+                                <div class="buycount">
+                                    购买数量
+                                    <div class="item">
+                                        <ul>
+                                            <li onclick="prev(this)">-</li>
+                                            <li id="num"><input onchange="testcount(this)" type="number" value="1" /></li>
+                                            <li onclick="next(this)">+</li>
+                                            <div class="clear">
+                                            </div>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="ChoicseSize_space">
+                        <div class="ChoiceSize_footer">
+                            <ul>
+                                <li style="width: 100%;" onclick="addCar()">加入购物车</li>
+                                <!--<li onclick="toBuy()">立即购买</li>-->
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!--选择型号弹层-end-->
+            <div class="space"></div>
+            <a href="{:url('home/Comment/getcomment')}?goods_id={$ginfo['id']}">
+                <div class="three_warry" style="border: none;">
+                    商品评价({$ginfo.comment_num|default=0})
+                    <div class="three_img">
+                        <img src="__HOME_STATIC__/img/sucesstoshopping_7_07.png" />
+                    </div>
+                </div>
+            </a>
+            <div class="space">
+
+            </div>
+        </div>
+    </section>
+    <section class="none">
+        <div class="four">
+            <div class="alert">
+                <img src="__HOME_STATIC__/img/sucesstoshoppingalert_03.png" />
+                <p>商品成功添加到购物车</p>
+            </div>
+        </div>
+    </section>
+    <a href="javascript:;">
+        <div class="three_warry" style="background: #fff;margin:0;padding-left:12px;margin-bottom: 12px;">
+            商品详情
+        </div>
+    </a>
+    <section>
+        <div class="seven">
+            {$goods_details.details}
+        </div>
+    </section>
+    <section class="five_footer_space">
+        <div class="five_footer">
+            <ul>
+                <li>
+                    <ul class="five_item_1">
+                        
+                        {if condition='(session("userInfo")["parent_agent"] eq "0") OR (session("userInfo")["agent_type"] eq "1")'}
+                        <a href="{:url('home/message/dialogList')}?consignee_id=-2">
+                        <li><img src="__HOME_STATIC__/img/sucesstoshopping_03.png" alt="">
+                            <p>客服</p>
+                        </li>
+                        </a>
+                        {else/}
+                        <a href="{php}if(session('qt_userId')){echo url('home/message/dialogList').'?consignee_id='.session('userInfo')['parent_agent'];}else{echo url('home/login/index');}{/php}">
+                        <li><img src="__HOME_STATIC__/img/sucesstoshopping_03.png" alt="">
+                        <p>客服</p>
+                        </li>
+                        </a>
+                        {/if}
+                        <!--<a href='{:url('home/Index/service')}'>
+                            <li><img src="__HOME_STATIC__/img/sucesstoshopping_03.png"  alt=""/>
+                                <p>客服</p>
+                            </li>
+                        </a>-->
+                        <li><a href="{:url('home/shopcar/index')}"><i id="shop_num" class="{if condition='$shop_car_num eq "0"'} none{/if}">{$shop_car_num}</i><img src="__HOME_STATIC__/img/sucesstoshopping_07.png"/>
+                            <p>购物车</p></a></li>
+                    </ul>
+                </li>  
+                <li>
+                    <ul class="five_item_2">
+                        <li onclick="goods_model()">加入购物车</li>
+                         <a href='{:url('home/Order/toaddnow')}?goodsid={$ginfo.id}'><li>立即购买</li></a>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+</body>
+    {/block}
+    {block name='footerjs'}
+    <!-- is_on_sale 等于0时，点击没有反应 -->
+    <script type="text/javascript" src="__HOME_STATIC__/js/zepto.js"></script>
+    <script type="text/javascript" src="__HOME_STATIC__/js/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/util.js"></script>
+    <!--<script type="text/javascript" src="__HOME_STATIC__/js/count.js"></script>-->
+    <script type="text/javascript" src="__HOME_STATIC__/js/swiper-3.4.2.jquery.min.js"></script>
+    <script type="text/javascript">
+   
+      var mySwiper = new Swiper ('.swiper-container', {
+        loop: true,
+        // 如果需要分页器
+        pagination: '.swiper-pagination',
+        prevButton:'.swiper-button-prev',
+        nextButton:'.swiper-button-next'
+      })
+    </script>
+    <script type="text/javascript">
+      var count=Number($("#store_count").html());//库存
+      (function($) {
+        //收藏
+        $("#collect").click(function(evt) {
+          var data = $(this).data('collect');
+          $.ajax({
+            url: '{:url("ajaxAddCollect",["gid"=>$ginfo["id"]])}',
+            data: {
+              type: data
+            },
+            timeout: 3000,
+            success: function(res) {
+              if (res.code == 1) {
+                if (data == 'delete') {
+                  $("#collect").data('collect', 'add');
+                  $("#collect_text").text('马上收藏');
+                } else {
+                  $("#collect_text").text('取消收藏');
+                  $("#collect").data('collect', 'delete');
+                }
+              }
+              alert(res.msg)
+            },
+            error: function(err) {
+              alert(err.status + '服务器错误')
+            }
+          })
+        });
+
+
+        $(".color span").click(function(evt) {
+          if (!$(this).hasClass('active')) {
+            $(this).addClass('active')
+            $(this).siblings('span').removeClass('active');
+          }
+        })
+
+        //==================================================================
+          /*点击商品参数-start*/
+        $('#goods_config').click(function() {
+          var $shadeContainer = $('.shade-container');
+          $('.shade').removeClass('fadeOut');
+          $shadeContainer.removeClass('fadeOutDown');
+
+            /*设置html的overflow阻止滑动*/
+          $('html').css('overflow', 'hidden');
+            /*弹层*/
+          $shadeContainer.css('display', 'block');
+          $shadeContainer.addClass('animated slideInUp');
+          $('.five_footer_space').css('display', 'none');
+            /*遮罩*/
+          $('.shade').css('display', 'block');
+          $('.shade').addClass('animated fadeIn');
+        })
+          /*点击完成退出弹层*/
+        $('.GoodsParameter_footer').click(function() {
+          backShade('.shade-container');
+        })
+          /*点击遮罩退出弹层*/
+        $('.shade').click(function() {
+          backShade('.shade-container');
+          backShade('.select-container');
+        });
+          /*点击选择型号*/
+
+
+          /*点击右上角关闭 弹层消失*/
+        $('.close').find('img').click(function() {
+          backShade('.select-container');
+          setTimeout(function() {
+            $('.select-container').css('display', 'none');
+          }, 500)
+        })
+
+        function backShade(ele) {
+          var $shadeContainer = $(ele);
+          $('.five_footer_space').css('display', 'block');
+          $('.shade').removeClass('fadeIn');
+            /*弹层*/
+          $shadeContainer.removeClass('slideInUp');
+          $shadeContainer.addClass('fadeOutDown');
+            /*遮罩*/
+          $('.shade').addClass('animated fadeOut');
+          $('.shade').css('display', 'none');
+
+            /*设置overflow默认值*/
+          $('html').css('overflow', 'auto');
+        }
+
+      })(Zepto);
+      //选择型号加入购物车 start&&修改价格 start
+      {notempty name='$ginfo.spec_config'}
+      var choice_arr = []; //选择的属性id(为value)及title的id(为下标)
+      var key_arr = []; //所有可能性
+      var config_ = '{$ginfo.spec_config}';
+      $(".choice").off(choice);
+      var config = JSON.parse(config_);
+      var profit = {$ginfo.store_profit};
+      console.log(profit);
+      for (var i in config) {
+        key_arr.push(i);
+      }
+      function choice(obj) {
+        var sort_arr = []; //选择的属性id
+        var obj = $(obj);
+        var id = obj.attr("data-id");
+        var qid = obj.parents(".color").attr("data-id");
+        obj.parents(".color").addClass("isClick");
+        choice_arr[qid] = id;
+        sort_arr = each_arr(choice_arr);
+        sort_arr.sort(function(x, y) {
+          return x - y
+        });
+        for (var i of key_arr) {
+          let key = i.split('_');
+          key.sort(function(x, y) {
+            return x - y
+          });
+          if (key.join() == sort_arr.join()) {
+            $("#price").html(config[i].price);
+            $('#store_count').html(config[i].store_count);
+            profit=config[i].store_profit;
+            break
+          } else {
+            $("#price").html("{$ginfo.shop_price}");
+            $('#store_count').html("{$ginfo.store_count}");
+            profit = {$ginfo.store_profit};
+          }
+        }
+      };
+      function each_arr(obj) {
+        var sort_arr = [];
+        for (var i in obj) {
+          if (typeof obj[i] == "string") {
+            sort_arr.push(obj[i]);
+          }
+        }
+        return sort_arr;
+      }
+      {/notempty}
+
+
+      //选择型号end
+      function toBuy(){
+        addCar(function (res) {
+          window.location.href = "{:url('home/order/index')}?shopids="+res.data.id;
+        });
+      }
+      //加入购物车
+      function addCar(succFn) {
+        var bool=false;
+//      var num= Number($("#num input").val());
+        var num=$("#num input").val();
+        if (num<1||num.indexOf('.')>0) {
+          alert("请输入正确的数值");
+          return false;
+        }
+        if (num>count) {
+          alert("超库存啦");
+          return false;
+        }
+        $(".color").each(function() {
+          if (!$(this).hasClass("isClick")) {
+            alert("请选择" + $(this).children(".title").html());
+            bool=true;
+            return false;
+          }
+        });
+        if (bool) {
+          return false;
+        }
+        {notempty name='$ginfo.spec_config'}
+        var sort_arr = each_arr(choice_arr);
+        var str = sort_arr.join('|');
+        {else /}
+        var str="";
+        {/notempty}
+        var price = Number({$ginfo.shop_price});
+        var data = {
+          goods_id: "{$ginfo.id}",
+          artnum: '{$ginfo.artnum}',
+          number: num,
+          goods_price: price,
+          goods_name: '{$ginfo.title}',
+          spec_config: str,
+          selected: 0,
+          profit:profit
+        };
+        //发送
+        isLoginAjax("{:url('home/shopcar/add')}", data, function(res) {
+          if (res.code > 0) {
+              if(res.data.shopnum>0){
+                   $('#shop_num').text(res.data.shopnum); 
+              }        
+            alert("加入购物车成功");
+            succFn&&succFn(res)
+          } else {
+            alert(res.msg)
+          }
+        }, function(err) {
+          alert(err.status + '服务器错误');
+        });
+      }
+      //--------------------------------------
+      $(".color span").click(function(evt) {
+        if (!$(this).hasClass('active')) {
+          $(this).addClass('active')
+          $(this).siblings('span').removeClass('active');
+        }
+      });
+      //选择型号加入购物车 start&&修改价格 end
+      /*点击选择型号*/
+      function goods_model() {
+        var $selectContainer = $('.select-container');
+        $('.shade').removeClass('fadeOut');
+        $selectContainer.removeClass('fadeOutDown');
+
+          /*设置html的overflow阻止滑动*/
+        $('html').css('overflow', 'hidden');
+
+          /*显示弹层*/
+        $selectContainer.css('display', 'block');
+        $selectContainer.addClass('animated slideInUp');
+          /*遮罩*/
+        $('.shade').css('display', 'block');
+        $('.shade').addClass('animated fadeIn');
+      }
+
+      //选择型号加入购物车 start&&修改价格 end
+      //验证库存
+      function testcount(obj){
+        var obj=$(obj);
+        var value=obj.val();
+        if (value>count) {
+          alert("超库存啦");
+          obj.val(num);
+          return false;
+        }
+      }
+
+        //商品的数量的加减
+    function prev(obj){
+            var obj=$(obj).next().children("input");
+            var storeCount=obj.val();
+            if(storeCount>1){
+                storeCount--;
+            }
+            obj.val(storeCount)
+    }
+    function next(obj){
+            var obj=$(obj).prev().children("input");
+            var storeCount=obj.val();
+                if(storeCount<count){
+                    storeCount++;
+                }else{
+                    alert('超库存啦！'); 
+                }
+                obj.val(storeCount)
+    }
+    </script>
+    {/block}
+    {block name="wxShareImg"}
+    <img src="{:goods_thum_images($ginfo['id'], 200, 200)}" id="wxShare-img" style="display:none !important;"/>
+    {/block}

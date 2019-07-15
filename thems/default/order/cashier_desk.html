@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css">
+  <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/common.css">
+  <style>
+    .checkOut {
+      padding: 0px 12px;
+    }
+
+    .checkOut li {
+      display: block;
+      width: 100%;
+      height: 40px;
+      border-bottom: 1px solid #f3f3f3;
+    }
+
+    .checkOut ul>li {
+      display: flex;
+      justify-content: space-between;
+      line-height: 40px;
+    }
+
+    .checkOut li .right {
+      text-align: right;
+      color: #cc2727;
+    }
+
+    .checkOutDesk .submit-btn {
+      width: 90%;
+      height: 34px;
+      background-color: #cc2727;
+      border-radius: 4px;
+      margin: 24px auto 0 auto;
+      text-align: center;
+      color: #fff;
+      border: none;
+      display: block;
+      line-height: 34px;
+      font-size: 16px;
+    }
+    .selected {
+      background: url(__HOME_STATIC__/img/DeliveryAdress_07.png) no-repeat center center;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-size: 24px 16px;
+    }
+  </style>
+  <title>收银台</title>
+</head>
+<body>
+  <div class="box checkOutDesk">
+    <div class="checkOut">
+      <ul>
+        <li>
+          <div class="left">
+            订单金额
+          </div>
+          <div class="right">
+            ￥{$need_pay['total_amount']}
+          </div>
+        </li>
+        <li>
+          <div class="left">
+            订单应付
+          </div>
+          <div class="right">
+            <p style="color:#000;" id="needPay">{$need_pay['total_amount']}</p>
+          </div>
+        </li>
+       
+  
+       <!-- <li id="Remainder" rel="Remainder" data-name="payway">
+          <div class="left">
+            请代理支付订单
+          </div>
+          <div class="right" style="line-height:20px;display: none">
+            <i class="selected"></i>
+          </div>
+        </li>-->
+        <li id="{:cache_data('site_config')['current_payway']}" rel="{:cache_data('site_config')['current_payway']}"  data-name="payway" style="{if condition="cache_data('site_config')['current_payway'] == 'Fuqianla' && input('from') && input('from') == 'orderlist'"}display: none{/if}">
+          <div class="left">
+            微信支付
+          </div>
+          <div class="right weixinpay" style="display: none">
+            <i class="selected"></i>
+          </div>
+        </li>
+        <li id="Remainder" rel="Remainder" data-name="payway">
+          <div class="left">
+            余额支付
+          </div>
+          <div class="right yue" style="line-height:20px;display: none">
+            <i class="selected"></i>
+          </div>
+        </li>
+        <li id="userVb" style="display: none">
+          <div class="left">
+            可用余额
+          </div>
+          <div class="right" id="user_have_vb">
+            {$need_pay['user_vb']}
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="submit-btn">
+      立即支付
+    </div>
+    <div style="color: red;margin-left: 12px; margin-top: 36px;">
+    	温馨提示：在本商城所购买商品，一旦支付成功，取消订单手续比较复杂，请明确购买！
+    </div>
+  </div>
+  <script src="__HOME_STATIC__/js/zepto.js"></script>
+  <script src="__HOME_STATIC__/js/layer.js"></script>
+  <script>
+    window.alert = function (msg) {
+      layer.open({
+        content:msg,  
+        time: 2,
+        shadowClose:false
+      });
+    }
+  </script>
+  <script>
+    $(document).ready(function () {
+      var payCode;
+      var vb = $("#userVb")
+      $('.submit-btn').on('click', function () {
+        // 判断余额是否大于余额应付;
+        //余额;
+        if(!payCode) {
+          alert('请选择支付方式')
+          return
+        }
+        var userVB = Number($('#user_have_vb').text());
+        var needPay = Number($('#needPay').text());
+        if(payCode == 'Remainder' && userVB < needPay){
+          alert('余额不足,请先充值');
+          setTimeout(function(){
+            window.location.href ="{:url('home/user/applyRecharge')}";
+          },500);
+          return;
+        }
+        window.location.href="{:url('home/Order/toPay')}?paycode="+ payCode +"&orderid={$need_pay['order_id']}";
+      });
+      
+      $('[data-name="payway"]').click(function (e) {
+          var paycode = $(this).attr('id')
+
+          $(this).find('.right').show()
+          if(paycode == 'Remainder'){
+            $(".weixinpay").hide()
+            vb.show()
+//          $(this).next().find('.right').show()
+          }else{
+            $(".yue").hide()
+            vb.hide()
+//          $(this).prev().find('.right').hide()
+          }
+          payCode = paycode
+          
+      })
+    });
+  </script>
+</body>
+
+</html>

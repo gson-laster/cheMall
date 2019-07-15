@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css">
+    <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/common.css">
+    <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/myTeam.css">
+    <style>
+    .imgShadow{
+        position: fixed;
+        top: 0;
+        z-index: 8888;
+    }
+    .imgShadow img{
+        width: 100%;
+    }
+    </style>
+    <title>我的团队</title>
+</head>
+<body bgcolor="#F3F3F3">
+    <div class="box myTeam">
+        <!--<div class="myTeam-header">
+            <input type="text" name="myTeam_search" value="" placeholder="" id="myTeam-search">
+            <div class="myTeam-search-icon">
+                <img src="__HOME_STATIC__/img/my_team_search.png" alt=""><span>搜索</span>
+            </div>
+        </div>-->
+        <div style="background: #F3F3F3; text-align: center;line-height: 40px;" class="myTeam-nav">共有<span class="count"></span>名小伙伴 </div>
+        <div class="myTeam-content-list scrollload-container">
+            <ul class="scrollload-content">
+                <!--<li>
+                    <div class="left">
+                        <div class="myTeam-avatar">
+                            <img src="__HOME_STATIC__/img/defalut_userimg.jpg" alt="" />
+                        </div>
+                        <div class="myTeam-detail">
+                            <p>江小鱼(15588881111)</p>
+                            <p>经销商</p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <p>发消息</p>
+                    </div>
+                </li>-->
+            </ul>
+        </div>
+        {block name="footermenu"} {include file="thems/default/public/Footer/footer.html"} {/block}
+    </div>
+    	<div onclick="hideShadow(this)" class="imgShadow none">
+			<img src="" alt="">
+		</div>
+</body>
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script>
+    window.alert = function (content, time) {
+        var _t = time || 2;
+        layer.open({
+            content: content,
+            skin: 'msg',
+            time: _t
+        });
+
+    }
+</script>
+<script>
+    var clickState = 0; //初始化点击状态：
+    var srcollload_content = $(".scrollload-content"), counts = $(".count");
+    var agent_type = 0; //查询代理类型默认值
+    var dengji = ['V0', 'V1', 'V2', 'V3', '服务中心'];
+    $(document).ready(function () {
+
+        // 异步有返回值才能触发点击事件;
+        $navItem = $('.myTeam-nav-item');
+        $contentList = $('.myTeam-content-list');
+        $teamSearch = $('#myTeam-search');
+        $teamSearchIcon = $('.myTeam-search-icon');
+
+        // 页面一初始化，普通会员数据加载;
+        ajaxFn(0, function (res) {
+            var num = res;
+            var navItemLi = $navItem.find('li')[0];
+            $(navItemLi).find('span').removeClass('none');
+            $(navItemLi).find('span').text(num + '人');
+        })
+
+        // 点击顶部tab；
+        $navItem.on('click', function (e) {
+           
+            if (clickState == 1) {
+                return;
+            } else {
+                clickState = 1;
+                // 清除内容和底部动画元素;
+                $('.scrollload-content').empty();
+                $('.scrollload-bottom').remove();
+                var _e = e.target;
+                var index = $(_e).index();
+                agent_type = index;
+                var dataRole = $(_e).data("role");
+                $(_e).addClass('active').siblings('li').removeClass('active');
+                // $(_e).find('span').removeClass('none').parent('li').siblings().find('span').addClass('none');
+                $(_e).siblings().find('span').addClass('none');
+                ajaxFn(dataRole, function (res) {
+                    var count = res;
+                    $(_e).find('span').removeClass('none');
+                    $(_e).find('span').text(count + '人');
+                });
+            }
+        });
+
+        // 点击搜索框：
+        $teamSearchIcon.on('click', function () {
+            $(this).hide();
+            $teamSearch.focus();
+        });
+        $teamSearch.on('blur', function () {
+            $teamSearchIcon.show();
+        });
+    });
+
+    //发送请求;
+    function ajaxFn(type, cb, p, ps) {
+        var page = p || 1;
+        var pageSize = ps || 10;
+        new Scrollload({
+            container: document.querySelector('.scrollload-container'),
+            content: document.querySelector('.scrollload-content'),
+            loadMore: function (me) {
+                ++page;
+                $.ajax({
+                    type: 'POST',
+                    url: '{:url("home/user/MyTeam")}?type=' + type + '&page=' + page + '&pageSize=' +
+                        pageSize,
+                    dataType: 'json',
+                    async: true,
+                    success: function (res) {
+                      
+                        if (res.code === 2000) {
+                            var data = res.data.list;
+                            var count = res.data.count;
+                            counts.text(count)
+                            clickState = 0; //修改点击状态;
+                            // 回调方法 传入count;
+                            cb && cb(count);
+                            var html = htmlFn(data);
+                            $('.scrollload-content').append(html);
+                            if (data.length <= count) {
+                                me.lock();
+                                me.noMoreData();
+                            } else {
+                                me.unLock();
+                            }
+                        } else {
+                            me.noMoreData
+                        }
+                    },
+                    error: function (xhr, type) {
+                        alert(xhr.status + '服务器错误')
+                    }
+                });
+            }
+        })
+    }
+
+    // 拼接字符串
+    function htmlFn(data) {
+        var html = '';
+        var imgAvatarAddress = '';
+        var phoneNumber = '';
+        var agentName = '';
+        var nickName='';
+        for (var i = 0; i < data.length; i++) {
+           
+            if (data[i]['headimgurl']) {
+                imgAvatarAddress = data[i]['headimgurl'];
+            } else if (data[i]['userimg']) {
+                imgAvatarAddress = data[i]['userimg'];
+            }else{
+                imgAvatarAddress='/thems/default/static/img/defalut_userimg.jpg'
+            }
+
+
+            if(data[i]['wx_nickname']){
+                nickName=decodeURI(data[i]['wx_nickname']);
+            }else if(data[i]['nickname']){
+                nickName = data[i]['nickname'];
+            }else{
+                nickName='';
+            }
+
+
+            phoneNumber = data[i]['phone'] ? '(' + data[i]['phone'] + ')' : '';
+            agentName = dengji[data[i]["agent_type"]]
+
+//          switch (data[i]["agent_type"]) {
+//              case 2:
+//                  agentName = "经销商";
+//                  break;
+//              case 1:
+//                  agentName = "代理商";
+//                  break;
+//              case 0:
+//                  agentName = "VIP客户";
+//                  break;
+//          }
+            html += '<li><div class="left"><div class="myTeam-avatar"><img onclick=rotateImg(this) src="' + imgAvatarAddress +
+                '"/></div><div class="myTeam-detail"><p>' +nickName+ '</p><p>' + agentName +
+                '</p></div></div><a href="/home/message/dialogList?consignee_id=' + data[i].id +
+                '"><div class="right"><p>发消息</p></div></a></li>'
+        }
+        return html;
+    }
+
+    //搜索
+    $(document).keydown(function (event) {
+        var agentType = getAgentType();
+        var page = 0;
+        var pageSize = 10;
+        if (event.keyCode == 13) {
+            srcollload_content.empty();
+            $('.scrollload-bottom').remove();
+            var seach = $("#myTeam-search");
+            var val = seach.val();
+            if (val.trim() == "") {
+                layer.open({
+                    content: "请输入搜索关键词",
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+            } else {
+                new Scrollload({
+                    container: document.querySelector('.scrollload-container'),
+                    content: document.querySelector('.scrollload-content'),
+                    loadMore: function (me) {
+                        page++;
+                        $.ajax({
+                            type: "Post",
+                            url: '{:url("MyTeam")}',
+                            data: {
+                                'keyword': val,
+                                'type': agentType,
+                                'page': page,
+                                'pageSize': pageSize
+                            },
+                            async: true,
+                            success: function (res) {
+                                // 清空搜素框：
+                                $teamSearch.val('');
+                                if (res.code == 2000) {
+                                    var data = res.data.list;
+                                    var count = res.data.count;
+                                    counts.text(count)
+                                    console.error(count)
+                                    var html = htmlFn(data);
+                                    srcollload_content.append(html);
+//                                  $navItem.find('li').eq(agent_type).find('span').html(
+//                                      count + "人");
+                                    if (data.length <= count) {
+                                        me.lock();
+                                        me.noMoreData();
+                                    } else {
+                                        me.unLock();
+                                    }
+                                } else {
+                                    me.noMoreData();
+                                }
+                            },
+                            error: function (xhr, type) {
+                                me.throwException();
+                            }
+                        });
+                    }
+                });
+
+            }
+        }
+    })
+
+    // 获取agentType;
+    function getAgentType() {
+        var agentType = '';
+        var myTeamNavItem = $('.myTeam-nav-item').find('li');
+        for (var i = 0; i < myTeamNavItem.length; i++) {
+            if ($(myTeamNavItem[i]).hasClass('active')) {
+                agentType = $(myTeamNavItem[i]).data('role');
+                return agentType;
+            }
+        }
+    }
+
+    // 头像放大;
+    function rotateImg(ele){
+        var src = $(ele).attr('src');
+        var footer = $('.footer');
+        var imgShadowWidth =window.innerWidth;
+        var imgShadowHeight =window.innerHeight;
+        var imgShadow = $('.imgShadow');
+        imgShadow.find('img').attr('src',src);
+        imgShadow.removeClass('none');
+        imgShadow.css('width',imgShadowWidth);
+        imgShadow.css('height',imgShadowHeight);
+        imgShadow.css('background-color','#000');
+        // 隐藏底部导航栏;
+        footer.hide();  
+
+        var shadowImg =imgShadow.find('img');
+        var shadowImgHeight =shadowImg.height();
+        var marImg;
+        marImg = shadowImgHeight>imgShadowHeight?imgShadowHeight:(imgShadowHeight-shadowImgHeight)/2;
+        $('imgShadow').eq(0).css('overflow-y','hidden');
+        shadowImg.css('margin-top',marImg);
+    }
+
+    function hideShadow(ele){
+        $(ele).addClass('none');
+        $('.footer').show();
+        $('imgShadow').eq(0).css('overflow-y','auto');
+    }
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</html>

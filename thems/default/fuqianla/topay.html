@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>微信支付窗口-正在支付</title>
+	<script src="https://lib.fuqian.la/h5jssdk.4.0.js"></script>
+	<script src="__HOME_STATIC__/js/zepto.js"></script>
+</head>
+<body>
+<script>
+	window.onload = function () {
+      FUQIANLA.init({
+          app_id: "{$data['app_id']}",
+          order_no: "{$data['order_no']}",
+          amount:  "{$data['amount']}",
+          channel: "{$data['channel']}",
+          subject: "{$data['subject']}",
+          notify_url: "{$data['notify_url']}",
+          optional: "user_id={$data['user_id']}&order_type={$data['order_type']}",
+          extra: {
+              openid: 'odKIlw0xYWR0mqXZ4VHER611W990',
+              return_url: '{$data["return_url"]}',
+              ecb: function (data) {
+                  // window.location.href="{:url('home/order/detail',['order_id' => $data['order_id']])}"
+	                $.ajax({
+		                url: '/home/fuqianla/error_msg',
+		                data: data,
+		                type: 'post'
+	                })
+              },
+	            cb: function (data) {
+                $.ajax({
+                  url: '/home/fuqianla/error_msg',
+                  data: data,
+                  type: 'post'
+                })
+	            }
+          }
+      })
+	}
+</script>
+</body>
+</html>

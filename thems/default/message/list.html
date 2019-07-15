@@ -1,0 +1,109 @@
+{extend name='/public/base' /}
+{block name='title'}我的消息{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+{/block}
+{block name="content"}
+	<body bgcolor="#F3F3F3">
+	<div class="box message" style="background: #F3F3F3;">
+		<section>
+				<div class="content">
+			{volist name="order_msg" id="order_msg"}
+			<a href="/home/message/specialMsg?type=2">
+					<div class="context sys" style="background-image: url(__HOME_STATIC__/img/message_index_03.png);">
+						{if condition="$order_msg.message_status eq 0"}<i></i>{/if}
+						<div class="text">
+							<p>订单消息
+								<span class="time">
+									{$order_msg.create_time|dateaway}
+								</span>
+							</p>
+							<p class="text_overflow">
+									{$order_msg.content}
+							</p>
+						</div>
+					</div>
+				</a>
+				{/volist}
+				{empty name="order_msg"}
+							<div class="context sys" style="background-image: url(__HOME_STATIC__/img/message_index_03.png);">
+								<div class="text">
+									<p>订单消息</p>
+									<p class="text_overflow">
+										暂无消息
+									</p>
+								</div>
+							</div>
+				{/empty}
+			{volist name="sys_msg" id="sys_msg"}
+			<a href="/home/message/specialMsg?type=3">
+					<div class="context sys" style="background-image: url(__HOME_STATIC__/img/message_index_06.png);">
+						{if condition="$sys_msg.message_status eq 0"}<i></i>{/if}
+						<div class="text">
+							<p>系统通知
+								<span class="time">
+									{$sys_msg.create_time|dateaway}
+								</span>
+							</p>
+							<p class="text_overflow">
+									{$sys_msg.content}
+							</p>
+						</div>
+				</div>
+				</a>
+				{/volist}
+				<!--客服-->
+					<a href="/home/message/dialogList?consignee_id=-2">
+						<div class="content">
+							<div class="context sys" style="background-image: url(__HOME_STATIC__/img/message_index_08.png); border: none;">
+								<div class="text">
+									<p>售后客服
+										<span class="time">
+											
+										</span>
+									</p>
+									<p style="height: 21px;" class="text_overflow">物流服务顾问</p>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+		</section>
+		<section>
+			<div class="content friend">
+				{volist name="list" id='msg'}
+				{if condition="$msg.talkAboutId NEQ -2"}
+					<a href="/home/message/dialogList?consignee_id={$msg.talkAboutId}"><div class="context">
+						<div class="img">
+							<img src='{$msg.userimg|default="__HOME_STATIC__/img/defalut_userimg.jpg"}'/>
+						</div>
+							{if condition="($msg.message_status eq 0) AND ($msg.talkAboutId eq $msg.sender_id)"}<i></i>{/if}
+						<div class="text">
+							<p>{:urlDecode($msg.nickname)}
+								<span class="time">
+									{$msg.send_time|dateaway}
+								</span>
+							</p>
+							<p class="text_overflow">
+								{if condition="$msg.minitype eq 2"/}[图片]{elseif condition="$msg.minitype eq 3"/}[转账]{else /}{$msg.content}{/if}
+							</p>
+						</div>
+					</div>
+					</a>
+					{/if}
+				{/volist}
+			</div>
+		</section>
+		</div>
+		<div class="box">
+		{block name="footermenu"} {include file="thems/default/public/Footer/footer.html"} {/block}
+		</div>
+	</body>
+{/block}
+{block name="footerjs"}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+</script>
+{/block}
+</html>

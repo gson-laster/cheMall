@@ -1,0 +1,299 @@
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+
+
+<body>
+<style>
+    .delete-img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        cursor: pointer;
+    }
+    .add_menber li .add_name{
+        width: 48%;
+    }
+    .logoupload .btnbox a{
+        text-align: center;
+        display: block;
+        width: 100%;
+    }
+	select{
+		width: 350px;
+		margin-left: 10px;
+	}
+</style>
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <!---->
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加管理员</a>
+                      <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('delete')}"><i class="icon-trash"></i>批量删除</a>
+                    </span>
+                <span class="r_f">共：<b></b>条</span>
+            </div>
+            <!---->
+            <div class="table_menu_list">
+                <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                        <th width="80">ID</th>
+                        <th width="100">用户名</th>
+                        <th width="100">角色</th>
+                        <th width="70">状态</th>
+                        <th width="250">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+		                {volist name='list' id='u'}
+			                <tr>
+			                    <td><label><input type="checkbox" name="ids[]" value="{$u.id}" class="ace"><span
+			                            class="lbl"></span></label></td>
+			                    <td>{$u.id}</td>
+			                    <td align="left">{$u.user_name}</td>
+			                    <td align="left">{volist name="role" id="role_"}{if condition="$role_.role_id eq $u.admin_role"}{$role_.role_name}{/if}{/volist}</td>
+			                    <td class="td-status"><span class="label {switch name='$u.status'}{case value='1'}label-success{/case}{default/}label-default{/switch}">{switch name='$u.status'}{case value='1'}正常{/case}{default/}禁用{/switch}</span></td>
+			                    <td class="td-manage">
+			                         <a onClick="{if condition='$u.status eq "0"'  }member_start(this, {$u.id}){else /}member_end(this,{$u.id}){/if}" class="btn btn-xs {if condition='$u.status eq "1"'} btn-success {else /}btn_default{/if} " title="{if condition='$u.status eq "1"' }关闭{else /}开启{/if}"><i class="icon-ok bigger-120"></i></a>
+			                        <a title="编辑" onclick="member_edit({$u.id})" href="javascript:;" class="btn btn-xs btn-info"><i
+			                                class="icon-edit bigger-120"></i></a>
+			                        <a title="删除" href="javascript:;" onclick="member_del(this,{$u.id})" class="btn btn-xs btn-warning"><i
+			                                class="icon-trash  bigger-120"></i></a>
+			                    </td>
+			                </tr>
+		                {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+    <ul class=" page-content" style="height:100px">
+        <li class="adderss">
+            <label class="label_name">账户名：</label><span class="add_name"><input id="admin" name="admin_name" type="text" class="text_add" style=" width:350px" required data-title="title" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss">
+            <label class="label_name">选择角色：</label><span class="add_name">
+            	<select>
+            		{volist name="role" id="role"}
+            			<option value="{$role.role_id}">{$role.role_name}</option>
+            		{/volist}
+            	</select>
+            </span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss">
+            <label class="label_name">密码：</label><span class="add_name"><input id="password" name="password" type="password" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+          <li class="adderss">
+            <label class="label_name">确认密码：</label><span class="add_name"><input name="confirm" type="password" class="text_add" style=" width:350px" required data-title="url" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name"><label>
+        	<input name="status" type="radio" checked="checked" value="1" class="ace" data-role="add"/>
+        	<span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+            <label><input name="status" type="radio" class="ace" value="0" data-role="add"/><span class="lbl">关闭</span></label></span>
+            <div class="prompt r_f"></div>
+        </li>
+    </ul>
+</div>
+<input type="file" name="paymentLogo" id="paymentLogo" onchange="fileSelect(this)" style="display:none"/>
+<script type="text/javascript">
+//$(document).ready(function () {
+      /*添加分类-start*/
+    $('#member_add').on("click",function () {
+    	/*第一次点击添加管理的时候清空input*/
+    $('#password').attr("placeholder","");
+      $(".add_menber input").not("input[type=radio]").each(function (n) {
+        $(this).val('');
+      });
+      layer.open({
+        type:1,
+        title:'添加管理员',
+        maxmin:true,
+        shadeClose:true,
+        area:['800px',''],
+        content:$('#add_menber_style'),
+        btn:['提交','取消'],
+        yes:function (index,layero) {
+            /*发送ajax请求*/
+           var data=ajaxdata();
+        	if(data){
+        	 util.ajaxPost('{:url("update")}',data).done(function (res) {
+            if(res.code>0){
+              layer.close(index);
+              layer.msg(res.msg);
+              setTimeout(function () {
+                window.location.href=res.url;
+              },2000);
+            }else{
+              layer.msg(res.msg);
+            }
+
+          }).fail(function (error) {
+            layer.msg(error.status+"服务器发生错误");
+          })
+        	}
+
+        },
+        cancel:function () {
+
+        },
+        end:function () {
+
+        }
+      })
+
+    })
+      /*添加管理-end*/
+
+//})
+  /*账户删除-start*/
+  function member_del(obj, id) {
+    layer.confirm('确认要删除吗？', function(index) {
+      adminAjax('Get', '{:url('delete')}', util.jsonToUrlStr({"id":id}), false, function () {
+        $(obj).parents("tr").remove();
+        layer.msg('已删除!', {
+          icon: 1,
+          time: 1000
+        });
+      })
+    });
+  }
+  /*账户删除-end*/
+ 
+  /*操作-编辑-start*/
+  function member_edit(id) {
+    $('#password').attr("placeholder","密码为空则不修改密码");
+    var arrInput = $('.page-content').find('input').not("input[type=radio]");
+    var arrRadio =$('.page-content').find('input[type="radio"]');
+    adminAjax('Get', '{:url('getAdminById')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+          /*返回数据成功*/
+      if(res.code==1){
+        var data =res.data;
+
+          /*设置管理用户名,密码*/
+           	$('#admin').val(data.user_name);
+
+          /*设置radio的值*/
+        for (var i=0;i<arrRadio.length;i++){
+          if($(arrRadio[i]).val()==data.status){
+            $(arrRadio[i]).prop('checked','checked');
+          }else{
+            $(arrRadio[i]).prop('checked',false);
+          }
+        }
+        layer.open({
+          type:1,
+          title:'修改管理员信息',
+          maxmin:true,
+          shadeClose:true,
+          area:['800px',''],
+          content:$('#add_menber_style'),
+          btn:['提交','取消'],
+          yes:function (index,layero) {
+            var data_ = ajaxdata();
+            data_.id=id;
+           if(data_){
+           	  util.ajaxPost('{:url("update")}',data_).done(function (res) {
+              if(res.code>0){
+                layer.close(index);
+                layer.msg(res.msg);
+                setTimeout(function () {
+                  window.location.href=res.url;
+                },2000);
+              }else{
+                layer.msg(res.msg);
+              }
+            }).fail(function (error) {
+              layer.msg(error.status+"服务器发生错误");
+            })
+           }
+          }
+        })
+      }
+    })
+  }
+
+  /*操作-编辑-end*/
+
+  /*点击启用-start*/
+  function member_start(obj,id) {
+    layer.confirm('确认要开启吗?',function (index) {
+      adminAjax('Post','{:url('update')}',{"id":id,'status': '1'}, function (res) {
+        layer.msg('已启用',{
+          icon:6,
+          timer:1000
+        })
+        $(obj).parents('tr').find('.td-manage').prepend('<a class="btn btn-xs btn-success" onclick="member_end(this, '+id+')" href="javascript:;" title="关闭"><i class="icon-ok bigger-120"></i></a>');
+        $(obj).parents('tr').find('.td-status').html('<span class="label label-success radius">1</span>');
+        $(obj).remove();
+
+      })
+    })
+  }
+  /*点击启用-end*/
+
+  /*点击停止-start*/
+  function member_end(obj,id) {
+  	console.log(id)
+    layer.confirm('确认关闭吗?',function (index) {
+      adminAjax('Post','{:url('update')}',{"id":id,'status': '0'}, function (res) {
+        layer.msg('已关闭',{
+          icon:5,
+          timer:1000
+        })
+        $(obj).parents('tr').find('.td-manage').prepend('<a class="btn btn-xs btn-default" onclick="member_start(this, '+id+')" href="javascript:;" title="开启"><i class="icon-ok bigger-120"></i></a>');
+        $(obj).parents('tr').find('.td-status').html('<span class="label label-default radius">0</span>');
+        $(obj).remove();
+      })
+    })
+  }
+	function ajaxdata(){
+		var str="";
+		var admin_name=$(".adderss input[name='admin_name']").val();
+		var password=$(".adderss input[name='password']").val();
+		var confirm=$(".adderss input[name='confirm']").val();
+			if(admin_name==""){
+				 layer.msg('请输入账户名', {
+         		 time: 1000
+   			     });
+			return false;
+		}
+		if (password!=confirm) {
+			 	 layer.msg('请输入一致的密码', {
+         		 time: 1000
+   			     });
+			return false;
+		};
+		var role_id=$(".adderss select").val();
+	     var arrRadio = $('.page-content').find('input[type="radio"]');
+	     var radioStr='';
+	     for(var i=0;i<arrRadio.length;i++){
+		     if($(arrRadio[i]).prop('checked')){
+				str={'user_name':admin_name,'password':password,'password_confirm':confirm,'status':$(arrRadio[i]).val(),'admin_role':role_id};
+	    	 }
+    }
+		return str;
+	}
+  /*点击停止-end*/
+</script>
+</body>

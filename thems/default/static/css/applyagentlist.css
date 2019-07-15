@@ -1,0 +1,43 @@
+.title{
+  color: #D6032C;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+.col{
+  color: #949494;
+}
+.colo{
+  color: #FE833E;
+}
+.list{
+  padding: 12px;
+  box-sizing: border-box;
+  position: relative;
+}
+.over{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.listBox{
+  margin: 0 15px;
+}
+.list:nth-child(n) {
+  background: #F3F3F3;
+}
+.list:nth-child(2n) {
+  background: #FCFCFC;
+}
+.delete{
+  position: absolute;
+  right: 0;
+  padding: 12px;
+  top: 0;
+  background: #FF6501;
+  color: #fff;
+}
+.icon-shanchu{
+  margin-right: 4px;
+}

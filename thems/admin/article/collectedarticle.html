@@ -1,0 +1,481 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+        <link href="__ADMIN_STATIC__/assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="__ADMIN_STATIC__/css/style.css"/>
+        <link href="__ADMIN_STATIC__/assets/css/codemirror.css" rel="stylesheet">
+        <link rel="stylesheet" href="__ADMIN_STATIC__/assets/css/ace.min.css" />
+        <link rel="stylesheet" href="__ADMIN_STATIC__/font/css/font-awesome.min.css" />
+        <!--[if lte IE 8]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+		<script src="__ADMIN_STATIC__/js/jquery-1.9.1.min.js"></script>
+        <script src="__ADMIN_STATIC__/assets/js/bootstrap.min.js"></script>
+		<script src="__ADMIN_STATIC__/assets/js/typeahead-bs2.min.js"></script>
+        <script src="__ADMIN_STATIC__/assets/layer/layer.js" type="text/javascript" ></script>
+        <script src="__ADMIN_STATIC__/assets/laydate/laydate.js" type="text/javascript"></script>
+        <script src="__ADMIN_STATIC__/js/H-ui.js" type="text/javascript"></script>
+        <style>
+        .delete-img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 88px;
+        background: rgba(0, 0, 0, 0.4);
+        color: #fff !important;
+        cursor: pointer;
+        }
+
+        #upload img ,#uploadBottomPic img{
+        width: 88px;
+        max-height: 75px;
+        }
+        .bottom-imags-list{
+            display: flex;
+            justify-content:center;
+            flex-wrap: wrap;
+
+        }
+       .bottom-imags-list > .bottom-item{
+           width: 200px;
+           height:100px;
+           overflow: hidden;
+           text-align: center;
+           margin: 10px;
+       }
+        .bottom-imags-list > .bottom-item img{
+            width: 200px;
+            border: 1px solid #ccc;
+        }
+        .selected{
+            border: 2px  solid #d70030;
+            box-shadow: 0 2px 10px rgba(255, 0, 0, 0.5);
+        }
+        
+
+        </style>
+<title>添加文章</title>
+</head>
+
+<body>
+    <form action="{:url('Article/addarticle')}" method="post" class="form form-horizontal" id="form-article-add">
+     <div class="margin clearfix">
+     <div class="article_style">
+
+    <div class="add_content" id="form-article-add">
+     <ul>
+      <li class="clearfix Mandatory">
+      <label class="label_name"></label><span class="formControls col-10">  <input name="id" type="hidden"   value="" 　readOnly="true" id="form-field-1" class="col-xs-10 col-sm-5 " ></span>
+      </li>
+
+
+      <li class="clearfix Mandatory">
+      <label class="label_name"><i>*</i>文章标题</label><span class="formControls col-10"><input name="title" type="text"   value="{$title}" id="form-field-1" class="col-xs-10 col-sm-5 " datatype="*5-100" nullmsg="标题不能空！" errormsg="标题5-200字符"></span>
+      </li>
+      <li class="clearfix Mandatory"><label class="label_name"><i>*</i>文章简介</label>
+      <span class="formControls col-10"><input name="titlecon" type="text" id="form-field-1" class="col-xs-10 col-sm-6 " value="{$title}" datatype="*5-100" nullmsg="副标题不能为空！" errormsg="副标题 5-200字符"></span>
+      </li>
+      <!--点击选择文章底图-->
+       <li class="clearfix Mandatory"><label class="label_name">选文章底图</label>
+      <span class="formControls col-14"><button type="button" class="btn btn-default" id="clickMe">点我</button></span>
+      </li>
+
+
+      <!--文章底部图片添加-->
+       <li class="clearfix"><label class="label_name">文章底图</label><span class="formControls col-10">
+          <div class="logobox"><div class="resizebox" id="uploadBottomPic" onclick="document.getElementById('articleBottomPic').click()" style="position:relative"><img src="__ADMIN_STATIC__/images/image.png"  alt="" ><i class="delete-img delete-img-bottom" data-src="">删除</i></div></div>
+               <div class="logoupload">
+                  <div class="btnbox"><a id="uploadBtnHolder" class="uploadbtn" href="javascript:;" onclick="document.getElementById('articleBottomPic').click()">上传替换</a></div>
+              </div>
+              <input type="hidden" name="bottompic" value="" id="bottompic" data-role='add'/></span>
+        </li>  
+      <li class="clearfix"><label class="label_name">排序</label><span class="formControls col-10"><input type="text" name="zid" value="0" id="form-field-1" class="col-xs-10 col-sm-1"></span></li>
+      <li class="clearfix"><label class="label_name">外链</label><span class="formControls col-10"><input type="text" name="tourl"  value="" id="form-field-1" class="col-xs-10 col-sm-1"></span></li>
+      <li class="clearfix"><label class="label_name">操作人</label><span class="formControls col-10"><input type="text"   name="user"  value="{$Request.session.admin_info.user_name}" id="form-field-1" class="col-xs-10 col-sm-1"></span></li>
+      <li class="clearfix"><label class="label_name"><i>*</i>封面图</label><span class="formControls col-10">
+          <div class="logobox"><div class="resizebox" id="upload" onclick="document.getElementById('paymentLogo').click()" style="position:relative"><img src="__ADMIN_STATIC__/images/image.png"  alt="" ><i class="delete-img" data-src="">删除</i></div></div>
+               <div class="logoupload">
+                  <div class="btnbox"><a id="uploadBtnHolder" class="uploadbtn" href="javascript:;" onclick="document.getElementById('paymentLogo').click()">上传替换</a></div>
+        </div>
+        <input type="hidden" name="picurl" value="" id="picurl" data-role='add'/></span>
+        </li>  
+      <li class="clearfix"><label class="label_name"><i>*</i>所属分类</label>
+       <span class="formControls col-4">
+        <select class="form-control" id="form-field-select-1" name="classid">
+       </select>
+       </span>
+       <script>
+    // 获取文章分类;
+        $.ajax({
+            type:'GET',
+            dataType:'json',
+            url:'{:url("Artclass/artclasslist")}',
+            success:function(res){
+            var content =htmlClass(res.data.artclass);   
+            $('#form-field-select-1').html(content);
+
+            },
+            error:function(xhr,type){
+                layer.alert(xhr.status+'服务器错误');
+            }
+        });
+            // 拼装文章分类;
+            function htmlClass(data){
+                var html ='';
+                for(var i=0;i<data.length;i++){
+                html+='<option value="'+data[i]["id"]+'">'+data[i]["title"]+'</option>'    
+                }
+                return html;
+            }
+            </script>
+      </li>
+      <li class="clearfix"><label class="label_name">显示时间</label>
+        <span class="formControls col-10">
+        <span class="add_date l_f">
+       <label><input name="isok" type="radio" class="ace" value="1" checked><span class="lbl">显示</span></label>&nbsp;
+       <label><input name="isok" type="radio" class="ace"  value="0"><span class="lbl">不显示</span></label></span>
+
+        <b  style=" margin-left:10px; font-weight:normal; color:#F63">注：(该字段为审核字段，若选择否则这条记录不显示！)</b>
+       </span>
+      </li>
+      <li class="clearfix"><label class="label_name">文章内容</label>
+      <span class="formControls col-10">
+      <!--  <script id="editor" type="text/plain" style="width:100%;height:400px; margin-left:10px;"></script> -->
+           <textarea rows="" cols="" name="content"  id="editor" style="height:400px;"  >{$content}</textarea>
+      </span>
+      </li>
+
+     </ul>
+    <div class="Button_operation">
+
+				<button id="submitForm" class="btn btn-primary radius" type="submit"  >保存并提交</button>
+		<!--<button onclick="article_save();" class="btn btn-secondary  btn-warning" type="button">保存草稿</button>-->
+				<button id="restForm"   class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+    </div>
+ </div>
+</div>
+</form>
+ <input type="file" name="paymentLogo" id="paymentLogo" onchange="fileSelect(this)" style="display:none" />
+
+ <!--文章底图-->
+<input type="file" name="articleBottomPic" value="" id="articleBottomPic" onchange="uploadArticlePic(this)" style="display:none">
+
+
+<!--文章底图列表弹层-->
+<div class="add_menber" id="add_menber_style">
+    <div class="bottom-imags-list">
+    </div>
+</div>
+
+
+</body>
+</html>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.all.min.js"> </script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+  <script>
+    //表单验证
+    // $("#form-article-add").Validform({
+    //     btnSubmit:"#submitForm", //#btn_sub是该表单下要绑定点击提交表单事件的按钮;如果form内含有submit按钮该参数可省略;
+    //     btnReset:"#restForm",//可选项 .btn_reset是该表单下要绑定点击重置表单事件的按钮;
+    //     tiptype: 3,
+    //     ignoreHidden:false,//对:hidden的表单元素将不做验证;
+    //     tipSweep:true,//可选项 true | false 默认为false，只在表单提交时触发检测，
+    //     label:".label",//可选项 选择符，在没有绑定nullmsg时查找要显示的提示文字，默认查找".Validform_label"下的文字;
+    //     showAllError:true,//可选项 true | false，true：提交表单时所有错误提示信息都会显示，false：一碰到验证不通过的就停止检测后面的元素，只显示该元素的错误信息;
+    //     postonce:true, //可选项 表单是否只能提交一次，true开启，不填则默认关闭;
+    //     ajaxPost:true, //使用ajax方式提交表单数据，默认false，提交地址就是action指定地址;
+    //     datatype:{
+    //       'f': /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/
+    //     },
+    //     beforeSubmit:function(curform){
+    //         //组装数据
+    //         console.log(curform)
+    //         // return false;
+    //     },
+    //     callback:function(data){
+    //         console.log(data)
+    //         //返回数据data是json格式，{"info":"demo info","status":"y"}
+    //         //info: 输出提示信息;
+    //         //status: 返回提交数据的状态,是否提交成功。如可以用"y"表示提交成功，"n"表示提交失败，在ajax_post.php文件返回数据里自定字符，主要用在callback函数里根据该值执行相应的回调操作;
+    //         //你也可以在ajax_post.php文件返回更多信息在这里获取，进行相应操作；
+    //         //ajax遇到服务端错误时也会执行回调，这时的data是{ status:**, statusText:**, readyState:**, responseText:** }；
+
+    //         //这里执行回调操作;
+    //         //注意：如果不是ajax方式提交表单，传入callback，这时data参数是当前表单对象，回调函数会在表单验证全部通过后执行，然后判断是否提交表单，如果callback里明确return false，则表单不会提交，如果return true或没有return，则会提交表单。
+    //     }
+    // });
+  </script>
+
+
+<script type="text/javascript">
+/**提交操作**/
+function article_save_submit(){
+	     var num=0;
+		 var str="";
+		 var strs="";
+     $(".Mandatory input[type$='text']").each(function(n){
+          if($(this).val()=="")
+          {
+
+			   layer.alert(str+=""+$(this).attr("name")+"不能为空！\r\n",{
+                title: '提示框',
+				icon:0,
+          });
+		    num++;
+            return false;
+          }
+
+
+ });
+
+
+		  if(num>0){
+
+		  return false;
+
+		  }else{
+               layer.alert('添加成功！',{
+               title: '提示框',
+			icon:1,
+			  });
+			   layer.close(index);
+		  }
+	}
+
+$(function(){
+	var ue = UE.getEditor('editor');
+});
+/*radio激发事件*/
+function Enable(){ $('.date_Select').css('display','block');}
+function closes(){$('.date_Select').css('display','none')}
+/**日期选择**/
+var start = {
+    elem: '#start',
+    format: 'YYYY/MM/DD',
+    min: laydate.now(), //设定最小日期为当前日期
+    max: '2099-06-16', //最大日期
+    istime: true,
+    istoday: false,
+    choose: function(datas){
+         end.min = datas; //开始日选好后，重置结束日的最小日期
+         end.start = datas //将结束日的初始值设定为开始日
+    }
+};
+var end = {
+    elem: '#end',
+    format: 'YYYY/MM/DD',
+    min: laydate.now(),
+    max: '2099-06-16 ',
+    istime: true,
+    istoday: false,
+    choose: function(datas){
+        start.max = datas; //结束日选好后                                                                                                             ，重置开始日的最大日期
+    }
+};
+// laydate(start);
+// laydate(end);
+
+ // 照片异步上传;
+  function fileSelect(o){
+     $.ajaxFileUpload({
+      url:'{:url('api/UploadFiles/uploadAjax',array('file'=>'paymentLogo','to_dir'=>'article'))}',
+      type: 'post',
+      secureuri :false,
+      fileElementId :'paymentLogo',
+      dataType : 'json',
+      success : function (res){
+      if(res.code == 1){
+        layer.msg('上传成功')
+        console.log(res);
+        $('#upload').find('img').eq(0).attr('src',res.path);
+        $('.delete-img').attr('data-src',res.path);
+        $('#picurl').val(res.path); 
+      }else{
+        layer.msg('上传失败')
+      }
+    },
+    error: function(data, status, e){   //提交失败自动执行的处理函数
+      // alert('error',e);
+//    console.log(data)
+//    console.log(status)
+//    console.log(e)
+    }
+  })
+  }
+  //   点击删除图片;
+      $('#upload').find('.delete-img').eq(0).on('click',function(e){
+            if($(this).data('src').length>0){
+                util.ajaxPost('{:url("api/UploadFiles/delImg")}',{path:$(this).attr('data-src')}).done(function(res){
+                    if(res.code==1){
+                        layer.msg(res.msg);
+                         $('#upload').find('img').attr('src','__ADMIN_STATIC__/images/image.png');
+                         $('.delete-img').data('src','');
+                        $('#picurl').val('');
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }).fail();
+            }
+         e.stopPropagation();
+      });  
+
+
+
+    //   文章底图上传：
+    function uploadArticlePic(o){
+      $.ajaxFileUpload({
+      url:'{:url('api/UploadFiles/uploadAjax',array('file'=>'articleBottomPic','to_dir'=>'articleBottom'))}',
+      type: 'post',
+      secureuri :false,
+      fileElementId :'articleBottomPic',
+      dataType : 'json',
+      success : function (res){
+      if(res.code == 1){
+        layer.msg('上传成功')
+        console.log(res);
+        $('#uploadBottomPic').find('img').eq(0).attr('src',res.path);
+        $('.delete-img-bottom').attr('data-src',res.path);
+        $('#bottompic').val(res.path); 
+      }else{
+        layer.msg('上传失败')
+      }
+    },
+    error: function(data, status, e){   //提交失败自动执行的处理函数
+      // alert('error',e);
+//    console.log(data)
+//    console.log(status)
+//    console.log(e)
+    }
+  })
+}
+
+// 删除文章底图;
+   $('#uploadBottomPic').find('.delete-img-bottom').eq(0).on('click',function(e){
+            if($(this).data('src').length>0){
+                util.ajaxPost('{:url("api/UploadFiles/delImg")}',{path:$(this).attr('data-src')}).done(function(res){
+                    if(res.code==1){
+                        layer.msg(res.msg);
+                         $('#uploadBottomPic').find('img').attr('src','__ADMIN_STATIC__/images/image.png');
+                         $('.delete-img-bottom').data('src','');
+                        $('#bottompic').val('');
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }).fail();
+            }
+         e.stopPropagation();
+      });  
+
+
+   
+
+
+// 点我事件触发;
+$('#clickMe').on('click',function(){
+    // 发送ajax请求;
+    ajaxPic(function(res){
+          console.log(res);  
+         // 拼装html;
+        var html=htmlFn(res.data.bannerinfo.data);
+        var $bottomImagesList =$('.bottom-imags-list');
+        var $bottomImageItem =$bottomImagesList.find('img');
+        var selectedImgUrl='';
+        $bottomImagesList.on('click','.bottom-item',function(){
+           $(this).addClass('selected').siblings().removeClass('selected');
+           selectedImgUrl = $(this).find('img').eq(0).attr('src');
+           
+        });
+        $bottomImagesList.html(html);
+        layer.open({
+            type:1,
+            title:'选择底图',
+            content:$('#add_menber_style'),
+            shadeClose:true,
+            area:['700px',''],
+            btn:['确定','取消'],
+            maxmin:true,
+            yes:function(index,layero){
+                if(selectedImgUrl.length>0){
+                    $('#uploadBottomPic').find('img').eq(0).attr('src',selectedImgUrl);
+                    $('.delete-img-bottom').attr('data-src',selectedImgUrl);
+                    $('#bottompic').val(selectedImgUrl);
+                }   
+                layer.close(index);
+            }
+        });
+    });
+    
+});
+
+// 发送请求获取文章底图列表;
+function ajaxPic(cb){
+    $.ajax({
+        type:'GET',
+        dataType:'json',
+        url:'{:url("Article/articlebannerlist")}?bannertype=1',
+        success:function(res){
+            cb&&cb(res);
+        },
+        error:function(xhr,type){
+            layer.alert(xhr.status+'服务器错误');
+        }
+    });
+}
+
+// 是否是编辑页面页面，若不是则自动使用第一张底图;
+if(window.location.href.indexOf('id=')==-1){
+    ajaxPic(function(res){
+      if(res.code=1002){
+     var imgUrl =   res.data.bannerinfo.data[0].pic;  
+     $('#uploadBottomPic').find('img').eq(0).attr('src',imgUrl);
+     $('.delete-img-bottom').attr('data-src',imgUrl);
+     $('#bottompic').val(imgUrl);
+     console.log(imgUrl);
+      }      
+});
+}
+
+// 拼装html:
+function htmlFn(data){
+    var html ='';
+    for(var i=0;i<data.length;i++){
+        html+='<div class="bottom-item">'+
+           '<img src="'+data[i]['pic']+'" alt="">'+
+        '</div>'  
+    }
+    return html;
+}
+
+var content ='<?php preg_match("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$content,$match); echo $match[0]?>';
+var srcReg =  /\ssrc=[\'\"]?([^\'\"]*)[\'\"]?/i;
+var arr = content.match(srcReg);
+var imgSrc =arr[1];
+var imgUrl ='';
+if(imgSrc.indexOf('url=')){
+    imgUrl =imgSrc.split('url=')[1];
+    if(imgUrl.length>0){
+          $('#upload').find('img').attr('src',imgUrl);
+    }
+  
+}
+</script>

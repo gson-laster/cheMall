@@ -1,0 +1,257 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+ul {
+	list-style-type: none;
+}
+body {
+	background: #f3f3f3;
+}
+.clear {
+	clear: both;
+}
+.box{
+	min-height: 100%;
+	max-width: 640px;
+	width: 100%;
+	margin: 0 auto;
+	font-size:14px;
+	height: 100%;
+}
+.brokerage_header {
+	position: relative;
+	width: 100%;
+	height: 135px;
+	background: url(../img/brokerage_backg.jpg) no-repeat center;
+}
+.brokerage_header span {
+	font-size: 14px;
+	color: #fff;
+}
+.brokerage_time {
+	position: absolute;
+	top: 15px;
+	right: 12px;
+}
+.brokerage_header p {
+	font-size: 26px;
+	font-weight: bold;
+	color: #fff;
+}
+.accumulate {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	text-align: center;
+	line-height: 30px;
+	transform: translate(-50%,-50%);
+}
+.brokerage_content li {
+	width: 50%;
+	float: left;
+	box-sizing: border-box;
+	border-top: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
+	text-align: center;
+	padding: 40px 0;
+	line-height: 25px;
+	font-size: 16px;
+	color: #333333;
+	background: #fff;
+}
+.brokerage_content li p {
+	font-weight: 600;
+	font-size: 18px;
+}
+.brokerage_content li:nth-of-type(1) {
+	border-top: none;
+	border-left: none;
+}
+.brokerage_content li:nth-of-type(2) {
+	border-top: none;
+}
+.brokerage_content li:nth-of-type(3) {
+	border-left: none;
+}
+.h_red {
+	color: #e85565;
+}
+.h_bule {
+	color: #00a0e9;
+}
+.h_yellow {
+	color: #ffaa00;
+}
+.h_green {
+	color: #32b16c;
+}
+.brokerage_detail {
+	background: #fff;
+	margin-top: 10px;
+	padding: 12px 0;
+	position: relative;
+}
+.brokerage_detail span {
+	font-size: 14px;
+	color: #333333;
+	margin-left: 12px;
+}
+.h_backg {
+	position: fixed;
+	top: 0;	
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 8;
+	max-width: 640px;
+	display: none;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+}
+.h_box1 { 
+    width: 65%;			   	 
+	-webkit-animation: my .35s;	 
+	animation: my .35s;	
+	background: #fff;
+	border-radius: 3px;
+	padding: 26px 15px;	
+	text-align: center;	
+	margin-bottom: 160px;	
+}
+@-webkit-keyframes my {
+	0%{
+		-webkit-transform: scale(0,0);
+		transform: scale(0,0);
+	}
+	100%{
+		-webkit-transform: scale(1,1);
+		transform: scale(1,1);
+	}
+}
+.hyear1 li {
+	width: 50%;
+	box-sizing: border-box;
+	float: left;	
+}
+.hyear1 select {
+	width: 100%;
+	height: 100%;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	border: none;
+	opacity: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	outline: none;
+}
+.h_select {
+	height: 35px;
+	border: 1px solid #cccccc;
+    margin: 16px 6px;
+    position: relative;
+    text-align: center;
+}
+.cance {
+	display: block;
+	height: 35px;
+	margin: 10px 6px;
+	border: 1px solid #cccccc;
+	line-height: 35px;
+	color: #cccccc;
+	margin-top: 26px;
+}
+.confirm {
+	display: block;
+	height: 35px;
+	margin: 10px 6px;
+	border: 1px solid #e85565;
+	line-height: 35px;
+	background: #e85565;
+	color: #fff;
+	margin-top: 26px;
+}
+.h_select span {
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	line-height: 35px;
+	z-index: 1;
+}
+.h_select img {
+	position: absolute;
+	right: 6px;
+    top: 10px;
+    z-index: 2;
+}
+.brokerage_detail img {
+	position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 8px;
+}
+/*明细*/
+.brokerage_years {
+	position: relative;
+	padding: 6px 12px;
+	color: #888888;
+	font-size: 14px;
+}
+.brokerage_month {
+	color: #aaaaaa;
+	margin-right: 20px;
+}
+.allincome {
+	position: absolute;
+	right: 12px;
+}
+.brokerage_list li {
+	position: relative;
+	padding: 0 12px;	
+	background: #fff;	
+}
+.brokerage_border {
+	font-size: 14px;
+	border-bottom: 1px solid #cccccc;
+	padding: 10px 0;
+	color: #666666;
+}
+.brokerage_list li:last-of-type .brokerage_border {
+	border-bottom: none;
+}
+.income {
+	position: absolute;
+	right: 12px;
+	color: #dd4b39;
+	font-weight: 600;
+}
+.brokerage_list .empty {
+	width: 100%;
+	height: 240px;
+	line-height:28px;
+	font-size: 18px;
+	font-weight: 600;
+	color: #999;
+	margin-top: 50%;
+	text-align: center;
+}
+.brokerage_list .empty span {
+	display: block;
+	width:100%;
+	height:60px;
+}
+
+.brokerage_list .empty .goback {
+	font-size:16px;
+	color: #00b7ee;
+	display: inline-block;
+	width: 120px;
+	border: 1px solid #00a5e5;
+	border-radius: 5px;
+}

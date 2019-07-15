@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>500</title>
+		<script src="js/zepto.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			html,body{
+				min-height: 100%;
+				height: 100%;
+				font-family: "微软雅黑";
+			}
+			.box{
+				max-width: 640px;
+				width: 100%;
+				margin: 0 auto;
+				height: 100%;
+				min-height: 100%;
+				display: flex;
+				display: -webkit-flex;
+				text-align: center;
+			}
+			.content{
+				flex-grow: 1;
+				align-self: center;
+				padding-bottom: 80px;
+			}
+			.img{
+				position: relative;
+				display: inline-block;
+				width: 315px;
+			}
+			.img img{
+				width: 100%;
+			}
+			.text{
+				position: absolute;
+				text-align: left;
+				top: 106px;
+				left: 80px;
+				color: #D68921;
+			}
+			.btn{
+				margin-top: 60px;
+				text-align: left;
+				color: #72ACB8;
+				margin-left: 14%;
+				margin-bottom: 20px;
+			}
+			button{
+				border: 1px solid #F2F1ED;
+				padding: 4px 10px;
+				font-size: 16px;
+				border-radius: 4px;
+				outline: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="content">
+				<div class="img">
+					<img src="/public/static/images/500_03.jpg"/>
+					<div class="text">
+						很抱歉,您指定的网页无法访问......
+					</div>
+				</div>
+				<div class="btn">
+					您还可以:
+				</div>
+				<div>
+					<button onclick="change(this)" style="background: #69A3AE; color: white; margin-right: 20px;">访问首页</button>
+					<button onclick="change(this)" style="color: #69A3AE;background: white;">返回上一步</button>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		function change(obj){
+			var obj=$(obj);
+			obj.css("background","#69A3AE");
+			obj.css("color","white");
+			obj.siblings().css("background","white");
+			obj.siblings().css("color","#69A3AE");
+		}
+	</script>
+</html>

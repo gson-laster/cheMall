@@ -1,0 +1,36 @@
+  <div id="menu_style" class="menu_style">
+    <ul class="nav nav-list" id="nav_list">
+    <li class="home"><a href="javascript:void(0)" name="{:url('admin/index/home')}" class="iframeurl" title=""><i class="icon-home"></i><span class="menu-text"> 系统首页 </span></a></li>
+    {foreach name="left_menu['group']" item="ml" key="k"}
+    <li>
+        <a href="#" class="dropdown-toggle"><i class="{$ml[0]}"></i><span class="menu-text"> {$ml[1]} </span><b class="arrow icon-angle-down"></b></a>
+        <ul class="submenu">
+          {volist name="left_menu['second_html']" id="item"}
+            {eq name="item['group']" value="$k"}
+              <li class="home"><a href="javascript:void(0)" name="{:url($item["url"])}" title="{$item.name}" class="iframeurl"><i class="icon-double-angle-right"></i>{$item.name}</a></li>
+            {/eq}
+          {/volist}
+        </ul>
+    </li>
+    {/foreach}
+    
+</ul>
+</div>
+<script type="text/javascript">
+$("#menu_style").niceScroll({
+    cursorcolor: "#888888",
+    cursoropacitymax: 1,
+    touchbehavior: false,
+    cursorwidth: "5px",
+    cursorborder: "0",
+    cursorborderradius: "5px"
+});
+</script>
+<div class="sidebar-collapse" id="sidebar-collapse">
+    <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+</div>
+<script type="text/javascript">
+try {
+    ace.settings.check('sidebar', 'collapsed')
+} catch (e) {}
+</script>

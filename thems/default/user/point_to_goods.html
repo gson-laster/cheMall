@@ -1,0 +1,122 @@
+{extend name='/public/base'/} 
+{block name='title'}积分{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/point_to_remainder.css">
+    <link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/paypassword.css"/>
+<script type="text/javascript" src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+{/block}
+{block name="content"}
+<body style="background-color:#f3f3f3;">
+  {php}
+    if(!isset($service_id)){
+      $phone = '';
+    }
+  {/php}
+  <div class="point-to-goods">
+      <div class="point-to-goods-top">
+        注意事项：兑换成功不能撤销
+      </div>
+      <div class="item">
+        <p class="title">充值账号</p>
+        <input onchange="change('phone', this)"  type="text" value="{$phone}" placeholder="请输入服务中心账号">
+      </div>
+      <div class="item">
+        <p class="title">充值金额</p>
+        <input onchange="change('integral', this)" type="text" placeholder="请输入兑换金额" class="remainder">
+        <span class="dollars">￥</span>
+      </div>
+      <p class="hint">当前可充值额度{:session('userInfo')['record']}积分</p>
+      <div onclick="toGoods()" class="btn">确定兑换</div>
+        <div class="passwordcontent" style="display: none;">
+      <div class="password_box">
+        <div class="payexplain">
+          <span onclick="cancelpassword()">x</span>
+          请输入6位支付密码
+        </div>
+        <div class="paycode_box">
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix onepayinput" autofocus="autofocus" readonly style="border-left:1px solid #ccc"/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+        </div>
+        <!--唤起数字键盘-->
+        <input type="tel" name="" value="" class="pwd-input" id="pwd-input" unselectable="on">
+        <button onclick="confirmTransfer()">确认</button>
+      </div>
+    </div>
+  </div>  
+    <script type="text/javascript">
+    var ajaxurl = '{:url("user/check_password")}'
+    var click = 1;
+  </script>
+<script src="__HOME_STATIC__/js/checkpassword.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+           {php}
+        $password = session('userInfo')['pay_password'];
+      {/php}
+        {empty name="password"}
+        layer.open({
+          content: '您还未设置支付密码,前往设置吗？'
+          ,btn: ['确定', '不要']
+          ,yes: function(index){
+            location.href = '{:url('user/checkpaypassword')}?to=1'
+          }
+        });
+        {/empty}
+      var paramer = {
+        integral: '',
+        phone: '{$phone}'
+      };
+      var click = 1;
+    	function toGoods(){
+    	  if (click) {
+    	  	click = 0
+    	  	
+      if (paramer.integral == '' || paramer.integral < 120) {
+        layer.open({
+          content: '金额不能为空且不能小于120'
+          ,skin: 'msg'
+          ,time: 2 //2秒后自动关闭
+        });
+        click = 1;
+        return
+      }
+passwordshow();      
+    	  }
+    	}
+    	function callback(){
+    	        $.ajax({
+          url: '{:url('Integral/ingegralChange')}',
+          data: paramer,
+          type: 'post',
+          success: function(res){
+            if(res.code == 200) {
+              layer.open({
+                content: '兑换成功'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+              });
+              setTimeout(function(){
+                location.href = '{:url('serviceCenter/index')}'
+              }, 1500)
+            } else {
+              layer.open({
+                content: '兑换失败'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+              });
+            }
+            }
+        })
+    	}
+    	function change(t, o){
+    	  paramer[t] = $(o).val()
+    	}
+    </script>
+{block name='footermenu'} {include file="thems/default/public/Footer/footer.html"}{/block}
+</body>
+{/block}

@@ -1,0 +1,417 @@
+/*loginFile-start*/
+
+
+/*index-start*/
+
+.Login .warry {
+    margin: 0 12px;
+}
+
+.Login .item {
+    background: white;
+    margin-bottom: 0.4rem;
+    border-bottom: 1px solid #DBDBDB;
+}
+
+.Login .item li {
+    float: left;
+    width: 50%;
+    text-align: center;
+    color: #797979;
+    padding: 16px 0;
+    position: relative;
+    top: 2px;
+}
+
+.Login .border_bottom {
+    color: #D70030 !important;
+    border-bottom: 3px solid #D70030;
+}
+
+.OtherLogin #phone {
+    background-image: url("../img/login_phone_icon.png") !important;
+}
+
+.OtherLogin #test {
+    background-image: url("../img/login_password_icon.png") !important;
+}
+
+.OtherLogin #input_one,
+.OtherLogin #input_four {
+    background-image: url("../img/login_phone_icon.png") !important;
+}
+
+.OtherLogin #input_three,
+.OtherLogin #input_two {
+    background-image: url("../img/login_password_icon.png") !important;
+}
+
+.OtherLogin .pad_left {
+    padding-left: 46px !important;
+}
+
+.OtherLogin .otherLogin_footer {
+    text-align: center;
+    border-top: 1px solid #DBDBDB;
+    width: 80%;
+    margin: 60px auto 0 auto;
+}
+
+.OtherLogin .circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: white;
+    margin: 0 auto;
+    margin-top: -19px;
+}
+
+.OtherLogin .circle img {
+    height: 11px;
+    margin-top: 19px;
+}
+
+.OtherLogin .other {
+    color: #949494;
+    padding: 16px 0;
+}
+
+.OtherLogin .weixinLogin img {
+    height: 55px;
+}
+
+.OtherLogin .wenxin {
+    padding-top: 10px;
+    padding-bottom: 16px;
+    color: #626262;
+}
+
+.OtherLogin #band_count {
+    background-image: url("../img/login_phone_icon.png") !important;
+}
+
+
+/*login-end*/
+
+
+/*sign-up-start*/
+
+.SignUp .warry {
+    margin: 0 40px;
+    margin-top: 30px;
+}
+
+.SignUp .warry input {
+    margin-bottom: 36px;
+    border: 1px solid #BCBCBC;
+    outline: none;
+    width: 100%;
+    line-height: 38px;
+    padding-left: 42px;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-family: "微软雅黑";
+    background-repeat: no-repeat;
+    background-size: auto 18px;
+    background-position: left 12px center;
+    border-radius: 5px;
+}
+
+.SignUp .warry input::-webkit-input-placeholder {
+    color: #B5B5B5;
+}
+
+.SignUp .phone input,
+.referee input {
+    background-image: url("../img/login_phone_icon.png") !important;
+}
+
+.SignUp .password input,
+.code input {
+    background-image: url("../img/login_password_icon.png") !important;
+}
+
+.SignUp .submit button {
+    background-color: #D70030;
+    width: 100%;
+    line-height: 38px;
+    border: none;
+    outline: none;
+    color: white;
+    border-radius: 38px;
+    font-size: 14px;
+}
+
+.SignUp .code {
+    position: relative;
+}
+
+.SignUp .sendcode {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #D70030;
+    line-height: 32px;
+    color: white;
+    border-radius: 4px;
+    width: 80px;
+    text-align: center;
+}
+
+.SignUp #send_code {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #D70030;
+    line-height: 32px;
+    color: white;
+    border-radius: 4px;
+    width: 80px;
+    text-align: center;
+}
+
+
+/*sign-up-end*/
+
+
+/*login-Register-start*/
+
+.Register .warry {
+    padding-top: 30px;
+}
+
+.Register .warry .inputone p {
+    position: absolute;
+    top: 100%;
+    color: #9e9e9f;
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.Register .warry .inputone .recommend_content,
+.Register .warry .inputone .phone_hint {
+    top: -20px;
+    height: 20px;
+    font-size: 14px;
+    color: #000;
+}
+
+.Register .warry .inputone .recommend_content span {
+    color: #9e9e9f;
+}
+
+.Register .warry .inputone p.code {
+    top: -20px;
+}
+
+.Register .inputone p.code>.phone_number {
+    color: #D70030;
+}
+
+.Register .warry .inputone .reg_close {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    margin-top: -8px;
+    width: 15px;
+    height: 15px;
+    background-image: url("../img/reg_close_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+}
+
+
+/*确定，完成注册*/
+
+.inputone .password_confirm {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -10px;
+    height: 22px;
+    line-height: 22px;
+    padding: 0px 0px 0 6px;
+    border-right: 1px solid #dbdbdb;
+    font-size: 14px;
+    padding: 0 8px;
+    width: 28px;
+    background-image: url(../img/login_password_icon.png);
+    background-repeat: no-repeat;
+    background-size: 20px;
+    background-position: center;
+}
+
+
+/*login-Register-end*/
+
+
+/*loginFile-end*/
+
+
+/*addressFile-start*/
+
+
+/*index-start*/
+
+.DeliveryAdress.box {
+    background-color: #f3f3f3;
+}
+
+.wrapper {
+    background-color: #fff;
+    margin-bottom: 0.1rem;
+}
+
+.wrapper .delivery_top {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0.10rem;
+}
+
+.wrapper .delivery_top .name {
+    float: left;
+}
+
+.wrapper .delivery_top .phone {
+    float: right;
+}
+
+.wrapper .delivery_top .address {
+    width: 100%;
+}
+
+.wrapper .address_container {
+    width: 100%;
+    margin: 0 auto;
+    padding-bottom: 0.10rem;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.wrapper .address_container p {
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.wrapper .delivery_bottom {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0.08rem;
+    line-height: 0.27rem;
+}
+
+.wrapper .delivery_bottom .bottom_left {
+    float: left;
+}
+
+.wrapper .delivery_bottom .bottom_left img {
+    width: 0.18rem;
+    vertical-align: top;
+    display: none;
+}
+
+.wrapper .delivery_bottom .bottom_left img.default_img {
+    display: block;
+    position: relative;
+    top: 0.01rem;
+}
+
+.wrapper .delivery_bottom .bottom_left span.default {
+    display: inline-block;
+    width: 0.18rem;
+    height: 0.18rem;
+    border-radius: 50%;
+    border: 1px solid #dbdbdb;
+    vertical-align: top;
+    position: relative;
+    margin-right: 0.04rem;
+    top: 0.02rem;
+}
+
+.wrapper .delivery_bottom .bottom_left span.default_txt {
+    line-height: 0.2rem;
+}
+
+.wrapper .delivery_bottom .bottom_left span.default_txt.selected {
+    color: #dd2727;
+}
+
+.wrapper .delivery_bottom .bottom_right {
+    float: right;
+}
+
+.wrapper .delivery_bottom .bottom_right img {
+    width: 0.24rem;
+    margin-right: 0.04rem;
+}
+
+.wrapper .delivery_bottom .bottom_right a {
+    line-height: 0.2rem;
+}
+
+
+/*底部css*/
+
+.DeliveryAdress .DeliveryAdress_footer {
+    position: fixed;
+    bottom: 0.3rem;
+    width: 100%;
+    max-width: 640px;
+}
+
+.DeliveryAdress .DeliveryAdress_text {
+    margin: 0 0.2rem;
+    background: #DD2727;
+    text-align: center;
+    color: white;
+    height: 0.4rem;
+    line-height: 0.4rem;
+    border-radius: 0.04rem;
+}
+
+.DeliveryAdress .space {
+    height: 0.8rem;
+    position: fixed;
+    width: 100%;
+    background-color: #fff;
+    bottom: 0;
+}
+
+.wx_header {
+    height: 42px;
+    line-height: 42px;
+    background: #fff;
+    text-align: center;
+    margin-bottom: 13px;
+}
+
+.tologin {
+    height: 28px;
+    line-height: 28px;
+    text-align: right;
+    padding: 4px 0;
+}
+
+.login-to {
+    font-size: 13px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.login-to span {
+    margin: 0 6px;
+}
+
+.login-to a:last-child {
+    color: #f49207;
+}
+
+
+/*index-end*/
+
+
+/*addressFile-end*/

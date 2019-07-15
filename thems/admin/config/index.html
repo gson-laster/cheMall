@@ -1,0 +1,612 @@
+<body>
+  <style>
+  .onoff {
+    font-size: 0;
+    position: relative;
+    overflow: hidden;
+    display: block;
+  }
+
+  .onoff label {
+    vertical-align: top;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    cursor: pointer;
+  }
+
+  .onoff input[type="radio"] {
+    position: absolute;
+    top: 0;
+    left: -999px;
+  }
+
+  .onoff .cb-enable,
+  .onoff .cb-disable {
+    color: #777;
+    font-size: 12px;
+    line-height: 20px;
+    background-color: #ECF0F1;
+    padding: 1px 9px;
+    border-style: solid;
+    border-color: #BEC3C7;
+  }
+
+  .onoff .cb-enable {
+    border-width: 1px 0 1px 1px;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .onoff .cb-disable {
+    border-width: 1px 1px 1px 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .onoff .cb-disable.selected {
+    color: #FFF;
+    background-color: #96A6A6;
+    border-color: #808B8D;
+  }
+
+  .onoff .cb-enable.selected {
+    color: #FFF;
+    background-color: #1BBC9D;
+    border-color: #16A086
+  }
+
+  .delete-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 28px;
+    line-height: 28px;
+    display: block;
+    text-align: center;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  </style>
+  <div class="margin clearfix">
+    <div class="stystems_style">
+      <div class="tabbable">
+        <ul class="nav nav-tabs" id="myTab">
+          <li class="active">
+            <a data-toggle="tab" href="#shop_info"><i class="green fa fa-home bigger-110"></i>&nbsp;商城信息</a></li>
+          <li class="">
+            <a data-toggle="tab" href="#profile">基本配置</a></li>
+          <li class="">
+            <a data-toggle="tab" data-toggle="dropdown" class="dropdown-toggle" href="#dropdown">短信设置</a>
+          </li>
+          <li class="">
+            <a data-toggle="tab" data-toggle="template" class="dropdown-toggle" href="#template">微信模板消息设置</a>
+          </li>
+          <li class="">
+            <a data-toggle="tab" data-toggle="dropdown" class="dropdown-toggle" href="#other">其他设置</a>
+          </li>
+        </ul>
+          <form action="{:url('save')}" method="post" name="shop_info">
+        <div class="tab-content">
+          <div id="shop_info" class="tab-pane active" data-type="shop_info">
+
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>网站名称： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_title" data-text="网站名称" id="website-title" placeholder="控制在25个字、50个字节以内" value="{$config.site_title}" class="col-xs-10 " data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>关键词： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_keywords" data-text="关键词" id="website-keywords" placeholder="5个左右,8汉字以内,用英文,隔开" value="{$config.site_keywords}" class="col-xs-10 " data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>商城描述： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_description" data-text="商城描述" id="website-description" placeholder="空制在80个汉字，160个字符以内" value="{$config.site_description}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                                <!--//---------------------->
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>开户账号： </label>
+                  <div class="col-sm-9">
+                    <input type="number" name="site_bank_code" data-text="开户账号" id="website-site_bank_code" placeholder="请输入开户账号" value="{$config.site_bank_code}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>开户银行： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_bank_name" data-text="开户银行" id="website-site_bank_name" placeholder="请输入开户银行" value="{$config.site_bank_name}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>开户人姓名： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_bank_khrname" data-text="开户人姓名" id="website-site_bank_khrname" placeholder="请输入开户人姓名" value="{$config.site_bank_khrname}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>支付宝账号： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_alipay_account" data-text="支付宝账号" id="website-site_alipay_account" placeholder="请输入支付宝账号" value="{$config.site_alipay_account}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>支付宝姓名： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_alipay_name" data-text="支付宝姓名" id="website-site_alipay_name" placeholder="请输入支付宝姓名" value="{$config.site_alipay_name}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                     <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>积分倍率-余额订货： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="integralratio" data-text="积分倍率" id="integralratio" placeholder="积分倍率" value="{$config.integralratio}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                 <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>： 积分兑换余额倍率</label>
+                  <div class="col-sm-9">
+                    <input type="text" name="integralratio_vb" data-text="积分兑换余额倍率" id="integralratio_vb" placeholder="请输入积分兑换余额倍率" value="{$config.integralratio_vb}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>： 分成比例</label>
+                  <div class="col-sm-9">
+                    <input type="text" name="divisionratio" data-text="分成比例" id="divisionratio" placeholder="请输入分成比例" value="{$config.divisionratio}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                <!----------------------------->
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>客服电话： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_servicePhone" data-text="客服电话" id="website-servicePhone" placeholder="客服电话" value="{$config.site_servicePhone}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>客服qq： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_serviceQQ" data-text="客服QQ" id="website-serviceQQ" placeholder="客服qq" value="{$config.site_serviceQQ}" class="col-xs-10" data-role='add'>
+                  </div>
+                </div>
+               <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>客服微信： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_serviceWechat" data-text="客服微信" id="website-site_serviceWechat" placeholder="客服微信" value="{$config.site_serviceWechat}" class="col-xs-10"data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>底部版权信息： </label>
+                  <div class="col-sm-9">
+                    <input type="text" name="site_copyright" data-text="底部版权信息" id="website-copyright" placeholder="底部版权信息" value="{$config.site_copyright}" class="col-xs-10 " data-role='add'>
+                  </div>
+                </div>
+
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>提现说明信息： </label>
+              <div class="col-sm-9">
+                <input type="text" name="instructions" data-text="提现说明信息" id="website-instructions" placeholder="提现说明信息" value="{$config.instructions}" class="col-xs-10 " data-role='add'>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>团队分成奖励设置： </label>
+              <div class="col-sm-9">
+                <label>
+                <input type="radio" name="fivepoint" value="0" {eq name="config.fivepoint" value="0"}checked {/eq} />
+                只开启省级代理
+                </label>
+                <label>
+                  <input type="radio" name="fivepoint" value="1" {eq name="config.fivepoint" value="1"}checked {/eq}>
+                  开启省级代理、市级代理、县级代理
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>团队分成的比例： </label>
+              <div class="col-sm-9">
+                <input type="text" name="fivepoint_value" data-text="提现说明信息" id="website-fivepoint_value" placeholder="团队分成的比例" value="{$config.fivepoint_value}" class="col-xs-10 " data-role='add'>
+              </div>
+            </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>备案号： </label>
+                  <div class="col-sm-9">
+                        <input type="text" name="site_icp" data-text="备案号" id="website-icp" placeholder="备案号" value="{$config.site_icp}" class="col-xs-10 " data-role='add'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>网站Logo： </label>
+                  <div class="col-sm-9">
+                    <div class="logobox" style="width:120px;">
+                      <div class="resizebox" id="upload" onclick="document.getElementById('logoFile').click()" style="position:relative">
+                          <img src="{neq name='$config["logo"]' value=""}{$config.logo}{else/}__ADMIN_STATIC__/images/image.png{/neq}" width="100px" alt="" height="100px">
+                          <i class="delete-img" data-src="{$config.logo}">删除</i>
+                      </div>
+                    </div>
+                    <div class="logoupload">
+                      <div class="btnbox"><a id="uploadBtnHolder" class="uploadbtn" href="javascript:" onclick="document.getElementById('logoFile').click()">上传替换</a></div>
+                    </div>
+                    <input type="hidden" name="logo" data-text="网站Logo" value="{$config.logo}" id="logo" data-role='add' />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>统计代码： </label>
+                  <div class="col-sm-9">
+                    <textarea class="textarea" name="site_count">{$config.site_count}</textarea>
+                  </div>
+                </div>
+                <input type="file" id="logoFile" name="logoFile" hidden="true" onchange="fileSelect(this)" style="display:none">
+            
+                <div class="Button_operation">
+                  <a class="btn btn-primary radius" onclick="config_save()"><i class="fa fa-save "></i>&nbsp;确认保存</a>
+                </div>
+          </div>
+          <div id="profile" class="tab-pane " data-type="base_info">
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>注册送积分：</label>
+              <div class="col-sm-9">
+                <input type="number" name="send_integral" id="website-integral" placeholder="" value="{$config.send_integral}" class="col-xs-10 ">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>满多少才可以提现： </label>
+              <div class="col-sm-9">
+                <input type="number" name="need_money" id="website-money" placeholder="" value="{$config.need_money}" class="col-xs-10 ">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>最少提现的额度： </label>
+              <div class="col-sm-9">
+                <input type="number" name="get_money" id="website-getmoney" placeholder="" value="{$config.get_money}" class="col-xs-10 ">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>发货多少天自动收货：</label>
+              <div class="col-sm-9">
+                <input type="text" name="getGoods" id="website-getGoods" placeholder="" value="{$config.getGoods}" class="col-xs-10 ">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>全场满多少免运费： </label>
+              <div class="col-sm-9">
+                <input type="text" name="noshipping" id="website-noshipping" placeholder="" value="{$config.noshipping}" class="col-xs-10 ">
+              </div>
+            </div>
+
+               <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>手续费(%): </label>
+              <div class="col-sm-9">
+                <input type="text" name="poundage" id="website-noshipping" placeholder="" value="{$config.poundage}" class="col-xs-10 ">
+              </div>
+            </div>
+               <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>提现税率(%): </label>
+              <div class="col-sm-9">
+                <input type="text" name="tax" id="website-noshipping" placeholder="" value="{$config.tax}" class="col-xs-10 ">
+              </div>
+            </div>
+            <div class="form-group">
+              
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>当前支付方式: </label>
+              <div class="col-sm-9">
+                <label>
+                <input type="radio" name="current_payway" value="Weichat" {eq name="config.current_payway" value="Weichat"}checked{/eq} />微信支付
+                </label>
+                <label>
+                <input type="radio" name="current_payway" value="Fuqianla" {eq name="config.current_payway" value="Fuqianla"}checked{/eq} />付钱啦支付
+                </label>
+              </div>
+            </div>
+            <div class="Button_operation">
+              <a onclick="config_save();" class="btn btn-primary radius"><i class="fa fa-save "></i>&nbsp;保存</a>
+            </div>
+          </div>
+          <div id="dropdown" class="tab-pane" data-type="sms_config">
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>用户注册时： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="regis_sms_enable1" class="cb-enable {eq name="config['regis_sms']" value="1"}selected{/eq}">开启</label>
+                  <label for="regis_sms_enable0" class="cb-disable {eq name="config['regis_sms']" value="0"}selected{/eq}">关闭</label>
+                  <input id="regis_sms_enable1" name="regis_sms" value="1" type="radio" {eq name="config['regis_sms']" value="1"}checked="checked"{/eq}>
+                  <input id="regis_sms_enable0" name="regis_sms" value="0" type="radio" {eq name="config['regis_sms']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>用户登录时： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="login_sms_enable1" class="cb-enable {eq name="config['login_sms']" value="1"}selected{/eq}">开启</label>
+                  <label for="login_sms_enable0" class="cb-disable {eq name="config['login_sms']" value="0"}selected{/eq}">关闭</label>
+                  <input id="login_sms_enable1" name="login_sms" value="1" type="radio" {eq name="config['login_sms']" value="1"}checked="checked"{/eq}>
+                  <input id="login_sms_enable0" name="login_sms" value="0" type="radio" {eq name="config['login_sms']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>找回密码时： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="forget_password_sms_enable2" class="cb-enable {eq name="config['forget_password']" value="1"}selected{/eq}">开启</label>
+                  <label for="forget_password_sms_enable3" class="cb-disable {eq name="config['forget_password']" value="0"}selected{/eq}">关闭</label>
+                  <input id="forget_password_sms_enable2" name="forget_password" value="1" type="radio" {eq name="config['forget_password']" value="1"}checked="checked"{/eq}>
+                  <input id="forget_password_sms_enable3" name="forget_password" value="0" type="radio" {eq name="config['forget_password']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>用户下单时是否发送短信给客户： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="do_order_success_sms_enable1" class="cb-enable {eq name="config['do_order_success']" value="1"}selected{/eq}">开启</label>
+                  <label for="do_order_success_sms_enable0" class="cb-disable {eq name="config['do_order_success']" value="0"}selected{/eq}">关闭</label>
+                  <input id="do_order_success_sms_enable1" name="do_order_success" value="1" type="radio" {eq name="config['do_order_success']" value="1"}checked="checked"{/eq}>
+                  <input id="do_order_success_sms_enable0" name="do_order_success" value="0" type="radio" {eq name="config['do_order_success']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>用户支付时是否发送短信给客户： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="do_pay_success_sms_enable1" class="cb-enable {eq name="config['do_pay_success']" value="1"}selected{/eq}">开启</label>
+                  <label for="do_pay_success_sms_enable0" class="cb-disable {eq name="config['do_pay_success']" value="0"}selected{/eq}">关闭</label>
+                  <input id="do_pay_success_sms_enable1" name="do_pay_success" value="1" type="radio" {eq name="config['do_pay_success']" value="1"}checked="checked"{/eq}>
+                  <input id="do_pay_success_sms_enable0" name="do_pay_success" value="0" type="radio" {eq name="config['do_pay_success']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>发货时是否给客户发短信： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="do_send_goods_success_sms_enable1" class="cb-enable {eq name="config['do_send_goods_success']" value="1"}selected{/eq}">开启</label>
+                  <label for="do_send_goods_success_sms_enable0" class="cb-disable {eq name="config['do_send_goods_success']" value="0"}selected{/eq}">关闭</label>
+                  <input id="do_send_goods_success_sms_enable1" name="do_send_goods_success" value="1" type="radio" {eq name="config['do_send_goods_success']" value="1"}checked="checked"{/eq}>
+                  <input id="do_send_goods_success_sms_enable0" name="do_send_goods_success" value="0" type="radio" {eq name="config['do_send_goods_success']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>分成成功时给直接上级发送信息： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="do_get_money_form_other_sms_enable1" class="cb-enable {eq name="config['do_get_money_form_other']" value="1"}selected{/eq}">开启</label>
+                  <label for="do_get_money_form_other_sms_enable0" class="cb-disable {eq name="config['do_get_money_form_other']" value="0"}selected{/eq}">关闭</label>
+                  <input id="do_get_money_form_other_sms_enable1" name="do_get_money_form_other" value="1" type="radio" {eq name="config['do_get_money_form_other']" value="1"}checked="checked"{/eq}>
+                  <input id="do_get_money_form_other_sms_enable0" name="do_get_money_form_other" value="0" type="radio" {eq name="config['do_get_money_form_other']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>短信码超时时间： </label>
+              <div class="col-sm-9">
+                <select name="sms_wait_time" id="">
+                  <option value="60" {eq name="config['sms_wait_time']" value="60"}selected="selected"{/eq}>1分钟</option>
+                  <option value="120" {eq name="config['sms_wait_time']" value="120"}selected="selected"{/eq}>2分钟</option>
+                  <option value="300" {eq name="config['sms_wait_time']" value="300"}selected="selected"{/eq}>5分钟</option>
+                  <option value="600" {eq name="config['sms_wait_time']" value="600"}selected="selected"{/eq}>10分钟</option>
+                  <option value="1200" {eq name="config['sms_wait_time']" value="1200"}selected="selected"{/eq}>20分钟</option>
+                  <option value="1800" {eq name="config['sms_wait_time']" value="1800"}selected="selected"{/eq}>30分钟</option>
+                </select>
+              </div>
+            </div>
+            <div class="Button_operation">
+              <a onclick="config_save();" class="btn btn-primary radius"><i class="fa fa-save "></i>&nbsp;保存</a>
+            </div>
+          </div>
+          <div id="template" class="tab-pane">
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>下单成功时： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_add_order1" class="cb-enable {eq name="config['template_add_order']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_add_order0" class="cb-disable {eq name="config['template_add_order']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_add_order1" name="template_add_order" value="1" type="radio" {eq name="config['template_add_order']" value="1"}checked="checked"{/eq}>
+                  <input id="template_add_order0" name="template_add_order" value="0" type="radio" {eq name="config['template_add_order']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>VB账户变更时： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_account_change1" class="cb-enable {eq name="config['template_account_change']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_account_change0" class="cb-disable {eq name="config['template_account_change']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_account_change1" name="template_account_change" value="1" type="radio" {eq name="config['template_account_change']" value="1"}checked="checked"{/eq}>
+                  <input id="template_account_change0" name="template_account_change" value="0" type="radio" {eq name="config['template_account_change']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>支付成功是： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_pay_success_enable1" class="cb-enable {eq name="config['template_pay_success']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_pay_success0" class="cb-disable {eq name="config['template_pay_success']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_pay_success_enable1" name="template_pay_success" value="1" type="radio" {eq name="config['template_pay_success']" value="1"}checked="checked"{/eq}>
+                  <input id="template_pay_success0" name="template_pay_success" value="0" type="radio" {eq name="config['template_pay_success']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>发货成功是： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_send_goods_enable1" class="cb-enable {eq name="config['template_send_goods']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_send_goods_enable0" class="cb-disable {eq name="config['template_send_goods']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_send_goods_enable1" name="template_send_goods" value="1" type="radio" {eq name="config['template_send_goods']" value="1"}checked="checked"{/eq}>
+                  <input id="template_send_goods_enable0" name="template_send_goods" value="0" type="radio" {eq name="config['template_send_goods']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+
+           <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>确认收货是： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_confirm_goods_enable1" class="cb-enable {eq name="config['template_confirm_goods']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_confirm_goods_enable0" class="cb-disable {eq name="config['template_confirm_goods']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_confirm_goods_enable1" name="template_confirm_goods" value="1" type="radio" {eq name="config['template_confirm_goods']" value="1"}checked="checked"{/eq}>
+                  <input id="template_confirm_goods_enable0" name="template_confirm_goods" value="0" type="radio" {eq name="config['template_confirm_goods']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+
+
+             <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>任务完成是： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_taskprocessing_enable1" class="cb-enable {eq name="config['template_taskprocessing']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_taskprocessing_enable0" class="cb-disable {eq name="config['template_taskprocessing']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_taskprocessing_enable1" name="template_taskprocessing" value="1" type="radio" {eq name="config['template_taskprocessing']" value="1"}checked="checked"{/eq}>
+                  <input id="template_taskprocessing_enable0" name="template_taskprocessing" value="0" type="radio" {eq name="config['template_taskprocessing']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+
+                 <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>后台充值通过是： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_pay_suc_enable1" class="cb-enable {eq name="config['template_pay_suc']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_pay_suc_enable0" class="cb-disable {eq name="config['template_pay_suc']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_pay_suc_enable1" name="template_pay_suc" value="1" type="radio" {eq name="config['template_pay_suc']" value="1"}checked="checked"{/eq}>
+                  <input id="template_pay_suc_enable0" name="template_pay_suc" value="0" type="radio" {eq name="config['template_pay_suc']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+
+                  <div class="form-group">
+              <label class="col-sm-1 control-label no-padding-right"><i>*</i>咨询消息通知是： </label>
+              <div class="col-sm-9">
+                <div class="onoff">
+                  <label for="template_counsel_enable1" class="cb-enable {eq name="config['template_counsel']" value="1"}selected{/eq}">开启</label>
+                  <label for="template_counsel_enable0" class="cb-disable {eq name="config['template_counsel']" value="0"}selected{/eq}">关闭</label>
+                  <input id="template_counsel_enable1" name="template_counsel" value="1" type="radio" {eq name="config['template_counsel']" value="1"}checked="checked"{/eq}>
+                  <input id="template_counsel_enable0" name="template_counsel" value="0" type="radio" {eq name="config['template_counsel']" value="0"}checked="checked"{/eq}>
+                </div>
+              </div>
+            </div>
+            
+
+            <div class="Button_operation">
+              <a onclick="config_save();" class="btn btn-primary radius"><i class="fa fa-save "></i>&nbsp;保存</a>
+            </div>
+          </div>
+          <div id="other" class="tab-pane" data-type="other_config">
+              <div class="form-group">
+                  <label class="col-sm-1 control-label no-padding-right"><i>*</i>微信默认分享的图标： </label>
+                  <div class="col-sm-9">
+                      <div class="logobox" style="width:120px;">
+                          <div class="resizebox" id="uploadWxPic" onclick="document.getElementById('wechatPic').click()" style="position:relative">
+                              <img src="{neq name="config['site_wechat_default_pic']" value=""}{$config.site_wechat_default_pic}{else/}__ADMIN_STATIC__/images/image.png{/neq}" width="100px" alt="" height="100px">
+                              <i class="delete-img" data-src="{$config.site_wechat_default_pic}">删除</i>
+                          </div>
+                      </div>
+                      <div class="logoupload">
+                          <div class="btnbox"><a id="uploadBtnHolders" class="uploadbtn" href="javascript:" onclick="document.getElementById('logoFile').click()">上传替换</a></div>
+                      </div>
+                      <input type="hidden" name="site_wechat_default_pic" id="site_wechat_default_pic" data-text="微信默认分享的图标" value="{$config.site_wechat_default_pic}" data-role='add' />
+                  </div>
+                  <input type="file" name="wechatPic" id="wechatPic" hidden onchange="wechartFile(this)" style="display: none" />
+              </div>
+              <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right">微信默认分享描述： </label>
+                <div class="col-sm-9">
+                  <textarea class="textarea" name="site_wechat_default_desc">{$config.site_wechat_default_desc}</textarea>
+                </div>
+              </div>
+              <div class="Button_operation">
+                  <a class="btn btn-primary radius" onclick="config_save()"><i class="fa fa-save "></i>&nbsp;确认保存</a>
+              </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+      <script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+</body>
+
+</html>
+<script>
+function uploadFiles(file, succFn, faileFn){
+    $.ajaxFileUpload({
+        url: "{:url('api/UploadFiles/uploadAjax',array('to_dir'=>'site'))}?file="+file,
+        type: 'post',
+        secureuri: false,
+        fileElementId: file,
+        dataType: 'json',
+        success: function(res) {
+            if (res.code == 1) {
+                succFn&&succFn(res);
+            } else {
+                layer.msg('上传失败')
+            }
+        },
+        error: function(data, status, e) { //提交失败自动执行的处理函数
+            // alert('error',e);
+            console.log(data);
+            console.log(status);
+            console.log(e)
+        }
+    })
+}
+function fileSelect(o) {
+    uploadFiles('logoFile', function (res) {
+        layer.msg('上传成功');
+        $("#upload").find('img').eq(0).attr('src', res.path);
+        $('#upload .delete-img').data('src', res.path);
+        $("#logo").val(res.path);
+    })
+}
+function wechartFile () {
+    uploadFiles('wechatPic', function (res) {
+        layer.msg('上传成功');
+        $("#uploadWxPic").find('img').eq(0).attr('src', res.path);
+        $('#uploadWxPic .delete-img').data('src', res.path);
+        $("#site_wechat_default_pic").val(res.path);
+    })
+}
+$(".delete-img").on('click', function(e) {
+    var _this = $(this);
+    if ($(this).data('src') !== undefined) {
+    util.ajaxPost("{:url('api/UploadFiles/delImg')}", {
+        path: $(this).data('src')
+      }).done(function(res) {
+      if (res.code == 1) {
+        _this.siblings('img').eq(0).attr('src', '');
+        $('.delete-img').data('src', '');
+        _this.parents('.logobox').siblings('input').val('');
+      }
+      layer.msg(res.msg)
+    }).fail(function(err) {
+      layer.msg(err.status + '服务器错误')
+    });
+  }
+  return false;
+});
+$(".cb-enable").click(function() {
+  // if()
+  $(this).addClass('selected');
+  $(this).siblings('.cb-disable').removeClass('selected');
+});
+$(".cb-disable").click(function() {
+  $(this).addClass('selected');
+  $(this).siblings('.cb-enable').removeClass('selected');
+});
+function config_save() {
+    adminAjax('Post', "{:url('save')}", $("form[name='shop_info']").serializeArray(),false, function (res) {
+        console.log(res)
+        return false;
+    }, function (err) {
+        console.log(err)
+    })
+    return false;
+}
+</script>

@@ -1,0 +1,149 @@
+html{
+    height: 100%;
+}
+
+/*商品参数弹层-start*/
+.shade-container{
+    position: fixed;
+    bottom: 0;
+    z-index:999;
+    left: 0;
+}
+
+/*商品参数弹层-end*/
+.select-container{
+    position: fixed;
+    bottom: 0;
+    z-index: 999;
+}
+
+.shade{
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index:200;
+    display: none;
+}
+.animated{
+    -webkit-animation-duration: 0.2s;
+    animation-duration: 0.2s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+/*slideInUp-start*/
+@keyframes slideInUp {
+    from {
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+        visibility: visible;
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+.slideInUp {
+    -webkit-animation-name: slideInUp;
+    animation-name: slideInUp;
+}
+/*slideInUp-end*/
+
+/*fadeIn-start*/
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+}
+/*fadeIn-end*/
+
+
+/*fadeOut-start*/
+@-webkit-keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+.fadeOut {
+    -webkit-animation-name: fadeOut;
+    animation-name: fadeOut;
+}
+/*fadeOut-end*/
+
+/*fadeOutDown-start*/
+@-webkit-keyframes fadeOutDown {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 110%, 0);
+        transform: translate3d(0, 110%, 0);
+    }
+}
+
+@keyframes fadeOutDown {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 110%, 0);
+        transform: translate3d(0, 110%, 0);
+    }
+}
+
+.fadeOutDown {
+    -webkit-animation-name: fadeOutDown;
+    animation-name: fadeOutDown;
+}
+
+/*fadeOutDown-end*/
+
+#Goodsparameter{
+    overflow: auto;
+    height: 200px;
+}
+
+.close img{
+    height: 0.3rem;
+    width: 0.3rem;
+}

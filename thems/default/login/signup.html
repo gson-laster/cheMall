@@ -1,0 +1,82 @@
+{include file='thems/default/public/Header/login_header.html'}
+
+<div class="box SignUp Login">
+    <section>
+        <div class="warry">
+            <div class="warn">
+          	      为了您的账户安全,请绑定手机号
+            </div>
+            <div class="inputone">
+                <input id="input_one" type="text" placeholder="请输入手机号"/>
+                <div onclick="send()" class="send">
+                    发送验证码
+                </div>
+            </div>
+            <div class="inputone pad_right">
+                <input id="testcode" type="text" placeholder="请输入验证码"/>
+            </div>
+            <div class="submit">
+                <button onclick="complete()">完成</button>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  function send() {
+    var val = $("#input_one").val();
+    if (val == "") {
+      layer.open({
+        content: '请输入手机号',
+        btn: '我知道了',
+        shadeClose: false,
+        yes: function () {
+          layer.open({
+            content: '好的'
+            , time: 2
+            , skin: 'msg'
+          });
+        }
+      });
+      return false;
+    }
+    ;
+    if (!val.match(/^\d{11}$/)) {
+      layer.open({
+        content: '请输入正确的手机号',
+        btn: '我知道了',
+        shadeClose: false,
+        yes: function () {
+          layer.open({
+            content: '好的'
+            , time: 2
+            , skin: 'msg'
+          });
+        }
+      });
+      return false;
+    }
+    ;
+    return true;
+  };
+  function complete() {
+    var bool = send();
+    if ($("#testcode").val() == "" && bool) {
+      layer.open({
+        content: '请输入验证码',
+        btn: '我知道了',
+        shadeClose: false,
+        yes: function () {
+          layer.open({
+            content: '好的'
+            , time: 2
+            , skin: 'msg'
+          });
+        }
+      });
+    }
+  }
+</script>
+<script src="__HOME_STATIC__/js/confirm.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

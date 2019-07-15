@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>二维码收款</title>
+		<link rel="stylesheet" type="text/css" href="../static/css/reset.css"/>
+		<style type="text/css">
+			body,html{
+			  height: 100%;
+			  background: #EC87BF;
+			}
+			.warry{
+			  background: #FFFFFF;
+			}
+			.shoukuan{
+        color: #fff;
+        text-align: center;
+        font-size: 16px;
+        line-height: 52px;
+			}
+			.box{
+			  /*display: flex;*/
+			  height: 100%;
+			  width: 100%;
+			  /*flex-direction: column;*/
+			}
+			.warry{
+			   border-radius: 6px;
+			   overflow: hidden;
+			   margin: 0 12px;
+			}
+			.titleIcon{
+			  display: inline-block;
+        padding-left: 20px;
+        padding-right: 4px;
+
+			}
+			.titleIcon img{
+			  vertical-align: middle;
+			  height: 20px;
+			}
+			.title{
+			  background: #FAFAFA;
+        color: #DFB741;
+			  line-height: 55px;
+			  font-size: 16px;
+			}
+			.sweep{
+			  padding-top: 34px;
+			  padding-bottom: 42px;
+			  color: #666666;
+        text-align: center;
+        font-size: 16px;
+			}
+			.code{
+			  text-align: center;
+			}
+			.code img{
+			  width: 180px;
+			}
+			.zhangben{
+			  border-top: 1px solid #ECECEC;
+			  margin: 15px;
+			  padding-left: 10px;
+			  font-size: 16px;
+			  color: #353535;
+			  line-height: 65px;
+			}
+			.zhangben img{
+			  height: 20px;
+			  vertical-align: text-bottom;
+			  margin-right: 4px;
+			}
+		</style>
+	</head>
+	<body>
+	  <div class="box">
+    	     <div class="shoukuan">
+            二维码收款
+          </div>
+    <div class="warry">
+          <div class="title">
+            <div class="titleIcon">
+            	<img src="../static/img/receivables_03.png"/>
+            </div>
+            <span>二维码收款</span>
+          </div>
+          <div class="sweep">
+          	扫二维码向我付钱
+          </div>
+          <div class="code">
+          	<img src="../static/img/card.jpg"/>
+          </div>
+          <div class="zhangben">
+          	<img src="../static/img/shoukuanLogo.png"/>收款小账本
+          </div>
+    </div>
+	  </div>
+	</body>
+</html>

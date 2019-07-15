@@ -1,0 +1,131 @@
+.state-overview .Info {
+  width: 202px;
+  height: 72px;
+  line-height: 72px;
+  text-align: center;
+  font-size: 18px;
+  color: #fff !important;
+  position: relative;
+}
+.state-overview .Info .icon{
+	display: inline-block;
+	width: 140px;
+	height: 30px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;	
+	
+}
+
+.state-overview .Info.green .icon{
+	background: url('../../static/images/sale_account_icon.png');
+	background-repeat: no-repeat;
+	background-position: left center; 
+}
+
+.state-overview .Info.red  .icon{
+	background: url('../../static/images/goods_quality_icon.png');
+	background-repeat: no-repeat;
+	background-position: left center; 
+}
+
+.state-overview .Info.blue .icon{
+	background: url('../../static/images/divide_detail_icon.png');
+	background-repeat: no-repeat;
+	background-position: left center; 
+}
+
+.state-overview .Info.yellow .icon{
+	background: url('../../static/images/service_rating_icon.png');
+	background-repeat: no-repeat;
+	background-position: left center; 
+}
+
+
+.state-overview .Info.green {
+  background-color: #87b87f;
+}
+
+.state-overview .Info.blue {
+  background-color: #6fb3e0;
+}
+
+.state-overview .Info.yellow {
+  background-color: #ffb752;
+}
+
+.state-overview .Info.red {
+  background-color: #d15b47;
+}
+.state-overview .Info .icon{
+  position: absolute;
+}
+.select-container{
+	margin-left: 16px;
+	
+}
+.select-container .select-wrapper{
+	width: 700px;
+	border: 1px solid #666;
+	float: left;
+}
+.select-container .select-btn-big{
+	width: 100px;
+	height: 82px;
+	line-height:82px;
+	background: #6fb3e0;
+	text-align: center;
+	float: left;
+	margin-left: 20px;
+	color: #fff;
+}
+.select-container .select-item{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	background: #f3f3f3;
+}
+.select-container .select-item:first-child{
+	background:#fff;
+}
+
+.select-container .select-item>div{
+		float: left;
+		padding-left: 10px;
+}
+.select-container .select-item>div>span{
+	color: #ff0000;
+}
+.table_menu_list{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

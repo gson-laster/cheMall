@@ -1,0 +1,257 @@
+/*newDeliveryAddress-start*/
+.DeliveryAdress a{
+    display: inline-block;
+}
+.DeliveryAdress.box {
+    background-color: #f3f3f3;
+}
+
+.wrapper {
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.wrapper .delivery_top {
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.wrapper .delivery_top .name {
+    float: left;
+}
+
+.wrapper .delivery_top .phone {
+    float: right;
+}
+
+.wrapper .delivery_top .address {
+    width: 100%;
+}
+
+.wrapper .address_container {
+    width: 100%;
+    margin: 0 auto;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.wrapper .address_container p {
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.wrapper .delivery_bottom {
+    margin: 0 12px;
+    padding: 8px;
+    line-height: 26px;
+}
+
+.wrapper .delivery_bottom .bottom_left {
+    float: left;
+}
+
+.wrapper .delivery_bottom .bottom_left img {
+    width: 18px;
+    vertical-align: top;
+    display: none;
+}
+
+.wrapper .delivery_bottom .bottom_left img.default_img {
+    display: block;
+    position: relative;
+    top: 0;
+}
+
+.wrapper .delivery_bottom .bottom_left span.default {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #dbdbdb;
+    vertical-align: top;
+    position: relative;
+    margin-right: 4px;
+    top: 2px;
+}
+
+.wrapper .delivery_bottom .bottom_left span.default_txt {
+    line-height: 20px;
+}
+
+.wrapper .delivery_bottom .bottom_left span.default_txt.selected {
+    color: #dd2727;
+}
+
+.wrapper .delivery_bottom .bottom_right {
+    float: right;
+}
+
+.wrapper .delivery_bottom .bottom_right img {
+    /*width: 0.24rem;*/
+    height: 17px;
+    margin-right: 4px;
+}
+
+.wrapper .delivery_bottom .bottom_right a {
+    line-height: 20px;
+}
+
+
+/*底部css*/
+.DeliveryAdress .DeliveryAdress_footer {
+    position: fixed;
+    bottom:30px;
+    width: 100%;
+    max-width: 640px;
+}
+
+.DeliveryAdress .DeliveryAdress_text {
+    margin: 0 20px;
+    background: #DD2727;
+    text-align: center;
+    color: white;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 6px;
+}
+
+.DeliveryAdress .space {
+    height:80px;
+    position: fixed;
+    width: 100%;
+    background-color: #fff;
+    bottom: 0;
+}
+
+
+/*newDeliveryAddress-end*/
+
+
+/*newAddress-start*/
+
+.NewAddress .user {
+    position: relative;
+    margin-bottom:20px;
+}
+
+.NewAddress .one {
+    margin: 0 12px;
+    padding-top: 12px;
+}
+
+.NewAddress .userinformation {
+    position: absolute;
+    left: 0;
+    height: 34px;
+    line-height: 34px;
+    color: #0E0E0E;
+}
+
+.NewAddress .userinput {
+    margin-left: 70px;
+    margin-right: 12px;
+}
+
+.NewAddress .one input {
+    height: 20px;
+    outline: none;
+    border: 1px solid #DBDBDB;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: "微软雅黑";
+    padding: 6px;
+}
+
+.NewAddress .btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
+}
+
+.NewAddress .btn button {
+    height: 34px;
+    /*padding: 6px;*/
+    border: none;
+    background: transparent;
+    border-left: 1px solid #E4E4E4;
+    outline: none;
+    width: 45px;
+    background-image: url("../img/NewAddress_03.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 10px;
+}
+
+.NewAddress .btn img {
+    height: 10px;
+}
+
+.NewAddress .pad_right {
+    padding-right: 45px;
+    box-sizing: border-box;
+}
+
+.NewAddress .user p {
+    /*font-size: 0.14rem;*/
+    color: #909090;
+    line-height:24px;
+}
+
+.NewAddress .eclipse {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border: 1px solid #ccc;
+    width: 50px;
+    height: 25px;
+    border-radius: 25px;
+    transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.NewAddress .circle {
+    transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    width: 23px;
+    height: 23px;
+    border: 1px solid #E0E0E0;
+    border-radius: 24px;
+}
+
+.NewAddress .footer_use {
+    /*background: white;*/
+    margin-top: 60px;
+}
+
+.NewAddress .use {
+    background: #DD2727;
+    color: white;
+    margin: 0 0.12rem;
+    margin-bottom: 0.6rem;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 0.04rem;
+    font-size: 15px;
+}
+
+.NewAddress .use.delete {
+    margin-bottom: 0.1rem;
+}
+.userinput input {
+    width: 100%;
+    height: 36px;
+    outline: none;
+    margin-bottom: 12px;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid #DBDBDB;
+    border-radius: 0.03rem;
+    background: transparent;
+    font-size: 0.14rem;
+    font-family: "微软雅黑";
+}
+
+
+/*newAddress-end*/

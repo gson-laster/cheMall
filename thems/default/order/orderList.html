@@ -1,0 +1,507 @@
+{extend name="/public/base" /} {block name="title"}我的订单-订单列表{/block} {block name="headcss"}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<style media="screen">
+  html {
+    background-color: #f5f5f5;
+  }
+
+  .header-title {
+    height: 42px;
+    line-height: 42px;
+    background: #fff;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+  }
+
+  .back_img {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    vertical-align: middle;
+  }
+
+  .scroll-content {
+    margin-top: 54px;
+  }
+
+  .scroll-content section:first-child {
+    margin-top: 60;
+  }
+</style>
+{/block} {block name="content"}
+
+<body>
+  <div class="box allOrders">
+    <div class="allOrder-top">
+      <div class="header-title">
+        <!--<div class="back_img" onclick="javascript:history.back(-1)"><img src="__HOME_STATIC__/img/back.png" alt="" style="width: 20px" /></div>-->
+        我的订单
+      </div>
+
+      <!--顶部tab选项-->
+      <div class="all_orders_tab">
+        <ul>
+          <li class="active" data-role="0" data-action="all">全部
+            <div class="line">
+            </div>
+          </li>
+          <li data-role="1" data-action="WAITPAY">待付款
+            <div class="line"></div>
+          </li>
+          <li data-role="2" data-action="WAITSEND">待发货
+            <div class="line"></div>
+          </li>
+          <li data-role="2" data-action="WAITRECEIVE">待收货
+            <div class="line"></div>
+          </li>
+          <li data-role="2" data-action="WAITCCOMMENT">待评价
+            <div class="line">
+
+            </div>
+          </li>
+        </ul>
+        <!--<div class="move_line"></div>-->
+      </div>
+      <!--顶部tab选项-->
+      <script>
+        var locationUrl = window.location.href;
+        var actionDataUrl;
+        var actionData;
+        //  根据url地址判断是否有&;
+        if (locationUrl.indexOf('&') >= 0) {
+          actionDataUrl = locationUrl.split('&')[1];
+          actionData = actionDataUrl.split('=')[1];
+        } else {
+          actionData = locationUrl.split('=')[1];
+        }
+
+        // 遍历顶部tab的data-action的值;
+        var $ordersTabItem = $('.all_orders_tab').find('li');
+        var action = '';
+        for (var i = 0; i < $ordersTabItem.length; i++) {
+          action = $($ordersTabItem[i]).data('action');
+          if(actionData==action){
+            $($ordersTabItem[i]).addClass('active').siblings().removeClass('active');
+          }
+        }
+      </script>
+    </div>
+    <div class="height_space">
+    </div>
+    <div class="scroll-container" style="background:#f5f5f5">
+      <div class="scroll-content">
+        {volist name='list' id='item'}
+        <section style="background:#fff;margin-bottom:0.08rem;">
+          <div class="header clear">
+            <div class="left">订单号: {$item.order_sn}</div>
+            <div class="right">
+              {if condition="$item['pay_status'] eq 1"}待付款 {elseif condition="($item['pay_status'] == 2) AND ($item['shipping_status']==
+              1) AND ($item['order_status']
+              <3) "}待发货
+              {elseif condition="($item[ 'pay_status']==2 ) AND ($item[ 'shipping_status']> 1) AND ($item['order_status']
+                < 3) "}待收货
+              {elseif condition="($item[ 'pay_status']==2) AND ($item[ 'shipping_status']> 1) AND ($item['order_status'] ==3)"} 待评价
+              {elseif condition="($item['order_status'] ==5)"} 已完成
+              {elseif condition="($item['order_status']==4)"}已取消 
+              {elseif condition="($item['order_status']==6)"} 已作废
+              {elseif condition="($item['order_status']==7)"}已完成 
+              {/if}
+            </div>
+            <div class="clear">
+            </div>
+            {php} $num = 0;{/php} {volist name="goods" id="gl"} {eq name="gl['order_id']" value="$item['order_id']"}
+            <div class="container clear" data-role="{$gl['spec_key']}" data-id="{$gl['goods_id']}">
+              <a href="{:url('home/order/detail',array('order_id'=>$item['order_id'],'shipping_code'=>$item['shipping_code'],'logisticCode'=>$item['invoice_no']))}">
+                <div class="img">
+                  <img src="{$gl['thumb']}" alt="">
+                </div>
+                <div class="desc">
+                  <p style="max-width:186px" class="text_overflow">{$gl["goods_name"]}</p>
+                  <p>{$gl["spec_key_name"]}</p>
+                </div>
+                <div class="price">
+                  <p>￥{$gl["goods_price"]}</p>
+                  <p>X{$gl["goods_num"]}</p>
+                </div>
+              </a>
+              {if condition="($item['pay_status'] ==2) AND ($item['shipping_status'] > 1) AND($item['order_status'] ==3)"}
+              <a href="{:url('home/Comment/editorcomment',array('rec_id'=>$gl['rec_id']))}"><input type="button" value="评价" class="evaluate_btn" /></a>
+              {/if}
+
+            </div>
+            {php} $num += $gl['goods_num'];{/php} {/eq} {/volist}
+            <div class="bottom">
+              <div class="bottom-up">
+                <p>共<span>{php}echo $num;{/php}</span>件商品 折扣: <span class="red">{$item["total_amount"] - $item['order_amount']}</span>&nbsp;&nbsp;合计: <span class="red">{$item["total_amount"]}</span>(含运费
+                  <span>{$item["shipping_price"]}</span>)</p>
+              </div>
+
+              <!--待付款-->
+              {if condition='$item["pay_status"] eq 1'}
+              <input class="btn" type="button" value="取消订单" onclick="cancelOrder({$item['order_id']},{$item['shipping_status']},'用户取消')"
+              />
+              <a href="{:url('home/Order/CashierDesk',array('order_id'=>$item['order_id'],'from'=>'orderlist'))}"> <input class="btn" type="button" name="" value="付款"></a>
+
+              <!--待发货-->
+              {elseif condition="($item['pay_status'] == 2) AND ($item['shipping_status'] == 1) AND ($item['order_status']
+              < 3) "}
+              <a href="{:url('home/message/dialogList')}?consignee_id=-2"><input class="btn " type="button" name=" " value="我要催单 "></a>
+              <a href="{:url( 'home/message/dialogList')}?consignee_id=-2"><input class="btn" type="button" name="" value="联系客服"></a>
+
+                <!--待收货-->
+                {elseif condition="($item[ 'pay_status']==2 ) AND ($item[ 'shipping_status']> 1) AND ($item['order_status']< 3)"}
+              <input class="btn " type="button" value="确认收货 " onclick="confirmOrder(this, {$item[ 'order_id']}, '用户收货') "/>
+               <!--快递方式为自提不能查看物流-->
+              {if condition='$item["shipping_code"] neq "ZITI" AND $item["shipping_code"] neq "JIAXIN"'}
+              <a href="{:url( 'home/Order/getshipping',array( 'shipping_code'=>$item['shipping_code'],'logisticCode'=>$item['invoice_no']))}">
+              <input class="btn" type="button" name="" value="查看物流"></a>
+              {/if}
+              <!--待评价-->
+              {elseif condition="($item[ 'pay_status']==2) AND ($item[ 'shipping_status'] > 1) AND ($item['order_status'] ==3)"}
+                  <!--已完成并且评价完-->
+              {elseif condition="($item['order_status'] ==5)"}
+              <div class="bottom-down"><input type="button" value="已完成" hidden/></div>
+              {elseif condition="($item['order_status'] ==6)"} 
+              {elseif condition="($item['order_status']) ==7"} {/if}
+            </div>
+          </div>
+        </section>
+        {/volist}
+      </div>
+    </div>
+    {block name="footermenu"}{include file="thems/default/public/Footer/footer.html"}{/block}
+  </div>
+</body>
+{/block} {block name="footerjs"}
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script>
+  window.alert = function (message) {
+    layer.open({
+      content: message,
+      skin: 'msg',
+      time: 2
+    })
+  }
+</script>
+<script type="text/javascript">
+  var scrollload;
+  $(document).ready(function () {
+    refreshFn();
+    //    调用tabclick()方法;
+    //    tabClick(0,'all',1,10);
+    $(".footer li").eq(4).addClass('active');
+    /*下拉刷新方法*/
+    function refreshFn() {
+      var page = 1;
+      var pagesize = 10;
+      var searUrl = '';
+      var winSear = window.location.search.split('?');
+      if (winSear.length > 1) {
+        searUrl = '&' + winSear[winSear.length - 1];
+      } else {
+        searUrl = '';
+      }
+      scrollload = new Scrollload({
+        container: document.querySelector('.scroll-container'),
+        content: document.querySelector('.scroll-content'),
+        loadMore: function (me) {
+          page++;
+          $.ajax({
+            url: '{:url("home/Myorders/getorder")}?page=' + page + '&pagesize=' + pagesize + searUrl,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (res) {
+              if (res.code === 1002) {
+                var goodsList = res.data['goods_list'];
+                var list = res.data['list'].data;
+                var html = htmlFn(list, goodsList);
+                $('.scroll-content').append(html);
+                if (res.data['list']['current_page'] > parseInt(res.data['list']['total'] / parseInt(
+                    res.data['list']['per_page']))) {
+                  me.lock();
+                  me.noMoreData();
+                } else {
+                  me.unLock();
+                }
+              } else {
+                me.lock();
+                me.noMoreData();
+              }
+            },
+            error: function (xhr, type) {
+              me.throwException();
+            }
+          })
+        }
+      })
+    }
+    //    tab切换
+    var $allOrdersTab = $('.all_orders_tab');
+    var moveLine = $allOrdersTab.find('.move_line').eq(0);
+    var tab_header = $allOrdersTab[0];
+    var itemWidth = tab_header.offsetWidth / 5;
+
+    //    给每个li添加点击事件;
+    $allOrdersTab.click(function (event) {
+      //      清除动画元素;
+      $('.scrollload-bottom').remove();
+
+      var _e = $(event.target);
+      var index = _e.index();
+      var dataRole, dataAction;
+      moveLine.css('left', itemWidth * index);
+      _e.addClass('active');
+      _e.siblings('li').removeClass('active');
+      dataRole = _e.data('role');
+      dataAction = _e.data('action');
+      //    清空之前内容;
+      $('.scroll-content').empty();
+
+      //      调用请求数据的方法;
+      tabClick(dataRole, dataAction, 1, 10);
+
+    });
+
+
+
+
+    //    点击tab调用的方法
+    function tabClick(payStatus, s, p, ps) {
+      var pay_status = payStatus || 0;
+      var ajaxStatus = s || 'all';
+      var page = p || 1;
+      var pageSize = ps || 10;
+      var data;
+      new Scrollload({
+        container: document.querySelector('.scroll-container'),
+        content: document.querySelector('.scroll-content'),
+        loadMore: function (me) {
+          scrollload.lock();
+          //        未传值，请求所有
+          if (pay_status === 0) {
+            data = {
+              'status': ajaxStatus,
+              'page': page,
+              'pageSize': pageSize
+            }
+          } else {
+            data = {
+              'pay_status': pay_status,
+              'status': ajaxStatus,
+              'page': page,
+              'pageSize': pageSize
+            }
+          }
+          page++;
+          $.ajax({
+            url: '{:url("home/Myorders/getorder")}',
+            type: 'GET',
+            data: data,
+            dataType: 'json',
+            async: true,
+            success: function (res) {
+              if (res.code === 1002) {
+                var goodsList = res.data['goods_list'];
+                var list = res.data['list'].data;
+                var html = htmlFn(list, goodsList);
+                $('.scroll-content').append(html);
+                if (res.data['list']['current_page'] > parseInt(res.data['list']['total'] / parseInt(
+                    res.data['list']['per_page']))) {
+                  me.lock();
+                  me.noMoreData();
+                } else {
+                  me.unLock();
+                }
+              } else {
+                me.lock();
+                me.noMoreData();
+              }
+            },
+            error: function (xhr, type) {
+              me.throwException();
+            }
+          })
+        }
+      });
+    }
+  })
+
+  /*取消订单*/
+  function cancelOrder(id, status, action) {
+    /*如果已经发货禁止取消*/
+    if (status > 1) {
+      alert("已经发货,禁止取消");
+      return false;
+    } else {
+      layer.open({
+        content: '确定要取消订单吗?',
+        btn: ['确定', '取消'],
+        yes: function (index) {
+          location.reload();
+          layer.close(index);
+          let data = {
+            'order_id': id,
+            'order_status': 4,
+            'action': action
+          };
+          $.ajax({
+            url: '{:url("home/order/cancel")}',
+            data: data,
+            type: 'POST',
+            dataType: 'json',
+            async: false,
+            success: function (res) {
+              console.log(res);
+              if (res.code > 0) {
+                window.location.href = '{:url("home/user/index")}';
+              }
+            },
+            error: function (xhr, type) {
+              console.log('ajax错误');
+            }
+          })
+        }
+      })
+    }
+  }
+
+  /*确认收货*/
+  function confirmOrder(obj, id, action) {
+    var specKey, goodsId;
+    /*获取spec_key的值*/
+    specKey = $(obj).parents('.bottom').prev('.container').data("role");
+    goodsId = $(obj).parents('.bottom').prev('.container').data("id");
+    var data = {
+      'order_id': id,
+      'order_status': 3,
+      'action': action,
+      'goods_id': goodsId,
+      'spec_key': specKey
+    }
+
+    $.ajax({
+      url: '{:url("home/order/cancel")}',
+      type: 'POST',
+      dataType: 'json',
+      data: data,
+      async: false,
+      success: function (res) {
+        if (res.code > 0) {
+          window.location.href = res.url;
+        }
+      },
+      error: function (xhr, type) {
+        console.log('ajax错误');
+      }
+    })
+  }
+
+  /*拼接字符串*/
+  function htmlFn(list, goodsList) {
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+      var rightText = '';
+      var bottomBtn = '';
+      var bottomHtml = '';
+      //            付款url
+      var payUrl = '{:url("home/Order/CashierDesk")}?order_id=' + list[i]["order_id"];
+      //         查看物流url
+      var checkUrl = '{:url("home/order/getshipping")}?shipping_code=' + list[i]["shipping_code"] + '&logisticCode=' +
+        list[i]["invoice_no"];
+
+
+      /*右上角文字和底部btn*/
+      if (list[i]['pay_status'] == 1) { //待付款;
+        rightText = '<div class="right">待付款</div>';
+        bottomBtn = '<input class="btn" type="button" value="取消订单" onclick="cancelOrder(' + list[i]["order_id"] + ',' +
+          list[i]["shipping_status"] + ',&#39;用户取消&#39;' + ')">' + '<a href="' + payUrl +
+          '"><input class="btn" type="button" value="付款"/></a>'
+      } else {
+        if (list[i]['shipping_status'] == 1 && list[i]['order_status'] < 3) { //待发货;
+          rightText = '<div class="right">待发货</div>';
+          bottomBtn = '<input class="btn" type="button" value="我要催单"></input>' +
+            '<input class="btn" type="button" value="取消订单" onclick="cancelOrder(' + list[i]["order_id"] + ',' + list[i]
+            ["shipping_status"] + ',&#39;用户取消&#39;' + ')">';
+
+        } else if (list[i]['shipping_status'] > 1 && list[i]['order_status'] < 3) { //待收货
+                 rightText = '<div class="right">待收货</div>';
+              // 判断是否是自提;
+              if(list[i]['shipping_code']!="ZITI"){
+                  bottomBtn = '<a href="' + checkUrl + '"><input class="btn" type="button" value="查看物流"/></a>' +
+               '<input class="btn" type="button" value="确认收货" onclick="confirmOrder(' + list[i]["order_id"] +
+            ',&#39;用户收货&#39;' +
+            ')"/>' 
+              }else{
+                bottomBtn =  '<input class="btn" type="button" value="确认收货" onclick="confirmOrder(' + list[i]["order_id"] +
+            ',&#39;用户收货&#39;' +
+            ')"/>' 
+              }
+        } else if (list[i]['shipping_status'] > 1 && list[i]['order_status'] == 3) {
+          rightText = '<div class="right">待评价</div>';
+          bottomBtn = ''; //待评价
+        }
+      }
+      if (list[i]['order_status'] == 4) {
+        rightText = '<div class="right">已取消</div>'
+      } else if (list[i]['order_status'] == 5) {
+        rightText = '<div class="right">已完成</div>';
+
+      } else if (list[i]['order_status'] == 6) {
+        rightText = '<div class="right">已作废</div>';
+
+      } else if (list[i]['order_status'] == 7) {
+        rightText = '<div class="right">已完成</div>'
+      }
+
+      var num = 0;
+      var container = '',
+        aUrl = '';
+      //      评价url
+
+      /*拼装container*/
+      for (var j = 0; j < goodsList.length; j++) {
+        var evaUrl = '{:url("home/Comment/editorcomment")}?rec_id=' + goodsList[i]["rec_id"];
+
+        if (list[i]['order_id'] === goodsList[j]['order_id']) {
+          aUrl = '{:url("home/order/detail")}?order_id=' + list[i]['order_id'] + '&shipping_code=' + list[i][
+            'shipping_code'
+          ] + '&logisticCode=' + list[i]['invoice_no'];
+          //          如果交易成功
+          if (list[i]['shipping_status'] > 1 && list[i]['order_status'] === 3) {
+            container += '<div class="clear"></div><div class="container clear"><a href="' + aUrl +
+              '"><div class="img"><img src="' + goodsList[j]["thumb"] + '" alt=""/></div><div class="desc"><p>' +
+              goodsList[j]["goods_name"] + '</p>' +
+              '<p>' + goodsList[j]["spec_key_name"] + '</p></div><div class="price"><p>￥' + goodsList[j]["goods_price"] +
+              '</p><p>X' + goodsList[j]["goods_num"] + '</p></div></a><a href="' + evaUrl +
+              '"><input type="button" value="评价" class="evaluate_btn"/></a></div>'
+          } else {
+            container += '<div class="clear"></div><div class="container clear"><a href="' + aUrl +
+              '"><div class="img"><img src="' + goodsList[j]["thumb"] + '" alt=""/></div><div class="desc"><p>' +
+              goodsList[j]["goods_name"] + '</p>' +
+              '<p>' + goodsList[j]["spec_key_name"] + '</p></div><div class="price"><p>￥' + goodsList[j]["goods_price"] +
+              '</p><p>X' + goodsList[j]["goods_num"] + '</p></div></a></div>';
+            num += goodsList[j]["goods_num"];
+          }
+
+        }
+      }
+      /*拼装bottom*/
+      bottomHtml += '<div class="bottom"><div class="bottom-up"><p>共<span>' + num +
+        '</span>件商品&nbsp;&nbsp;合计:<span class="red">' + list[i]["order_amount"] + '</span>(含运费<span>' + list[i][
+          "shipping_price"
+        ] + '</span>)</p></div>' +
+        '<div class="">' + bottomBtn + '</div>';
+      html +=
+        '<section style="background:#fff; border-bottom:1px solid #ddd"><div class="header clear"><div class="left">订单号:' +
+        list[i]["order_sn"] + '</div>' + rightText + container + bottomHtml + '</div></section>';
+    }
+    return html;
+  }
+</script>
+{/block}

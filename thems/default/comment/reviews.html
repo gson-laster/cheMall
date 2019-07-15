@@ -1,0 +1,235 @@
+{extend name='/public/base' /}
+{block name='title'}商品评价{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css"/>
+{/block}
+
+{block name='content'}
+<body>
+<div class="box">
+    <div class="review_header clear">
+        <div class="left">
+            <img src="{$goods['thumb']}" alt="">
+        </div>
+        <div class="right">
+            <p>{$goods['goods_name']|default=''}</p>
+            <p>{$goods['spec_key_name']}</p>
+        </div>
+    </div>
+    <div class="review_text">
+        <textarea name="review" id="review" cols="30" rows="10" placeholder="对您购买的商品进行评价" style="font-size: 0.16rem;border: 1px solid #eee"></textarea>
+    </div>
+    <div class="rating_title">评分:</div>
+    <div class="rating_detail clear">
+        <p>与描述相符:</p>
+        <div class="rating_starts">
+            <ul>
+                <li data-id="1" class="evaluate evaluate_empty"></li>
+                <li data-id="2" class="evaluate evaluate_empty"></li>
+                <li data-id="3" class="evaluate evaluate_empty"></li>
+                <li data-id="4" class="evaluate evaluate_empty"></li>
+                <li data-id="5" class="evaluate evaluate_empty"></li>
+            </ul>
+        </div>
+        <p class="rating_starts_text"><span>0</span> 星</p>
+    </div>
+    <div class="upload_title">上传图片:</div>
+    <div class="upload_pic">
+        <ul>
+            <li id="insertEle"><label for="uploadImage"><img src="__HOME_STATIC__/img/image.png" alt=""></label></li>
+        </ul>
+    </div>
+    <div class="review_submit">
+        <span>提交</span>
+    </div>
+    <input type="file" id="uploadImage" multiple="multiple" hidden="hidden"/>
+
+    {block name='footermenu'}{include file="thems/default/public/Footer/footer.html"}{/block}
+</div>
+{/block}
+
+{block name='footerjs'}
+<script type="text/javascript" src="__HOME_STATIC__/js/zepto.js"></script>
+<script type="text/javascript">
+  window.alert = function (content, time) {
+    let _t = time || 2
+    layer.open({
+      content: content
+      , skin: 'msg'
+      , time: _t
+    })
+  }
+  $(document).ready(function () {
+    let imgAddress = [], data, content, goods_rank, userName, evaluate, isImage;
+    let imgUrl = '';
+    $('.review_submit').find('span').click(function () {
+      let arrLis = $('.upload_pic').find('.img_item');
+      for (let i = 0; i < arrLis.length; i++) {
+        imgAddress.push($(arrLis[i]).data('role'));
+      }
+//      图片信息;
+      imgUrl = imgAddress.join('|$|');
+
+//      评论内容
+      content = $('#review').val();
+
+//      用户名;
+      userName = '{$Request.session.qt_nickname}' ? '{$Request.session.qt_nickname}' : '';
+
+//      判断好中差评
+      if (goods_rank <= 2 || !goods_rank) {
+        evaluate = 0;
+        console.log("差评");
+      } else if (goods_rank == 3) {
+        evaluate = 1;
+        console.log("中评");
+      } else {
+        evaluate = 2;
+        console.log("好评");
+      }
+
+//      判断是否有图
+      if (!imgUrl) {
+        isImage = 0;
+      } else {
+        isImage = 1;
+      }
+      data = {
+        'username': userName,
+        'content': content,
+        'goods_rank': goods_rank,
+        'img': imgUrl,
+        'rec_id': '{$goods["rec_id"]}',
+        'goods_id': '{$goods["goods_id"]}',
+        'user_id': '{$Request.session.qt_userId}',
+        'order_id': '{$goods["order_id"]}',
+        'evaluate': evaluate,
+        'is_img': isImage,
+        'add_time': <?php echo time()?>
+    }
+      $.ajax({
+        url: '{:url("home/Comment/addcomment")}',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        async: false,
+        success: function (res) {
+          if (res.code > 0) {
+            alert("评价成功");
+            setTimeout(function () {
+              window.location.href = '{:url("home/comment/getcomment")}?goods_id=' + {$goods["goods_id"]};
+            }, 1000)
+          }
+        },
+        error: function (xhr, type) {
+          console.log('ajax错误');
+        }
+      })
+    });
+      /*评分*/
+    let evaEles = $('.rating_starts').find('li');
+    for (let i = 0; i < evaEles.length; i++) {
+      $(evaEles[i]).click(function () {
+//        评分
+        goods_rank = $(evaEles[i]).data('id');
+        addEvaStyle(goods_rank);
+        $('.rating_starts_text').find('span').text(goods_rank);
+      });
+    }
+      /*     /!*匿名评价*!/
+       let num =0;
+       $('#anonymous').click(function () {
+       if(num==0){
+       $('.anonymous_eva').css('background-image','url("/thems/default/static/img/anonymous-eva.png")');
+       num=1;
+       }else{
+       $('.anonymous_eva').css('background-image','none');
+       num=0;
+       }
+       });*/
+  });
+
+
+  /*添加评分样式*/
+  function addEvaStyle(index) {
+    let evaEles = $('.rating_starts').find('.evaluate');
+    $(evaEles).removeClass('evaluate_red');
+    for (let i = 0; i < index; i++) {
+      $(evaEles[i]).addClass('evaluate_red').removeClass('evaluate_empty');
+    }
+  }
+
+  $('#uploadImage').bind("change", function () {
+    uploadImage(this, function () {
+        /*删除图片*/
+      let imgItems = $('.upload_pic').find('.img_item');
+      for (let i = 0; i < imgItems.length; i++) {
+        let num = 0;
+        $(imgItems[i]).click(function () {
+          if (num == 0) {
+            $(this).find('.delete_img').css({'display': 'block'});
+            $(this).find('.delete_img').click(function () {
+              $(this).parent('.img_item').remove();
+              let path = $(this).parent('.img_item').data('role');
+              $.ajax({
+                url: '{:url("api/UploadFiles/delImg")}',
+                type: 'POST',
+                dataType: 'json',
+                data: {'path': path},
+                success: function (res) {
+                  alert("删除成功")
+                },
+                error: function (xhr, type) {
+                  console.log("ajax错误");
+                }
+              })
+            });
+            num = 1;
+          } else {
+            $(this).find('.delete_img').css({'display': 'none'});
+            num = 0;
+          }
+        });
+      }
+    })
+  })
+
+
+  /*上传图片*/
+  function uploadImage(obj, fn) {
+    let files = obj.files;
+    let html = '';
+    if ($('.upload_pic').find('li').length > 4) {
+      alert('超过图片数量限制');
+      return false;
+    }
+    for (let i = 0; i < files.length; i++) {
+      if (!/image\/\w+/.test(files[i].type)) {
+        alert('请选择正确的图片格式');
+        return false;
+      }
+      let reader = new FileReader();
+      reader.readAsDataURL(files[i]);
+      reader.onload = function (event) {
+        let _that = this;
+        if ((event.total / 1024) / 1024 > 2) {
+          alert("文件大于2M");
+          return false;
+        }
+        $.ajax({
+          url: '{:url("api/UploadFiles/saveBase64Image")}?to_dir=Comment',
+          type: 'POST',
+          dataType: 'json',
+          async: false,
+          data: {formFile: this.result},
+          success: function (res) {
+            html = '<li class="img_item" data-role="' + res.url + '"><div class="delete_img">删除</div><img src="' + _that.result + '" alt=""/></li>';
+            $(html).insertBefore($('#insertEle'));
+            fn();
+          }
+        });
+      }
+    }
+  }
+</script>
+{/block}

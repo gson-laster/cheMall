@@ -1,0 +1,35 @@
+{extend name='/public/base' /} {block name='title'}绑定银行卡{/block} {block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/bind_credit_card.css" />
+{/block} {block name="content"}
+
+{block name="content"}
+<body style="background-color:#f3f3f3">
+  <div class="bind_credit_card">
+    <header class="header">申请说明：请认真填写信息，修改银行卡信息需联系客服。</header>
+    <ul class="lists">
+      <li>
+        <span>真实姓名</span>
+        <input type="text" placeholder="请输入真实姓名">
+      </li>
+      <li>
+        <span>银行卡号</span>
+        <input type="text" placeholder="银行卡号">
+      </li>
+      <li>
+        <span>开户银行</span>
+        <select name="" id="">
+          <option>中国银行</option>
+          <option>中国农业银行</option>
+          <option>中国工商银行</option>
+          <option>招商银行</option>
+          <option>浦发银行</option>
+        </select>
+      </li>
+      <li>
+        <span>手机号码</span>
+        <input type="text" placeholder="银行卡号">
+      </li>
+    </ul>
+  </div>
+</body>
+{/block}

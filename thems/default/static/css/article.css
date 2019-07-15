@@ -1,0 +1,98 @@
+.wenzhang_title {
+	margin-top: 8px;
+	min-height: 35px;
+	line-height: 35px;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 20px;
+}
+
+.time span {
+	line-height: 30px;
+	font-size: 14px;
+}
+
+.time .date {
+	padding-left: 20px;
+	color: #a1a1a1;
+}
+
+.text {
+	padding: 0 10px;
+	margin-top: 14px;
+}
+
+.time .writer {
+	font-size: 16px;
+	color: #4a6c92;
+	font-family: '微软雅黑';
+	padding-left: 10px;
+}
+
+.content .reading-count {
+	font-size: 14px;
+	color: #999;
+	padding-left: 10px;
+	height: 10px;
+	line-height: 10px;
+}
+
+.contain .text {
+	font-size: 14px;
+	line-height: 23px;
+	overflow-x: hidden;
+}
+
+.contain .text img {
+	margin: 0 auto;
+	margin-left: -2em;	
+	/*max-width: 250px;*/	
+	width: 100%;	
+}
+
+.content .counts {
+	font-size: 14px;
+	color: #a1a1a1;
+	margin-top: 4px;
+}
+
+.content .border-bottom {
+	width: 100%;
+	margin: 0 auto;
+	border: 1px dotted #ccc;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.text-img {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 10px;
+	height: 150px;
+	overflow: hidden;
+}
+.text-img > #bottom-img{
+	width: 100%;
+	margin-left: 0em;
+	min-width: 100%;
+}
+.content .follow{
+	padding: 0 10px;
+	text-align: center;
+	margin-top: 14px;
+}
+.content .follow img{
+	width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+

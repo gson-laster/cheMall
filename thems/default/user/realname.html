@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/common.css"/>
+		<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+		<script src="__HOME_STATIC__/js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>实名认证</title>
+		<style type="text/css">
+			.realname{
+				background: #F5F5F5;
+			}
+			.top{
+				background-image:url('__HOME_STATIC__/img/realname.png') ;
+				position: relative;
+				min-height: 170px;
+				height: 100%;
+			}
+			.content{
+				margin: 0 12px;
+				margin-top: 0.1rem;
+				background: white;
+				padding: 12px 0;
+			}
+			.text{
+				padding:8px 0;
+				padding-left: 30px;
+				padding-right: 12px;
+				position: relative;
+			}
+			.text span{
+				position: absolute;
+				line-height: 36px;
+			}
+			.text input{
+				width: 100%;
+				border: 1px solid #F8B756;
+				outline: none;
+				font-family: "微软雅黑";
+				padding-left: 10px;
+				box-sizing: border-box;
+				background: transparent;
+				line-height: 32px;
+				border-radius: 4px;
+			}
+			.blo{
+				margin-left:65px;
+				display: block;
+			}
+			.btn{
+				text-align: center;
+				margin-top: 14px;
+			}
+			.btn button{
+				background: #FF4400;
+				color: white;
+				padding: 6px 16px;
+				font-size: 14px;
+				border: none;
+				outline: none;
+				border-radius: 4px;
+			}
+			.bottom{
+				margin: 0 12px;
+				margin-bottom: 20px;
+				margin-top: 20px;
+				text-align: center;
+				font-size: 14px;
+				color: #B7B6B6;
+				line-height: 18px;
+			}
+			.bottom span{
+				line-height: 32px;
+				font-size: 15px;
+			}
+			.top_img{
+				padding-top: 16px;
+				padding-left: 12px;
+				padding-bottom: 14px;
+				width: 160px;
+				text-align: center;
+				overflow: hidden;
+			}
+			.top img{
+				width: 150px;
+			}
+			.top_img p{
+				margin-top: 8px;
+				font-size: 15px;
+				color: #fff;
+			}
+			.top_content{
+				position: absolute;
+				left: 0;
+				top: 0;
+				height: 100%;
+				margin-left: 188px;
+				padding-top: 26px;
+				box-sizing: border-box;
+			}
+			.top_content img{
+				width: 38px;
+				margin-left: 4px;
+			}
+			.color{
+				color: #FED2D6;
+				font-size: 16px;
+			}
+			.top_content p:nth-child(2){
+				font-size: 18px;
+				color: white;
+				margin: 12px 0;
+			}
+			.bank_name{
+				width: 100%;
+				border: 1px solid #F8B756;
+				outline: none;
+				font-family: "微软雅黑";
+				padding-left: 10px;
+				box-sizing: border-box;
+				background: transparent;
+				height: 32px;
+				border-radius: 4px;
+			}
+			.bank_box select{
+				appearance: none;
+				-webkit-appearance: none;
+				position: relative;
+				z-index: 2;
+			}
+			.bank_box button{
+				position: absolute;
+				height: 32px;
+				right: 12px;
+				top: 8px;
+				border: none;
+				outline: none;
+				background: transparent;
+				border-left: 1px solid #F8B756;
+				width: 50px;
+				text-align: center;
+				z-index: 1;
+			}
+			.bank_box button img{
+				height: 12px;
+			}
+			.real_ph{
+				    width: 100%;
+				    border: 1px solid #F8B756;
+				    font-family: "微软雅黑";
+				    padding-left: 10px;
+				    box-sizing: border-box;
+				    background: transparent;
+				    line-height: 32px;
+				    border-radius: 4px;
+			}
+			.LUploader-list li {
+			}
+		</style>
+	</head>
+	<body bgcolor="#F5F5F5">
+		<div class="box realname">
+			<section>
+				<div class="top">
+					<div class="top_img">
+						<div id="demo1">
+							<input style="visibility: hidden; width: 0;height: 0; overflow: hidden;" data-LUploader='demo1' name="cardimg" id="cardimg" data-form-file='basestr' data-upload-type='front' type="file" data-url="" />
+							<ul style="visibility: hidden; width: 0;height: 0; overflow: hidden;" class="LUploader-list"></ul>
+						</div>
+						{if condition="isset($real_info)"}{if condition="($real_info.status eq 1) OR ($real_info.status eq 0)" /}<img src="{$real_info.idcard_img}"/>{elseif condition="$real_info.status eq 2" /}<label for="cardimg"><img src="{$real_info.idcard_img}"/></label>{/if}{else /}<label for="cardimg"><img src="__HOME_STATIC__/img/realname_03.png"/></label>{/if}
+					<div class="cardshow">
+					</div>
+					<p>为保障您的资金安全！请把身份证和银行卡一起拍照上传 </p>
+					</div>
+					<div class="top_content">
+						<p class="color">认证状态:</p>
+						<p>{if condition="isset($real_info)"}{if condition="$real_info['status'] eq 0"}未审核
+							<img src="__HOME_STATIC__/img/realname_06.png"/>
+							{elseif condition="$real_info['status'] eq 1" /}审核通过{elseif condition="$real_info['status'] eq 2" /}审核失败
+							<img src="__HOME_STATIC__/img/realname_06.png"/>
+							{/if}{else /}未提交
+							<img src="__HOME_STATIC__/img/realname_06.png"/>
+							{/if}
+						</p>
+						<p class="color">(请填写相关信息)</p>
+					</div>
+				</div>
+			</section>
+			<section>
+			<form method="post" action='{:url('realname')}' enctype="multipart/form-data" onsubmit="return sub(this)">
+				<input data-title="身份证及银行卡照片" type="hidden" id="idcard_i" name="idcard_img"  {if condition="isset($real_info)"}value="{$real_info.idcard_img}" {else /}value=""{/if} />
+				{if condition="isset($real_info)"}
+					<input type="hidden" name="id" value="{$real_info.id}" />
+				{/if}
+				<div class="content">
+					<div class="text">
+						<span>真实姓名:</span><div class="blo"><input data-title="真实姓名" type="text" name="real_name" {if condition="isset($real_info)"}{if condition="$real_info.status neq 2"}disabled="disabled"{/if} value="{$real_info.real_name}" {else /}value=""{/if} /></div>
+					</div>
+					<div class="text">
+						<span>银行卡号:</span><div class="blo">
+							<input data-title="银行卡号" type="number" name="bank_card_code" {if condition="isset($real_info)"} {if condition="$real_info.status neq 2"}disabled="disabled"{/if} value="{$real_info.bank_card_code}" {else /}value=""{/if} />
+						</div>
+					</div>
+					{if condition="isset($real_info)"}
+						{if condition="$real_info.status eq 2"}
+							<div class="text">
+								<span>确认卡号:</span><div class="blo">
+									<input data-title="确认卡号" name="confirm_code" type="number" value="" />
+								</div>
+							</div>
+						{/if}
+						{else /}
+							<div class="text">
+								<span>确认卡号:</span><div class="blo">
+									<input data-title="确认卡号" name="confirm_code" type="number" value="" />
+								</div>
+							</div>
+					{/if}
+						<div class="text">
+						<span>开户银行:</span><div class="blo">
+						<div class="bank_box">
+							<select {if condition="isset($real_info)"}{if condition='($real_info.status eq 1) OR ($real_info.status eq 0)'}disabled="disabled"{/if} {/if}class="bank_name" id="bank_name" name="bank_name" value="中国银行">
+								<option {if condition="isset($real_info)"}{if condition='($real_info.bank_name eq "中国银行 ")'}selected="selected"{/if}{/if} value="中国银行 ">中国银行 </option>
+								<option {if condition="isset($real_info)"}{if condition='($real_info.bank_name eq "中国工商银行")'}selected="selected"{/if}{/if} value="中国工商银行">中国工商银行</option>
+								<option {if condition="isset($real_info)"}{if condition='($real_info.bank_name eq "中国农业银行")'}selected="selected"{/if} {/if}value="中国农业银行">中国农业银行</option>
+								<option {if condition="isset($real_info)"}{if condition='($real_info.bank_name eq "中国建设银行  ")'}selected="selected"{/if} {/if}value="中国建设银行  ">中国建设银行  </option>
+							</select>
+							<button><img src="__HOME_STATIC__/img/realname_04.png"/></button>
+						</div>	
+						</div>
+					</div>
+					<div class="text">
+					<span>手机号码:</span>
+					<div class="blo">
+						<div class="real_ph">
+							{$Request.session.qt_userPhone}
+						</div>
+						<input type="hidden" name="real_phone" value="{$Request.session.qt_userPhone}"/>
+					</div>
+					</div>
+				</div>
+					{if condition="isset($real_info)"}{if condition="($real_info['status'] eq 1) OR ($real_info['status'] eq 0)"}{else /}
+					<div class="btn">
+						<button type="submit">提交信息</button>
+					</div>
+					{/if}{else /}
+					<div class="btn">
+						<button type="submit">提交信息</button>
+					</div>
+					{/if}
+				</form>
+			</section>
+			<section>
+				<div class="bottom">
+					<span>温馨提示</span><br />余额提现需扣除6%的税费，2-3个工作日内到账。<br />关系到资金安全!请仔细核对以上相关信息!<br />通过认证的信息不能修改,如需修改信息请联系管理员,不便之处敬请谅解!
+				</div>
+			</section>
+		{block name="footermenu"}
+{/block}
+		</div>
+		<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__PUBLIC__/static/js/util.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="__HOME_STATIC__/js/LUploader.js">
+			
+		</script>
+		
+		<script type="text/javascript">
+			var cardshow=$(".cardshow");
+			var idcard_i=$("#idcard_i");
+			var oldsrc="";
+			{if condition="isset($real_info)"}
+				oldsrc='{php}echo str_replace("\\","/",$real_info["idcard_img"]){/php}';
+			{/if}
+			new LUploader(document.getElementById('cardimg'), {
+			    url: '{:url('api/UploadFiles/saveBase64Image',array('to_dir'=>'IDcardimg'))}', //post请求地址
+			    multiple: false, //是否一次上传多个文件 默认false
+			    maxsize: 102400, //忽略压缩操作的文件体积上限 默认100kb
+			    accept: 'image/*', //可上传的图片类型
+			    quality: 0.1, //压缩比 默认0.1  范围0.1-1.0 越小压缩率越大
+			    showsize: false, //是否显示原始文件大小 默认false
+			}, function(res) {
+			    if (res.code == 0) {
+			        idcard_i.val(res.url);
+			        var img='<label for="cardimg"><img src="'+res.url+'" /></label>'
+			        cardshow.empty();
+			        cardshow.append(img);
+			        var url=res.url;
+			        if (oldsrc&&oldsrc!="") {
+	    			        $.ajax({
+					          type: "Post",
+					          async: false,
+					          url: '{:url("api/UploadFiles/delImg")}',
+					          data: {
+					            'path': oldsrc
+					          },
+					          success: function (data) {
+					          		oldsrc=url;
+					          }
+					        });
+			        }
+			    } else {
+			        alert('上传失败')
+			    }
+			});
+		</script>
+		<script type="text/javascript">
+					var uid ={$Request.session.qt_userId},btn=$(".btn"),topimg=$(".top_img img"), idcard_i = $("#idcard_i");
+					var src="";//之前上传的照片
+					function sub(obj){
+						btn.prop('disabled','disabled');
+						var obj=$(obj),code,confirm_code;
+						var isok=true;
+						if (idcard_i.val() == "") {
+							alert("请上传身份证和银行卡");
+							return false;
+						}
+						var input=obj.find('input');
+						input.each(function(){
+							if ($(this).val()=="") {
+								alert("请填入"+$(this).attr('data-title'));
+								isok=false;
+								return false;
+							}
+							if ($(this).attr('name')=="bank_card_code") {
+								code=$(this).val();
+							}
+							if ($(this).attr('name')=="confirm_code") {
+								confirm_code=$(this).val();
+							}
+						})
+						if (confirm_code.trim()=="") {
+							alert("确认银行卡号不能为空");
+							isok=false;
+						}
+						if (code&&confirm_code&&code!=confirm_code) {
+							alert("两次输入的银行卡号不一致");
+							isok=false;
+						}
+						console.log(isok);
+						return isok;
+					}
+		</script>
+	</body>
+</html>

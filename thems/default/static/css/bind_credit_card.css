@@ -1,0 +1,96 @@
+.bind_credit_card{
+  width: 100%;
+  height: 50px;
+  background-color: #ed5564;
+  color: #fff;
+  text-align: center;
+  line-height: 50px;
+}
+.bind_credit_card .lists{
+  color: #000;
+}
+.bind_credit_card .lists li{
+  display: flex;
+  justify-content:space-between;
+  padding: 0 10px;
+  align-items: center;
+  background-color: #fff;
+  height: 46px;
+  margin-bottom: 10px;
+}
+.bind_credit_card .lists span{
+  margin-right:18px;
+}
+.bind_credit_card .lists input[type="text"]{
+  flex: 1;
+  border: 1px solid #fff;
+  padding: 4px 2px;
+}
+.bind_credit_card .lists select{
+  flex: 1;
+  border: 1px solid transparent;
+  padding: 4px 2px;
+}
+.bind_detail{
+  margin-top: 25px;
+}
+.bind_detail .detail{
+  margin: 0 20px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 4px;
+}
+.bind_detail .detail .red{
+  height: 6px;
+  background-color: #ed5564;
+}
+.bind_detail .detail .content{
+  margin:20px 24px auto 24px;
+}
+.bind_detail .content .item{
+  display: flex;
+  margin-bottom: 18px;
+  font-size: 16px;
+}
+.bind_detail .hint{
+  margin-top: 18px;
+  text-align: center;
+  font-size: 16px;
+}
+.bind_detail .hint .service{
+  color:#448aca;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,52 @@
+.SignUp{
+	background:#F0EFED ;
+}
+.SignUp .warry{
+	margin: 0 0.12rem;
+}
+.SignUp .warn{
+	color: #DF9F33;
+	padding: 0.18rem 0;
+}
+.SignUp .inputone input{
+	width: 100%;
+	color: #C8C8CA;
+	font-size: 0.14rem;
+	font-family: "微软雅黑";
+	border: 1px solid #DBDBDB;
+	height: 0.4rem;
+	padding-left: 0.1rem;
+	box-sizing: border-box;
+	padding-right: 0.9rem;
+	outline: none;
+}
+.SignUp .inputone{
+	position: relative;
+	margin-bottom: 0.2rem;
+}
+.SignUp .inputone .send{
+	border-left: 1px solid #DBDBDB;
+	position: absolute;
+	right: 0;
+	top: 0.08rem;
+	height: 0.24rem;
+	line-height: 0.24rem;
+	text-align: center;
+	width: 0.9rem;
+	color: #1C1C20;
+}
+.SignUp .pad_right input{
+	padding-right: 0.1rem;
+}
+.SignUp .submit button{
+	background: #D70030;
+	text-align: center;
+	color: white;
+	height: 0.42rem;
+	width: 100%;
+	border: none;
+	outline: none;
+	border-radius: 0.42rem;
+	margin-top: 0.24rem;
+	font-size: 0.14rem;
+}

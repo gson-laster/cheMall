@@ -1,0 +1,376 @@
+<!-- page specific plugin scripts -->
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<body>
+<style>
+    .td{
+        margin: 12px;
+    }
+</style>
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <!---->
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加运费模版</a>
+                      <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('delete')}"><i class="icon-trash"></i>批量删除</a>
+                    </span>
+                <span class="r_f">共：<b></b>条</span>
+            </div>
+            <!---->
+            <div class="table_menu_list">
+                <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                        <th width="80">ID</th>
+                        <th width="100">运费模版名称</th>
+                        <th width="80">排序</th>
+                        <th width="180">加入时间</th>
+                        <th width="70">状态</th>
+                        <th width="250">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="u"}
+                    <tr>
+                        <td><label><input type="checkbox" name="ids[]" value="{$u.id}" class="ace"><span class="lbl"></span></label></td>
+                        <td>{$u.id}</td>
+                        <td><u style="cursor:pointer" class="text-primary" onclick="member_show('张三','member-show.html','10001','500','400')"> {$u.name}</u></td>
+                        <td>{$u.zid}</td>
+                        <td>{$u.createtime}</td>
+                        <td class="td-status"><span class="label {if condition="$u['status'] eq '正常'"}label-success{else/}label-defaunt{/if} radius">{$u.status}</span></td>
+                        <td class="td-manage">
+                            <!--添加运费模板配置-->
+                            <a onClick="{if condition="$u['status'] eq '正常'"}member_stop(this,{$u.id}){else/}member_start(this,{$u.id}){/if}" href="javascript:;" title="{if condition="$u['status'] eq '正常'"}停用{else/}启用{/if}" class="btn btn-xs btn-success"><i class="icon-ok bigger-120"></i></a>
+                            <a href="{:url('shippingarea',['id'=>$u.id])}" class="btn btn-xs btn-info"><i class="icon-th bigger-120"></i></a>
+                            <a title="编辑" onclick="member_edit({$u.id})" href="javascript:;" class="btn btn-xs btn-info"><i class="icon-edit bigger-120"></i></a>
+                            <a title="删除" href="javascript:;" onclick="member_del(this,{$u.id})" class="btn btn-xs btn-warning"><i class="icon-trash  bigger-120"></i></a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+    <ul class=" page-content">
+        <li class="adderss"><label class="label_name">运费模版名称：</label><span class="add_name"><input name="name" type="text"  class="text_add" style=" width:350px" required data-title="运费模版名称" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss"><label class="label_name">选择快递：</label><span class="add_name" style="width: 100%;float: none">
+           <select name="delivery" id="select_logistics" title="" style="width:50%">
+               <option value='0'>请选择物流方式</option>
+               <option value="ANE">安能物流</option>
+               <option value="AXD">安信达快递</option>
+               <option value="BTWL">百世快运</option>
+               <option value="CITY100">城市100</option>
+               <option value="DBL">德邦</option>
+               <option value="EMS">EMS</option>
+               <option value="FEDEX">FEDEX联邦(国内件）</option>
+               <option value="FEDEX_GJ">FEDEX联邦(国际件）</option>
+               <option value="GDEMS">广东邮政</option>
+               <option value="GTO">国通快递</option>
+               <option value="GTSD">高铁速递</option>
+               <option value="HHTT">天天快递</option>
+               <option value="HTKY">百世快递</option>
+               <option value="JGSD">京广速递</option>
+               <option value="MHKD">民航快递</option>
+               <option value="QFKD">全峰快递</option>
+               <option value="SBWL">盛邦物流</option>
+               <option value="SF">顺丰快递</option>
+               <option value="ST">速通物流</option>
+               <option value="STO">申通快递</option>
+               <option value="STWL">速腾快递</option>
+               <option value="UC">优速快递</option>
+               <option value="WJWL">万家物流</option>
+               <option value="WXWL">万象物流</option>
+               <option value="XFEX">信丰快递</option>
+               <option value="YD">韵达快递</option>
+               <option value="YDH">义达国际物流</option>
+               <option value="YTO">圆通速递</option>
+               <option value="YTKD">运通快递</option>
+               <option value="YZPY">邮政平邮/小包</option>
+               <option value="ZENY">增益快递</option>
+               <option value="ZTE">众通快递</option>
+               <option value="ZTKY">中铁快运</option>
+               <option value="ZTO">中通速递</option>
+               <option value="ZTWL">中铁物流</option>
+               <option value="ZYWL">中邮物流</option>
+               <option value="AMAZON">亚马逊物流</option>
+               <option value="SUBIDA">速必达物流</option>
+               <option value="RFEX">瑞丰速递</option>
+               <option value="QUICK">快客快递</option>
+               <option value="HOTSCM">鸿桥供应链</option>
+               <option value="HPTEX">海派通物流公司</option>
+               <option value="HOTSCM">鸿桥供应链</option>
+               <option value="AYCA">澳邮专线</option>
+               <option value="PANEX">泛捷快递</option>
+               <option value="PCA">PCA Express</option>
+               <option value="UEQ">UEQ Express</option>
+           </select>
+            </span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss"><label class="label_name">排序：</label><span class="add_name"><input name="zid" type="text"  class="text_add" style=" width:350px" required data-title="排序" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
+     <label><input name="status" type="radio" checked="checked" value="正常" class="ace" data-role="add" id="normal"/><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+            <label><input name="status"type="radio" class="ace" value="禁用" data-role="add" id="forbidden"/><span class="lbl">关闭</span></label></span>
+            <div class="prompt r_f"></div>
+        </li>
+    </ul>
+</div>
+</body>
+<script type="text/javascript">
+
+
+    /*用户-添加*/
+    $('#member_add').on('click', function() {
+      openPanle('add', null);
+      layer.open({
+        type: 1,
+        title: '添加快递模板',
+        maxmin: true,
+        shadeClose: true, //点击遮罩关闭层
+        area: ['800px', '600px'],
+        content: $('#add_menber_style'),
+        btn: ['提交', '取消'],
+        yes: function(index, layero) {
+          var num = 0;
+          var str = "";
+            /*物流名称*/
+          var logisticsName=$('#select_logistics').val();
+          //不能为空
+          $(".add_menber input[type$='text']").each(function(n) {
+            if ($(this).attr('name') == 'name' && $(this).val() == "") {
+              layer.alert(str += "" + $(this).attr("data-title") + "不能为空！\r\n", {
+                title: '提示框',
+                icon: 0,
+              });
+              num++;
+              return false;
+            }
+          });
+          if(logisticsName=='0'){
+            layer.alert(str+='请选择快递',{
+              title:'提示框',
+              icon:0,
+            });
+            num++;
+            return false;
+          }
+          if (num > 0) {
+            return false;
+          } else {
+            var data = serializeData();
+            util.ajaxPost("{:url('add')}", data).done(function (res) {
+              if(res.code > 0){
+                layer.close(index);
+                layer.msg(res.msg);
+                setTimeout(function () {  window.location.href = res.url;},2000)
+              }else{
+                layer.msg(res.msg)
+              }
+            }).fail(function (err) {
+              layer.msg(err.status+"服务器发生错误")
+            });
+          }
+        }
+      });
+    });
+
+    /*用户编辑*/
+    function member_edit(id) {
+      openPanle('edit',id, function () {
+        layer.open({
+          type:1,
+          title:'修改快递模板',
+          maxmin:true,
+          shadeClose:false,
+          area: ['800px', '600px'],
+          content: $('#add_menber_style'),
+          btn: ['提交', '取消'],
+          yes:function (index,layero) {
+            var data = serializeData();
+            data+='&id='+id;
+            util.ajaxPost("{:url('add')}", data).done(function (res) {
+              if(res.code > 0){
+                layer.close(index);
+                layer.msg(res.msg);
+                setTimeout(function () {  window.location.href = res.url;},2000)
+              }else{
+                layer.msg(res.msg)
+              }
+            }).fail(function (err) {
+              layer.msg(err.status+"服务器发生错误")
+            });
+          }
+        })
+      });
+    }
+
+    /*用户删除*/
+    function member_del(obj,id) {
+      layer.confirm('确认删除吗?',function (index) {
+        adminAjax('Get','{:url("delete")}',util.jsonToUrlStr({"id":id}),false,function () {
+          $(obj).parents("tr").remove();
+          layer.msg('已删除',{
+            icon:1,
+            time:1000
+          });
+
+        })
+      })
+    }
+
+    /*用户-停用*/
+    function member_stop(obj,id) {
+      layer.confirm('确认停用么?',function (index) {
+        adminAjax('Get','{:url("api/base/changeStatu")}',util.jsonToUrlStr({"table":"transport","id_name":"id","id_value":id, "field":"status","value":0}),false,function (index) {
+          layer.msg("已停用",{
+            icon:5,
+            time:1000
+          });
+          $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs " onClick="member_start(this,'+id+')" href="javascript:;" title="正常"><i class="icon-ok bigger-120"></i></a>');
+          $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius">已停用</span>');
+          $(obj).remove();
+        })
+      })
+    }
+
+
+    /*用户-启用*/
+    function member_start(obj,id) {
+      layer.confirm('确认启用么',function (index) {
+        adminAjax('Get','{:url("api/base/changeStatu")}',util.jsonToUrlStr({"table":"transport","id_name":"id","id_value":id, "field":"status","value":1}),false,function (index){
+          layer.msg("已启用",{
+            icon:6,
+            time:1000
+          });
+          $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs btn-success" onClick="member_stop(this,'+id+')" href="javascript:;" title="停用"><i class="icon-ok bigger-120"></i></a>');
+          $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">正常</span>');
+          $(obj).remove();
+        })
+      });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*格式化数据*/
+    function serializeData(type) {
+
+      var type=type||'add';
+      var eles=$('*[data-role="add"]');
+      var str='';
+      var _d;
+        /*获取物流的值*/
+      var logisticVal=$('#select_logistics').val();
+
+
+      for(var i=0;i<eles.length;i++){
+        _d=$(eles[i]);
+        if(_d.attr('type')=='radio'){
+          if(_d.prop('checked')){
+            str+=_d.attr('name')+'='+_d.val()+'&';
+          }
+        }else{
+          str+=_d.attr('name')+'='+_d.val()+'&';
+        }
+      }
+      str+='transport_code='+logisticVal;
+      return str;
+    }
+
+</script>
+<script>
+  jQuery(function($) {
+
+    $('table th input:checkbox').on('click', function() {
+      var that = this;
+      $(this).closest('table').find('tr > td:first-child input:checkbox')
+        .each(function() {
+          this.checked = that.checked;
+          $(this).closest('tr').toggleClass('selected');
+        });
+
+    });
+    $('[data-rel="tooltip"]').tooltip({
+      placement: tooltip_placement
+    });
+    function tooltip_placement(context, source) {
+      var $source = $(source);
+      var $parent = $source.closest('table')
+      var off1 = $parent.offset();
+      var w1 = $parent.width();
+
+      var off2 = $source.offset();
+      var w2 = $source.width();
+
+      if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+      return 'left';
+    }
+  })
+  /*打开面板方法*/
+  function openPanle(type, id, fn){
+    if(type == 'add'){
+      //清空input
+      $(".add_menber input[type$='text']").each(function(n) {
+        $(this).val('');
+      });
+      $("#area_list").html('');
+    }else{
+      adminAjax('Get', '{:url('getTransById')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+        var data = res.data;
+        var arrInput =$('#add_menber_style').find('input');
+        var _e;
+        for (var i=0;i<arrInput.length;i++){
+          _e=$(arrInput[i]);
+          if(_e.attr('type')=='radio'){
+            if(data['status']=='正常'){
+              $('#normal').prop('checked',true);
+            }else if(data['status']){
+              $('#forbidden').prop('checked',true);
+            }
+          }else{
+            _e.val(data[_e.attr('name')]);
+          }
+        }
+            /*显示下拉选择*/
+        var transportVal =data['transport_code'];
+        var arrOption =$('#select_logistics').find('option');
+        var _o;
+        var text;
+        for (var i=0;i<arrOption.length;i++){
+          _o=$(arrOption[i]);
+            if(_o.val()==transportVal){
+              console.log(_o.text());
+              _o.prop('selected',true);
+              break;
+            }
+        }
+        fn&&fn();
+      }
+    );
+    }}
+
+</script>
+</body>
+</html>

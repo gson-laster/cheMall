@@ -1,0 +1,360 @@
+   html{
+     height: 100%;
+   }
+   body {
+     /* background-color: #f3f3f3; */
+     height: 100%;
+   }
+
+   input[type="button"] {
+     background: transparent;
+     border: none;
+     outline: none;
+   }
+
+   .container {
+     max-width: 640px;
+     width: 100%;
+     margin: 0 auto;
+     font-size: 14px;
+     /*background-color: #f3f3f3;*/
+     margin-bottom: 11px;
+   }
+
+   .swiper-container {
+     border-bottom: 1px solid #ccc;
+   }
+
+   .container .swiper-slide {
+     /*min-height: 250px;*/
+     height: 250px;
+     overflow: hidden;
+   }
+
+   .container .swiper-slide img {
+     /*min-height: 250px !important;*/
+   }
+
+   .content-container {
+     margin: 11px 0 0 0;
+     border-top: 1px solid #ccc;
+     /*border-bottom: 1px solid #ccc;*/
+     /*background-color: #f3f3f3;*/
+   }
+
+   .img {
+     width: 112px;
+     height: 112px;
+     overflow: hidden;
+     margin-top: 20px;
+     position: absolute;
+     top: 0;
+     left: 12px;
+   }
+
+   .img img {
+     /*height: 100%;
+    max-width: 320px;*/
+   width: 100%;
+   height: 100%;
+   /*min-height: 140px;*/
+  }
+@media only screen and (min-width: 320px) and (max-width: 350px) {
+	/*.img{
+	  width: 112px;
+	}
+ .img img{
+    min-height: 112px;
+  }*/
+     /*.describe{
+	  margin-left: 138px !important;
+	}*/
+}
+   .content-container .content {
+       /*margin-bottom: 5px;*/
+       position: relative;
+       /*min-height: 152px;*/
+       position: relative;
+       color: #343434;
+       background: #fff;
+   }
+
+   .shopPrice {
+     padding-top: 10px;
+     color: #F76601;
+     font-size: 14px;
+     height: 14px;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     white-space: nowrap;
+   }
+
+   .shopTitle {
+     line-height: 26px;
+     text-overflow: -o-ellipsis-lastline;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     display: -webkit-box;
+     -webkit-line-clamp: 2;
+     -webkit-box-orient: vertical;
+     margin-right: 20px;
+     font-size: 16px;
+   }
+  .describe{
+    /*padding-top: 20px;*/
+    /*margin-left: 140px;*/
+    font-size: 20px;
+      padding: 8px;
+  }
+  .shopcar_buy a{
+    display: inline-block;
+    /*margin-left: 8px;*/
+  }
+   .content-container .content:last-child {
+     margin-bottom: 0;
+   }
+
+   .content .shopcar_buy {
+     position: absolute;
+     bottom: 16px;
+     right: 14px;
+   }
+
+   .content .shopcar_buy span {
+     margin-right: 6px;
+     line-height: 20px;
+     margin-left: 4px;
+   }
+
+   .shopcar_buy img {
+     width: 15px;
+   }
+
+   .shopcar_buy .shopcar,
+   .shopcar_buy .buy {
+     padding: 0 2px;
+     height: 24px;
+     background-color: #d70030;
+     font-size: 12px;
+     color: #fff;
+     border-radius: 30px;
+     text-align: center;
+     line-height: 20px;
+     float: left;
+     display: flex;
+     justify-content: space-around;
+     align-items: center;
+   }
+
+   .shopcar_buy .shopcar {
+     margin-right: 6px;
+   }
+
+   .gonggao {
+     margin-top: 12px;
+     width: 100%;
+     overflow: hidden;
+   }
+.banner .swiper-slide{
+  min-height: 100px;
+}
+.i_call{
+  background: #FEC51F;
+  color: #FFFFFF;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+.position img{
+  height: 16px;
+  transform: translateY(-2px);
+}
+.position{
+  font-size: 16px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 80px;
+  text-align: center;
+}
+.position span{
+  padding:0 2px;
+
+}
+.seach{
+  height: 55px;
+  line-height: 55px;
+  background: #fff;
+  color: #666666;
+  position: relative;
+}
+.seachBtn{
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 56px;
+  text-align: center;
+  color: #666666;
+}
+.inputK{
+  margin-right:  56px;
+  margin-left: 80px;
+}
+.inputK input{
+  width: 100%;
+  height: 100%;
+  border: 1px solid #DBDBDB;
+  outline: none;
+  height: 30px;
+  line-height: 30px;
+  padding-left: 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.inputK input::-webkit-input-placeholder{
+  font-size: 16px;
+  color: #CDCDCD;
+}
+.scrollload-content .content{
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+.scrollload-content .content .left-img{
+    width: 92px;
+    height: 86px;
+    overflow: hidden;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+}
+.scrollload-content .content .left-img img{
+   width: 100%;
+}
+.scrollload-content .content .right-txt{
+    position: absolute;
+    left: 110px;
+    top: 10px;
+}
+.scrollload-content .content .shopTitle {
+   font-size: 18px;
+}
+.scrollload-content .content .distance, .scrollload-content .content .address{
+    font-size: 16px;
+    height: 30px;
+    line-height:20px;
+    color: #999
+}
+
+.scrollload-content .distance span:first-child{
+    background: #FD635F;
+    color: #fff;
+    display: inline-block;
+    padding: 2px;
+    margin-left: -5px;
+}
+.scrollload-content .address span:first-child{
+    background: #FECB11;
+    color: #fff;
+    display: inline-block;
+    padding: 2px;
+    margin-left: -5px;
+    margin-right: 5px;
+}
+.service_center_detail{
+  max-width: 640px;
+  margin: 0 auto;
+  /* display: none; */
+}
+.service_center_detail .service-line{
+  height: 10px;
+  width: 100%;
+  background-color: #ededed;
+}
+
+
+
+.service_center_detail .sub-desc {
+  width: 100%;
+  background-color: #fff;
+  height: 44px;
+  line-height: 44px;
+  padding-left: 10px;
+  font-size: 16px;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.service_center_detail .detail-list {
+  width: 100%;
+  background-color: #fff;
+  /* margin-top: 10px; */
+}
+
+.service_center_detail .detail-list .item {
+  margin: 0 10px;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.service_center_detail .detail-list .text {
+  height: 42px;
+  background: url('../img/phone_icon.png') no-repeat left center;
+  background-size: 20px;
+  padding-left: 26px;
+  color: #686868;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  line-height: 20px;
+}
+
+.service_center_detail .detail-list .location {
+  background: url('../img/addresslogo.png') no-repeat left center;
+  background-size: 20px;
+}
+
+.service_center_detail .detail-list .btns {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 42px;
+  margin: 0;
+}
+
+.service_center_detail .detail-list .btns a{
+  color: #fff;
+  font-size: 16px;
+  padding: 8px 14px;
+  background-color: #80c269;
+  margin: 36px auto;
+  border-radius: 2px;
+}
+.service_center_detail .detail-list .btns .line{
+  width: 1px;
+  height: 12px;
+  background-color: #d2d2d2;
+  padding: 0;
+}
+
+.service_center_detail .detail-list .btns a:last-of-type{
+  background-color: #fec51f;
+}
+.map-container{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: none;
+}
+
+.address span:last-child, .distance span:last-child{
+  padding-left: 4px;
+}
+
+

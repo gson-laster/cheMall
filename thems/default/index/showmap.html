@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>导航</title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Apttc2OLQjWTvhBRRfhHQQ2p"></script>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+		<style type="text/css">
+		  
+			#container{
+			  height: 100vh;
+			}
+			#r_result{
+			  position: fixed;
+			  bottom: 0;
+			  /*height: 60px;*/
+			 margin: 0 auto;
+			 height: 36%;
+			 overflow-y: scroll;
+			 overflow-x: hidden;
+			 background: #fff;
+			 width: 100%;
+			}
+			::-webkit-scrollbar {
+        width: 4px
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #f60
+      }
+      ::-webkit-scrollbar-corner {
+        width: 0;
+      }
+.loader{
+  margin-top: 200px;
+}
+		</style>
+	</head>
+	<body>
+	  <div class="box">
+	  <div class="loader">
+	  	
+	  </div>
+
+<div id="container">
+	
+</div>
+<div id="r_result">
+	
+</div>
+	  </div>
+	</body>
+	<script type="text/javascript">
+	  //展示地图
+      var point = new BMap.Point(116.331398,39.897445);
+      var geolocation = new BMap.Geolocation();
+      geolocation.getCurrentPosition(function(r){
+        if(this.getStatus() == BMAP_STATUS_SUCCESS){
+          navigation(r.point, {lat: {$detail['longitude']}, lng: {$detail['dimensionality']}}, r.address)
+        }
+        else {
+          alert('failed'+this.getStatus());
+        }
+      })
+function navigation(start, stop, address){
+  document.querySelector('.loader').className = 'none'
+  var map = new BMap.Map("container");
+  map.enableScrollWheelZoom(true);
+  map.enableInertialDragging();
+  map.centerAndZoom(new BMap.Point(start.lng, start.lat), 12);
+
+  var driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r_result", autoViewport: true}});
+  driving.search(address.province + address.city, '{$detail['address']}');
+}
+	</script>
+</html>

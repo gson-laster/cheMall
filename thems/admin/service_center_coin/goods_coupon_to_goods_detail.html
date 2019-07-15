@@ -1,0 +1,319 @@
+<link rel="stylesheet" href="__ADMIN_STATIC__/css/detail.css" />
+<style>
+    .ncm-goods-gift {
+        text-align: left;
+    }
+
+    .ncm-goods-gift ul {
+        display: inline-block;
+        font-size: 0;
+        vertical-align: middle;
+    }
+
+    .ncm-goods-gift li {
+        display: inline-block;
+        letter-spacing: normal;
+        margin-right: 4px;
+        vertical-align: top;
+        word-spacing: normal;
+    }
+
+    .ncm-goods-gift li a {
+        background-color: #fff;
+        display: table-cell;
+        height: 30px;
+        line-height: 0;
+        overflow: hidden;
+        text-align: center;
+        vertical-align: middle;
+        width: 30px;
+    }
+
+    .ncm-goods-gift li a img {
+        max-height: 30px;
+        max-width: 30px;
+    }
+
+    a.green {
+
+        background: #fff none repeat scroll 0 0;
+        border: 1px solid #f5f5f5;
+        border-radius: 4px;
+        color: #999;
+        cursor: pointer !important;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: normal;
+        height: 20px;
+        letter-spacing: normal;
+        line-height: 20px;
+        margin: 0 5px 0 0;
+        padding: 1px 6px;
+        vertical-align: top;
+    }
+
+    a.green:hover {
+        color: #FFF;
+        background-color: #1BBC9D;
+        border-color: #16A086;
+    }
+
+    .ncap-order-style .ncap-order-details {
+        margin: 20px auto;
+    }
+
+    .contact-info h3,
+    .contact-info .form_class {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .form_class i.fa {
+        vertical-align: text-bottom;
+    }
+
+    .ncap-order-details .tabs-panels dt {
+        text-align: left;
+        width: 60px
+    }
+
+    .transport-way {
+        width: 600px;
+        height: 100px;
+    }
+
+    .transport-way li {
+        display: inline-block;
+        float: left;
+        height: 20px;
+        line-height: 20px;
+        margin-top: 40px;
+        margin-left: 20px;
+        position: relative;
+    }
+
+    #shipping {
+        margin-left: 10px;
+        height: 34px;
+    }
+
+    #invoice_no {
+        height: 34px;
+    }
+
+    .page {
+        padding: 0px 1% 0 1%;
+    }
+
+    .pickSelf {
+        margin-left: 20px;
+        width: 140px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        color: #fff;
+        cursor: pointer;
+        background-color: #666;
+    }
+
+    .pickSelf.selected {
+        background-color: #ec5151;
+        color: #fff;
+    }
+</style>
+<div class="page">
+    <div class="ncap-order-style">
+        <div class="titile">
+            <h3></h3>
+        </div>
+        <form id="delivery-form" method="post">
+            <div class="ncap-order-details">
+                <div class="tabs-panels">
+                    <div class="misc-info">
+                        <dl>
+                            <dt>快递单号:</dt>
+                            {if condition="empty($detail.shipping_number)"}
+                            <dd><input type="text" value="" placeholder="请填写订单号"  id="shippind_number"></dd>
+                            {else/}
+                            <dd><input type="text" value="{$detail.shipping_number}"  id="shippind_number"></dd>
+                            {/if}
+                            <dt>下单时间:</dt>
+                            <dd>{$detail.createtime}</dd>
+                            <dt>申请数量:</dt>
+                            <dd>{$detail.goods_num}</dd>
+                        </dl>
+                    </div>
+                    <div class="addr-note">
+                        <h4>收货信息</h4>
+                        <dl>
+                            <dt>收货人</dt>
+                            <dd>{$detail.consignee}</dd>
+                        </dl>
+                        <dl>
+                            <dt>收货地址</dt>
+                            <dd>{$detail.address}</dd>
+                        </dl>
+                        <dl>
+                            <dt>电话</dt>
+                            <dd>{$detail.phone}</dd>
+                        </dl>
+                    </div>
+                    <div class="goods-info" style="display:none;">
+                        <h4>商品信息</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>申请的数量</th>
+                                    <th>申请会员</th>
+                                    <th>多少单位的货</th>
+                                    <th>发货时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="w30" style="text-align:center;">
+                                       {$detail.coupon_num}
+                                    </td>
+                                    <td style="text-align:center;">
+                                     {$detail.user_id}
+                                    </td>
+                                    <td class="w80">{$detail.goods_num}</td>
+                                    <td class="w60">{:date('Y-m-d',time())}</td>
+                                </tr>
+                        </table>
+                    </div>
+                    <!--配送方式-->
+                    <div class="transport-way">
+                        <ul>
+                            <li>配送方式
+                                <select name="shipping_code" id="shipping">
+                                <option value="0">请选择物流</option>
+                                {php}
+                                foreach($shipping_config as $k => $v){
+                                  $checked = '';
+                                  if($detail['shipping_code'] == $k){
+                                    $checked = 'selected';
+                                  }
+                                  echo '<option value="'.$k.'" '.$checked.'>'.$v.'</option>';
+                                }
+                                {/php}
+                                </select>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="contact-info" style="margin-top:10px;">
+                        <!--<h3>发货单备注</h3>-->
+                        <dl class="row">
+                            <dt class="tit"></dt>
+                        </dl>
+                        <dl class="row">
+                            <dd class="opt" style="margin-left:10px">
+                               {if condition="$detail.status == 1"}
+                                <a class="ncap-btn-big ncap-btn-green" onclick="dosubmit()" style="text-decoration:none;margin-top:20px;margin-left:-10px;">确认发货</a>
+                                <a class="ncap-btn-big ncap-btn-green" onclick="refuse()" style="text-decoration:none;margin-top:20px;margin-left:10px;">驳回</a>
+                               
+                               <!--<a class="ncap-btn-big ncap-btn-green" style="text-decoration:none;margin-top:20px;margin-left:-10px;">未审核</a>-->    
+                                {elseif condition="$detail.status == 2"/}
+                                {switch name="detail.shipping_status"}
+                                {case value="0"}
+
+                                {/case}
+                                {default/}
+                                <a class="ncap-btn-big ncap-btn-green" style="text-decoration:none;margin-top:20px;margin-left:-10px;">已发货</a>
+                                {/switch}
+                                {elseif condition="$detail.status == 3"}
+                                  <a class="ncap-btn-big ncap-btn-green" style="text-decoration:none;margin-top:20px;margin-left:-10px;">已驳回</a>    
+                                {/if}                              
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    function dosubmit() {
+        var $shipping = $('#shipping')
+        var $shipping_number = $('#shippind_number')
+        if(!$shipping_number.val()){
+            layer.alert('请填写快递单号',{
+                icon:2
+            })
+            return
+        }
+        console.log($shipping.val());
+        if (!$shipping.val()) {
+            layer.alert('请选择物流方式', {
+                icon: 2
+            });
+            return;
+        }
+        $.ajax({
+            url:'{:url("ServiceCenterCoin/doGoodsCouponToGoods")}',
+            type:'POST',
+            data:{
+                id:'{$detail.id}',
+                shipping_number:$shipping_number.val(),
+                shipping_code:$shipping.val(),
+                shipping_status:1,
+                status: 2
+            },
+            success:function(res){
+                if(res.code==2000){
+                   layer.alert(res.msg,{
+                       icon:2
+                   }) 
+                     window.location.href = '{:url("admin/ServiceCenterCoin/goodsCouponToGoodsLits")}' 
+                }else{
+                   layer.alert(res.msg,{
+                       icon:2
+                   }) 
+                     window.location.href = '{:url("admin/ServiceCenterCoin/goodsCouponToGoodsLits")}' 
+                }
+            },
+            error:function(){
+    
+            }
+        })
+    }
+    //拒绝
+    function refuse(){
+      layer.open({
+        content: '您确定驳回吗？'
+        ,btn: ['确定', '不要']
+        ,yes: function(index){
+          $.ajax({
+            url:'{:url("ServiceCenterCoin/doGoodsCouponToGoods")}',
+            type:'POST',
+            data:{
+                id:'{$detail.id}',
+                shipping_number: '',
+                shipping_code: '',
+                shipping_status:0,
+                status: 3
+            },
+            success:function(res){
+                if(res.code==2000){
+                   layer.alert(res.msg,{
+                       icon:2
+                   }) 
+                     window.location.href = '{:url("admin/ServiceCenterCoin/goodsCouponToGoodsLits")}' 
+                }else{
+                   layer.alert(res.msg,{
+                       icon:2
+                   }) 
+                     window.location.href = '{:url("admin/ServiceCenterCoin/goodsCouponToGoodsLits")}' 
+                }
+            },
+            error:function(){
+    
+            }
+        })
+        }
+      });
+    }
+</script>
+</body>
+
+</html>

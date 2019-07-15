@@ -1,0 +1,68 @@
+{extend name="public/base" /} {block name="headcss"}
+<link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/swiper-3.4.2.min.css">
+<link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/index.css">
+<style type="text/css">
+  .swiper-slide {
+    max-height: auto !important;
+    height: 100% !important;
+  } 
+  .container .hint{
+    padding-left: 10px;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    background-color: #ccc;
+  }
+</style>
+{/block} {block name="title"}首页{/block} {block name="headjs"}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/swiper-3.4.2.jquery.min.js"></script>
+<script src="__HOME_STATIC__/js/echo.min.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Apttc2OLQjWTvhBRRfhHQQ2p"></script> {/block} {block name="content"}
+
+<body>
+  <div class="container">
+    <div class="seach">
+      <div class="position">
+        <img src="__HOME_STATIC__/img/position.png" />
+        <span id="address"></span>
+      </div>
+      <div class="inputK"><input id="keyword" type="text" placeholder="请输入关键词进行搜索"/></div>
+      <div onclick="seach()" class="seachBtn">搜索</div>
+    </div>
+    <div class="hint">温馨提示:请到您附近的服务网点充值</div>
+    <div class="content-container scrollload-container">
+      <div class="scrollload-content">
+        <div class="content">
+          <div class="describe">
+            <a href="/home/index/servicecenterdetail/uid/1582.html?id=18">
+              <div class="left-img">
+                <img src="/public/upload/logo/2018/01-30/11034810846.png" alt=""> </div>
+              <div class="right-txt">
+                <p class="shopTitle">3232</p>
+                <div class="distance">
+                  <span>距离</span>
+                  <span>1630.60km</span>
+                </div>
+                <div class="address">
+                  <span>地址</span>
+                  <span>河北省/秦皇岛市/海港区</span>
+                </div>
+              </div>
+            </a>
+            <a href="/home/index/showmap/uid/1582.html?id=18">
+              <div class="i_call"> 一键导航 </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {include file='/public/Footer/footer'/}
+  </div>
+  <script>
+  </script>
+</body>
+{/block}
+</html>

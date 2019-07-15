@@ -1,0 +1,44 @@
+{extend name='/public/base' /} {block name='title'}我的业绩{/block} {block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/myachive.css" /> {/block} {block name="content"}
+
+<body style="background-color:#f3f3f3;">
+<section class="myachive">
+	<header class="myachive-header">
+		<p class="title">累积奖励</p>
+		<p class="text">{$total}</p>
+	</header>
+	<div class="content">
+		<ul class="lists">
+			<li class="item">
+				<a href="{:url('home/user_achive/achive_list', ['type' => 2])}">
+					<div class="number">{if condition="isset($divide_result[2])"}{$divide_result[2]}{else/}0{/if}</div>
+					<P class="text">销售业绩</P>
+				</a>
+			</li>
+			<li class="item">
+				<a href="{:url('home/user_achive/achive_list', ['type' => 4])}">
+					<div class="number">{if condition="isset($divide_result[4])"}{$divide_result[4]}{else/}0{/if}</div>
+					<P class="text">招商奖励</P>
+				</a>
+			</li>
+			<li class="item">
+				<a href="{:url('home/user_achive/achive_list', ['type' => 3])}">
+					<div class="number">{if condition="isset($divide_result[3])"}{$divide_result[3]}{else/}0{/if}</div>
+					<P class="text">利润分红</P>
+				</a>
+			</li>
+			<li class="item">
+				<a href="{:url('home/user_achive/achive_list', ['type' => 5])}">
+					<div class="number">{$user_coupon}</div>
+					<P class="text">订货额</P>
+				</a>
+			</li>
+		</ul>
+	</div>
+</section>
+{block name='footermenu'}
+{include file="thems/default/public/Footer/footer.html"}
+{/block}
+</body>
+{/block}
+

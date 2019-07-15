@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>会员充值</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/userRecharge.css"/>
+		    <link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/paypassword.css"/>
+		<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+	  <div class="box">
+	  	<section>
+	  	  <div class="title">
+	  	  	注意事项:充值成功不能撤销
+	  	  </div>
+	  	  <div class="content">
+	  	  	<span class="minititle">充值账号</span>
+	  	  	<div class="input">
+	  	  		<input onchange="change(this, 'to_phone')" type="text" placeholder="请输入要充值的账户" name=""  value="{$to_phone|default=''}" />
+	  	  	</div>
+	  	  </div>
+        <div class="content">
+          <span class="minititle">充值金额</span>
+          <div class="input">
+            <input onchange="change(this, 'to_number')" type="text" placeholder="请输入充值金额" name="" id="" value="" />
+          </div>
+          <div class="dangqian">
+          	当前可充值额度{$canUseNumber}元
+          </div>
+        </div>
+	  	</section>
+	  	<section>
+	  	  {if condition="$canUseNumber != 0"}
+	  	  <div onclick="sub()" class="btn">
+	  	  	确定充值
+	  	  </div>
+	  	  {/if}
+	  	</section>
+	  	       <div class="passwordcontent" style="display: none;">
+      <div class="password_box">
+        <div class="payexplain">
+          <span onclick="cancelpassword()">x</span>
+          请输入6位支付密码
+        </div>
+        <div class="paycode_box">
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix onepayinput" autofocus="autofocus" readonly style="border-left:1px solid #ccc"/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+        </div>
+        <!--唤起数字键盘-->
+        <input type="tel" name="" value="" class="pwd-input" id="pwd-input" unselectable="on">
+        <button onclick="confirmTransfer()">确认</button>
+      </div>
+    </div>
+	  </div>
+	</body>
+	     <script type="text/javascript">
+    var ajaxurl = '{:url("user/check_password")}'
+    var click = 1;
+  </script>
+<script src="__HOME_STATIC__/js/checkpassword.js" type="text/javascript" charset="utf-8"></script>
+  
+	<script type="text/javascript">
+	             {php}
+        $password = session('userInfo')['pay_password'];
+      {/php}
+        {empty name="password"}
+        layer.open({
+          content: '您还未设置支付密码,前往设置吗？'
+          ,btn: ['确定', '不要']
+          ,yes: function(index){
+            location.href = '{:url('user/checkpaypassword')}?to=1'
+          }
+        });
+        {/empty}
+	  var paramer = {
+	    to_phone: "{$to_phone|default=''}",
+	    to_number: ''
+	  }
+	     {if condition="$canUseNumber == 0"}
+        layer.open({
+          content: '当前没有可充值额度,跳转至商家充值吗？'
+          ,btn: ['确定', '不要']
+          ,yes: function(index){
+            location.href = "{:url('applyRechage')}"
+          }
+        });
+       {/if}
+		function sub(){
+		  if (paramer.to_phone == '') {
+	  	  layer.open({
+          content: '手机号不能为空'
+          ,skin: 'msg'
+          ,time: 2 //2秒后自动关闭
+        });
+        return
+		  }
+		  if (paramer.to_number == '' || paramer.to_number < 0) {
+        layer.open({
+          content: '金额不能为空且不能小于0'
+          ,skin: 'msg'
+          ,time: 2 //2秒后自动关闭
+        });
+        return
+		  }
+passwordshow();      
+		  
+
+		}
+		function callback(){
+		        $.ajax({
+        type:"post",
+        url:"{:url('userRechage')}",
+        data: paramer,
+        async:true,
+        success: function(res){
+          layer.open({
+            content: res.msg
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+          });
+          if(res.code == 2000) {
+            setTimeout(function(){
+              window.location.href = "{:url('user/index')}"
+            }, 2000)
+          }
+        }
+      });
+		}
+		function change(o, t){
+		  paramer[t] = $(o).val();
+		}
+	</script>
+</html>

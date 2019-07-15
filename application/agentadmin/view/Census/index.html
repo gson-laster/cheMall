@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__css/bootstrap.min.css">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__css/font-awesome.min.css">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__css/style.css">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__/assets/laydate/need/laydate.css">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__/assets/laydate/skins/default/laydate.css">
+
+    <script src="__AGENT_ADMIN_STATIC__assets/laydate/laydate.js"></script>
+    <title>会员统计</title>
+    <style>
+        #agentApplyCount span{
+            display: inline-block;
+            font-size: 14px;
+            width: 90px;
+        }
+        #agentApplyCount i{
+            color:#ff0000;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="margin clearfix">
+        <div class="cover_style" id="cover_style">
+            <!--内容-->
+            <!--左侧样式-->
+            <div class="">
+                <div class="search_style">
+                    <ul class="search_content clearfix">
+                        <!--查询条件-->
+                        <li><label class="l_f">选择查询日期：</label><input id="start" name="start_time" type="text" class="text_add inline laydate-icon"
+                                value="<?php echo date('Y-m-d')?>" style=" width:200px;padding:0 4px;"></li>
+                        <li><label class="l_f"></label><input id="end" type="text" name="end_time" class="text_add inline laydate-icon"
+                                placeholder="请选择日期" style="padding:0 4px;width:200px;"></li>
+                        <li style="width:90px;"><button type="submit" class="btn_search"><i class="fa fa-search"></i>查询</button></li>
+                    </ul>
+                </div>
+            </div>
+            <!--订单列表展示-->
+            <table class="table table-striped table-bordered table-hover" id="sample-table">
+                <thead>
+                    <tr>
+                        <!-- <th width="25px"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th> -->
+                        <th width="80px">查询日期</th>
+                        <th width="80px">下级推广会员</th>
+                        <th width="120px">下级代理申请人数</th>
+                        <th width="60px">下级代理申请费用</th>
+                        <th width="50px">下级订单数</th>
+                        <th width="50px">下级交易额</th>
+                        <th width="50px">我的分成</th>
+                        <th width="50px">下级分成</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td id="agentApplyCount"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="__AGENT_ADMIN_STATIC__js/jquery-1.9.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            laydate({
+                elem: '#start',
+                event: 'focus',
+                istoday: true
+            });
+            laydate({
+                elem: '#end',
+                event: 'focus',
+                istoday: true
+            });
+
+             // 获取开始日期和结束日期;
+            var $startTime;
+            var $endTime;
+            var time='<?php echo date("Y-m-d")?>';
+
+
+            // 第一次自动调用：
+            userCount($startTime,$endTime,function(res){
+                fillData(time,res);
+            })
+
+
+            // 给查选添加监听事件;
+            $('.btn_search').on('click', function () {
+                $startTime =$('#start').val();
+                $endTime =$('#end').val();
+                if($startTime && $endTime){
+                    time=$startTime+'至'+$endTime;
+                }else if($startTime && !$endTime){
+                    time=$startTime;
+                }else if(!$startTime && $endTime){
+                    time=$endTime;
+                }
+                userCount($startTime, $endTime, function (res) {
+                    fillData(time,res);
+                });
+            });
+
+
+            function userCount(startTime, endTime, cb) {
+                var sTime = startTime || '';
+                var eTime = endTime || '';
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: '{:url("UserCount")}',
+                    data: {
+                        'start_time': sTime,
+                        'end_time': eTime
+                    },
+                    success: function (res) {
+                        cb && cb(res);
+                    },
+                    error: function (xhr, type) {
+
+                    }
+                });
+
+            }
+
+            function fillData(time,data) {
+                var agentApplyCount =data['agent_acc'];
+                if(agentApplyCount.length<=0){
+                    agentApplyCount['first']=0;
+                    agentApplyCount['second']=0;
+                    agentApplyCount['third']=0;
+                    agentApplyCount['forth']=0;
+                }
+                var html='';
+                var $tds = $('tbody>tr').find('td');
+                // 设置日期显示;
+                $($tds[0]).text(time); 
+                // 下级代理推广会员;
+                $($tds[1]).text(data['user_count']);
+
+                // 下级代理申请人数;
+                html+='<span>区域代理:<i>'+agentApplyCount["first"]+'</i></span><span>市级代理:<i>'+agentApplyCount["second"]+'</i></span>'+
+                       '<span>县级代理:<i>'+agentApplyCount["third"]+'</i></span>'+'<span>经销商:<i>'+agentApplyCount["forth"]+'</i></span>';
+               $($tds[2]).html(html);  
+               
+               // 下级代理申请费用;
+               $($tds[3]).text(data['agent_free']);
+
+               //下级订单数;
+               $($tds[4]).text(data['order_num']);
+
+               //下级交易额;
+               $($tds[5]).text(data['child_order_amount']);
+
+               //我的分成;
+               $($tds[6]).text(data['myself_amount']);
+
+               //下级分成;
+               $($tds[7]).text(data['child_amount']);
+            }
+
+        });
+    </script>
+</body>
+
+</html>

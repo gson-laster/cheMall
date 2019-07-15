@@ -1,0 +1,12 @@
+<section class="footer_space">
+    <div class="footer">
+        <ul>
+            <li class="{php}if((request()->module()."/".request()->controller()."/".request()->action() == 'home/Index/index')||(request()->module()."/".request()->controller()."/".request()->action() == 'home/Index/serviceCenterDetail')){echo 'active';}{/php}"><a href="{:url('/home/index/index')}"><i class="foot-icon home"></i><p>首页</p></a></li>
+            <li class="{php}if(request()->module()."/".request()->controller()."/".request()->action() == 'home/Shopcar/index'){echo 'active';}{/php}"><a href="{:url('/home/shopcar/index')}"><i class="foot-icon shopcar"></i>
+              <i id="common-shopcar" class="{if condition='isset($shop_car_num) && $shop_car_num eq "0"'}none{/if}"></i>
+              <p>购物车</p></a></li>
+            <li class="{php}if(request()->module()."/".request()->controller()."/".request()->action() == 'home/Message/getusermsglist'){echo 'active';}{/php}"><a href="{:url('/home/Message/getUserMsgList')}"><i class="foot-icon service"></i><i id="common-message" class="{if condition='isset($has_no_read_message) && $has_no_read_message eq "0"'}none{/if}"></i><p>消息</p></a></li>
+            <li class="{php}if(request()->module()."/".request()->controller() == 'home/User'){echo 'active';}{/php}"><a href="{:url('/home/user/index')}"><i class="foot-icon user"></i><p>我的</p></a></li>
+        </ul>
+    </div>
+</section>

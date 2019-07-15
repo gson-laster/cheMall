@@ -1,0 +1,71 @@
+.DeliveryAdress .content{
+	position: relative;
+	border-bottom: 1px solid #DBDBDB;
+	padding-top: 0.12rem;
+	margin-left: 0.1rem;
+}
+.DeliveryAdress .edit{
+	position: absolute;
+	right: 0.2rem;
+	top:0.16rem;
+	border-left: 1px solid #DBDBDB;
+	height: 0.36rem;
+}
+.DeliveryAdress .edit img{
+	width: 0.24rem;
+	margin-left: 0.2rem;
+	margin-top: 0.06rem;
+}
+.DeliveryAdress .context p{
+	padding-top: 0.06rem;
+	padding-bottom: 0.1rem;
+	color: #979797;
+	font-size: 0.12rem;
+}
+.DeliveryAdress .context{
+	padding-right: 0.65rem;
+}
+.DeliveryAdress .context div{
+	font-size: 0.15rem;
+}
+.DeliveryAdress .context p span{
+	background: #DD2727;
+	color: white;
+	margin-right: 0.05rem;
+	padding: 0 0.04rem;
+}
+.DeliveryAdress .check{
+	position: absolute;
+	bottom: 0.2rem;
+}
+.DeliveryAdress .check img{
+	width: 0.3rem;
+}
+.DeliveryAdress .pad_left{
+	padding-left: 0.4rem;
+}
+.DeliveryAdress .pad_left div{
+	color: #DD2727;
+}
+.DeliveryAdress .DeliveryAdress_footer{
+	position: fixed;
+	bottom: 0.3rem;
+	width: 100%;
+	max-width: 640px;
+}
+.DeliveryAdress .DeliveryAdress_text{
+	margin: 0 0.2rem;
+	background: #DD2727;
+	text-align: center;
+	color: white;
+	height: 0.4rem;
+	line-height: 0.4rem;
+	border-radius: 0.04rem;
+}
+.DeliveryAdress .space{
+	height: 0.8rem;
+	position: fixed;
+	width: 100%;
+	background-color: #fff;
+	bottom: 0;
+}

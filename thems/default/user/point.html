@@ -1,0 +1,259 @@
+{extend name='/public/base'/} 
+{block name='title'}积分{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/wallet.css" />
+{/block}
+{block name="content"}
+{php}
+  $arr = array(1 => '购物币', '6' => '分红收入', '5' => '推广收入');
+{/php}
+<body style=" background-color: #EFEFEF;">
+    <div class="myremainder point" style="padding-bottom: 60px;">
+        <section class="purse-header-box text-center purse-f point-header">
+            <p class="text">当前积分</p>
+            <h2 class="content">{$record}</h2>
+        </section>
+        <section class="menu-select">
+            <ul class="lists">
+            <li class="item" id="pointToRemainder">
+                <span class="widthdraw"></span>
+                <p>积分转换余额</p>
+            </li>
+            <li class="item" id="poinToGoods">
+                <span class="recharge"></span>
+                <p>积分换货</p>
+            </li>
+            </ul>
+        </section>
+        <div onclick="cancel(event)" style="display: none;" class="bgblack">
+                <div class="selectT">
+                    <div class="table">
+                        <div class="table_row"><div class="table_cell">	请选择年</div><div class="table_cell"> 请选择月</div>  	</div>
+                        <div class="table_row"><div class="table_cell"><select onclick="stop(event)" onchange="date.oy(this, event)" id="year"></select></div><div class="table_cell"> <select onclick="stop(event)" onchange="date.om(this, event)" id="month"></select></div> </div>
+                        <div class="table_row"><div class="table_cell">	<div onclick="timeConfirm(false, event)" class="btn">取消</div></div><div class="table_cell"> <div onclick="timeConfirm(true)" class="btn confirm">确定 </div></div>  	</div>
+                    </div>
+                </div>
+            </div>
+        <div class="con scrollload-container">
+            <header class="dis-box header-menu point-top">
+                <div onclick="shuanxuantype()" class="shuaixuan">全部明细</div>
+                <h3 class="box-flex"></h3>
+                <!--<div onclick="shuaixuanshow()" class="shuaixuanriqi point-triangle">日期筛选</div>-->
+            </header>
+            <div style="display: none;" class="typelist">
+              {volist name="arr" id = "a"}
+                <div onclick="typeSelect({$key}, event)" data-type="{$key}">
+                {$a}
+                </div>
+              {/volist}
+            </div>
+          <div class="contentbox">
+            <!--<div class="income">2017年5月<span>收入：500&nbsp;&nbsp;&nbsp;支出：500</span></div>-->
+            <ul class="n-user-acc-log scrollload-content">
+                <!--<li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">
+                    <div class="dis-box">
+                        <div class="box-flex">
+                            <h5 class="f-05 col-7">积分换货</h5>
+                            <h6 class="f-05 col-7  m-top04">2018-1-19</h6>
+                        </div>
+                        <div class="box-flex">
+                            <p class="f-05 text-right plus">
+                               +500
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                <li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">
+                  <div class="dis-box">
+                      <div class="box-flex">
+                          <h5 class="f-05 col-7">充值奖励</h5>
+                          <h6 class="f-05 col-7  m-top04">2018-1-19</h6>
+                      </div>
+                      <div class="box-flex">
+                          <p class="f-05 text-right plus">
+                             +600
+                          </p>
+                      </div>
+                  </div>
+              </li>
+              <li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">
+                  <div class="dis-box">
+                      <div class="box-flex">
+                          <h5 class="f-05 col-7">转换月</h5>
+                          <h6 class="f-05 col-7  m-top04">2018-1-19</h6>
+                      </div>
+                      <div class="box-flex">
+                          <p class="f-05 text-right minus">
+                             -600
+                          </p>
+                      </div>
+                  </div>
+              </li>-->
+            </ul>
+          </div>
+        </div>
+    </div>
+   {block name='footermenu'} {include file="thems/default/public/Footer/footer.html"}{/block}
+    </div>
+</body>
+{/block}
+
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script type="text/javascript">
+  //设置月份
+  (function () {
+    var m = '';
+    var da = new Date()
+    var nowm = da.getMonth() + 1;
+    for (var i = 1; i < 13; i ++) {
+      var sel = nowm = i ? 'selected="selected"' : ''
+    	m = m + '<option ' + sel + ' value="' + i + '">'+ i +'月</option>'
+    }
+    $("#month").append(m);
+    var y = '';
+    var year = da.getFullYear();
+    while (year > 2015) {
+    	y = y + '<option value="' + year + '">'+ year +'年</option>';
+    	year --;
+    }
+    $("#year").append(y)
+  })()
+  Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+      "M+": this.getMonth() + 1, //月份
+      "d+": this.getDate(), //日
+      "h+": this.getHours(), //小时
+      "m+": this.getMinutes(), //分
+      "s+": this.getSeconds(), //秒
+      "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+      "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+  }
+</script>
+<script type="text/javascript">
+
+  //筛选$type = '', $coin_type = '', $from = '', $time = ''
+  var  bgblack = $(".bgblack"), 
+  selectT = $(".selectT"),
+  typelist = $(".typelist"),
+  contentbox = $(".scrollload-content"),
+  date = {
+    y: null,
+    m: null,
+    init: function() {
+      var d = new Date();
+      this.y = d.getFullYear();
+      this.m = d.getMonth() + 1;
+    },
+    oy: function(obj, e){
+      e.stopPropagation();
+      this.y = $(obj).val();
+    },
+    om: function (obj, e) {
+      e = e || window.event;
+      e.stopPropagation();
+      this.m = $(obj).val();
+    }
+  }, 
+  parameter = {
+    change_type: 1
+  };
+  date.init();
+  Date.prototype.setTime = function(){
+    month = this.getMonth() + 1;
+    return this.getFullYear() + '-' + (month < 10?('0'+ month):month) + '-' + (this.getDate() < 10?('0'+ this.getDate()):this.getDate()) + ' ' + (this.getHours() < 10?('0'+ this.getHours()):this.getHours()) + ':' + (this.getMinutes() < 10?('0'+ this.getMinutes()):this.getMinutes()) + ':' + (this.getSeconds() < 10?('0'+ this.getSeconds()):this.getSeconds()); 
+  }
+  function shuanxuantype(){
+    selectT.addClass('none')
+    bgblack.css('display', 'flex');
+    typelist.css('display', 'block')
+  }
+  function shuaixuanshow () {
+    selectT.removeClass('none');
+    bgblack.css('display', 'flex');
+  }
+  function typeSelect (fm, event){
+     var e = event || window.event;
+    e.preventDefault();
+    if (fm == 1) {
+      parameter.from = '';
+      parameter.coin_type = fm;
+    } else {
+      parameter.from = fm;
+      parameter.coin_type = '';
+    }
+    parameter.time = '';
+    //bgblack.css('display', 'none')
+    purchase();
+  }
+  function timeConfirm(c, e) {
+//  stop(e);
+    if (c) {
+	    parameter.time = date.y + '-' + date.m;
+      purchase()
+    }
+    //bgblack.css('display', 'none')
+  }
+  purchase();
+  function purchase(){
+    cancel();
+    // contentbox.empty();
+    $.ajax({
+    	type:"post",
+    	url:"{:url('BalanceChange/getBalanceChangeList')}",
+    	async:true,
+    	data: parameter,
+    	success: function(res) {
+    	  var data = res.data.data;
+    	  console.log(data)
+    	  var str = '';
+    	  for (var i = 0; i < data.length; i ++) {
+    	    var fuhao = data[i]['change_symbol'] == '-'?'minus':'plus';
+    	    
+    	  	str += '<li class="dis-shop-list p-r padding-all m-top1px b-color-f  ">' +
+                  '<div class="dis-box">'+
+                      '<div class="box-flex">'+
+                         ' <h5 class="f-05 col-7">'+ data[i]['change_remake'] +'</h5>'+
+                         ' <h6 class="f-05 col-7  m-top04">'+ new Date(data[i]['updatetime'] * 1000).setTime() +'</h6>'+
+                    '  </div>'+
+                      '<div class="box-flex">'+
+                          '<p class="f-05 text-right '+ fuhao +'">'+
+                          data[i]['change_symbol'] + data[i]['change_num'] +
+                         ' </p>'+
+                     ' </div>'+
+                 ' </div>'+
+             ' </li>'
+    	  }
+    	  contentbox.append(str)
+    	}
+    	  
+    });
+  }
+function stop (e) {
+    e = e || window.event;
+    e.stopPropagation();
+}
+  function cancel (event) {
+//  console.log(event)
+//  event.preventDefault();
+//  stop(event);
+    typelist.css('display', 'none');
+    bgblack.css('display', 'none');
+  }
+
+var $pointToRemainder = $('#pointToRemainder')
+var $poinToGoods = $('#poinToGoods')
+$pointToRemainder.on('click',function(){
+    window.location.href = '{:url("home/user/point_to_remainder")}'
+})
+$poinToGoods.on('click',function(){
+  window.location.href = '{:url("home/user/point_to_goods")}'
+})
+</script>
+{/block}

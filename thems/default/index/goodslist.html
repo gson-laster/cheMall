@@ -1,0 +1,357 @@
+{extend name='/public/base' /}
+{block name='title' }全名商城-商品列表{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+{/block}
+
+{block name='content'}
+<body>
+<div class="box goodsList">
+    <div class="main">
+        <section class="space">
+            <div class="seach">
+                <div class="back" onclick="javascript:history.back(-1);">
+                    <img src="__HOME_STATIC__/img/back.png"/>
+                </div>
+                <div onclick="SeachShow()" class="input_click">
+                    请输入您搜索的关键词
+                </div>
+                <div class="class">
+                    <img src="__HOME_STATIC__/img/class.png"/>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="sort">
+                <ul class="sort-item">
+                    <li class="default" onclick="orderFn(this, '')">所有</li>
+                    <li class="sales" onclick="orderFn(this,'buy_num')">销量 <span class="sales_arrow"></span></li>
+                    <li class="human" onclick="orderFn(this,'click_count')">人气 <span class="human_arrow"></span></li>
+                    <li class="price" onclick="orderFn(this,'shop_price')">价格 <span class="price_arrow"></span></li>
+                </ul>
+            </div>
+        </section>
+        <section>
+            <div class="scrollload-container">
+                <div class="list-container scrollload-content">
+                    {volist name="goods_list" id="goods_list_item"}
+                    <div class="list-item clear" name={$goods_list_item.id}>
+                        <a href="{:url('home/goods/index',['gid'=>$goods_list_item['id']])}">
+                            <img src="{$goods_list_item.thumb}" alt=""/>
+                            <p>{$goods_list_item.title}</p>
+                            <span>￥{$goods_list_item.shop_price}元</span>
+                        </a>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        </section>
+    </div>
+    <section class="seach_main" style="background-color: #fff;display: none">
+        <div class="seach_space">
+            <div class="seach_box">
+                <div class="input_box">
+                    <input type="text" placeholder="请输入搜索关键词"/>
+                    <div class="btn">
+                        搜索
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="min-height: 80px;" class="hot_search">
+                <div class="hot">最近搜索</div>
+                <div class="hot_result recent_search clear">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+            <!--<div class="seach_footer_space">-->
+            <div class="seach_footer">
+                点击关闭
+            </div>
+            <!--</div>-->
+        </div>
+    </section>
+    {block name='footermenu'}{include file="thems/default/public/Footer/footer.html"}{/block}
+</div>
+{/block}
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script type="text/javascript">
+  let num = 0;
+  let page = 2;
+  let pageSize = 10;
+  /*用变量存储搜索历史*/
+  let searchHistory = [];
+
+  $(document).ready(function () {
+      /*加载默认*/
+    $(".footer li").eq(1).addClass('active');
+    refreshFn();
+  });
+
+  /*点击关闭按钮*/
+  $('.seach_footer').click(function () {
+    page =2;
+//    debugger;
+    SeachHide();
+    refreshFn();
+  });
+
+  /*点击不同排序调用的方法*/
+  function orderFn(obj, order) {
+      /*清空动画元素*/
+    clearContent();
+    page = 1;
+    if ($(obj).attr('class').indexOf('red') <= 0) {
+      //    字体变红色,箭头变红色并且向上
+      $(obj).addClass('red').find('span').css({
+        'transform': 'rotate(180deg)',
+        'margin-top': '-0.08rem',
+        'border-top-color': 'red'
+      });
+      $(obj).siblings().removeClass('red');
+      $(obj).siblings().find('span').css({
+        'transform': 'rotate(0deg)',
+        'border-top-color': 'black',
+        'margin-top': '-0.03rem'
+      });
+
+        /*调用下拉刷新方法*/
+      refreshFn(order, 'desc');
+
+    } else if ($(obj).attr('class').indexOf('red') > 0) {
+      if (num === 0) {
+        num = 1;
+        //      红色箭头向下;
+        $(obj).find('span').css({'transform': 'rotate(0deg)', 'margin-top': '-0.03rem'});
+        refreshFn(order, 'asc');
+      } else if (num === 1) {
+        num = 0;
+        //  箭头变红色并且向上
+        $(obj).find('span').css({'transform': 'rotate(180deg)', 'margin-top': '-0.08rem', 'border-top-color': 'red'});
+        $(obj).siblings().removeClass('red');
+        $(obj).siblings().find('span').css({
+          'transform': 'rotate(0deg)',
+          'border-top-color': 'black',
+          'margin-top': '-0.03rem'
+        });
+
+          /*调用下拉刷新方法*/
+        refreshFn(order, 'desc');
+      }
+
+    }
+  }
+  /*下拉刷新方法*/
+  function refreshFn(order, type) {
+
+      /*调用清除动画和先前内容的方法*/
+    //clearContent();
+
+    let winSearc = window.location.search;
+    let arrSearch = winSearc.split('?');
+    let cate = util.getUrlParms('cate_id');
+    new Scrollload({
+      container: document.querySelector('.scrollload-container'),
+      content: document.querySelector('.scrollload-content'),
+      loadMore: function (me) {
+        var url;
+        if (order && type) {
+          url = '{:url("goodsList")}?pageSize=' + pageSize + '&page=' + page + '&order_type=' + order + '&order=' + type + "&cate_id=" + cate;
+        } else {
+          url = '{:url("goodsList")}?pageSize=' + pageSize + '&page=' + page + "&cate_id=" + cate;
+          ;
+        }
+        page++;
+        $.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'json',
+          success: function (res) {
+            if (res.code === 1002) {
+              let content = htmlFn(res.data.data);
+              if (page >= parseInt((res.data.total / parseInt(res.data.per_page)))) {
+                me.noMoreData();
+                me.lock();
+              } else {
+                me.unLock();
+              }
+              $('.scrollload-content').append(content);
+            } else {
+              me.noMoreData();
+            }
+          },
+          error: function (xhr, type) {
+            me.throwException();
+          }
+        })
+      }
+    });
+  }
+  //  拼接内容;
+  function htmlFn(data) {
+    if (data.length <= 0) {
+      return '';
+    } else {
+      var html = '';
+      for (let i = 0; i < data.length; i++) {
+        html += '<div class="list-item clear"><a href="/home/goods/index/gid/' + data[i].id + '.html"><img src="' + data[i].thumb + '" alt=""/><p>' + data[i].title + '</p><span>' + data[i].shop_price + '</a></span></div>'
+      }
+      return html;
+    }
+  }
+  /*点击搜索按钮*/
+  $('.input_box').find('.btn').click(function () {
+      /*获取输入框的值*/
+    var text = $('.input_box').find('input[type=text]').val();
+      /*去除所有空格*/
+    text = text.replace(/\s+/g, '');
+
+      /*判断是否为空*/
+    if (text.length <= 0) {
+      alert('不能为空');
+    } else {
+
+        /*隐藏搜索框*/
+      SeachHide();
+
+        /*调用搜索的方法*/
+      searchKeywordsFn(text, 0);
+
+        /*存储到localstorage*/
+      searchHistory.unshift(text);
+        /*调用数组去重方法*/
+      searchHistory = removeRepeat(searchHistory);
+        /*判断数组长度是否已经超过6个了*/
+      if (searchHistory.length > 6) {
+        searchHistory.pop();
+          /*将数组解析成字符串对象*/
+        let str = JSON.stringify(searchHistory);
+        util.storeSet('keywords', str);
+      } else {
+          /*将数组解析成字符串对象*/
+        let str = JSON.stringify(searchHistory);
+        util.storeSet('keywords', str);
+      }
+    }
+  });
+
+  /*点击搜索调用的方法*/
+  function searchKeywordsFn(words, _page) {
+    let page = _page ? _pgae : 0;
+    let pageSize = 10;
+    new Scrollload({
+      container: document.querySelector('.scrollload-container'),
+      content: document.querySelector('.scrollload-content'),
+      loadMore: function (me) {
+        page++;
+        $.ajax({
+          url: '{:url("goodsList")}?pageSize=' + pageSize + '&page=' + page + '&keywords=' + words,
+          type: 'GET',
+          dataType: 'json',
+          success: function (res) {
+            if (res.code == 1002) {
+              if (res.data.data.length > 0) {
+                var content = htmlFn(res.data.data);
+                $('.scrollload-content').append(content);
+                if (page >= parseInt((res.data.total / parseInt(res.data.per_page)))) {
+                  me.noMoreData();
+                  me.lock();
+                } else {
+                  me.unLock();
+                }
+              } else {
+                me.lock();
+                me.noMoreData();
+              }
+            }
+          },
+          error: function (xhr, type) {
+            me.throwException();
+          }
+        })
+      }
+    });
+  }
+  function SeachShow() {
+    $(".main").hide();
+    $(".seach_main").show();
+      /*获取localstorage的值*/
+    let keyWords = util.storeGet('keywords');
+    let arrKeyWords = [];
+    let html = '';
+//    第一次获取没有值
+    if (!keyWords) {
+      searchHistory = [];
+    } else {
+      arrKeyWords = JSON.parse(keyWords);
+      searchHistory = arrKeyWords;
+    }
+    if (arrKeyWords.length > 0) {
+        /*显示最近搜索*/
+      for (let i = 0; i < arrKeyWords.length; i++) {
+        html += '<li><div>' + arrKeyWords[i] + '</div></li>'
+      }
+      $('.recent_search').html(html);
+    }
+      /*点击最近搜索关键词跳转至结果页面*/
+    let liEles = $('.recent_search li').find('div');
+    for (let i = 0; i < liEles.length; i++) {
+      $(liEles[i]).click(function () {
+          /*清空之前内容*/
+        clearContent();
+          /*搜索按钮隐藏*/
+        SeachHide();
+          /*调用搜索关键字的方法*/
+        searchKeywordsFn($(this).text());
+      });
+    }
+  }
+  function SeachHide() {
+    $(".seach_main").hide();
+    $(".main").show();
+      /*清空input内容*/
+    $('.input_box').find('input[type=text]').val('');
+      /*清空排序之前残留的内容*/
+    clearContent();
+    clearTopStyle();
+
+  }
+  /*清空顶部选择样式*/
+  function clearTopStyle() {
+    var arrSpan = $('.sort-item>li').find('span');
+    for (var i = 0; i < arrSpan.length; i++) {
+      $(arrSpan[i]).removeAttr("style");
+      if ($(arrSpan[i]).parent("li").hasClass('red')) {
+        $(arrSpan[i]).parent("li").removeClass('red');
+      }
+    }
+  }
+
+  /*清空点击排序之前的内容*/
+  function clearContent() {
+      /*点击排序后清空先前内容*/
+    $('.scrollload-content').empty();
+      /*清空动画元素*/
+    $('.scrollload-bottom').remove();
+  }
+
+  /*数组去重*/
+  function removeRepeat(arr) {
+    var object = {};
+    var tmp = [];
+    for (var i = 0; i < arr.length; i++) {
+      if (!object[arr[i]]) {
+        object[arr[i]] = 1;
+        tmp.push(arr[i]);
+      }
+    }
+    return tmp;
+  }
+</script>
+{/block}

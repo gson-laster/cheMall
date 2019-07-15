@@ -1,0 +1,262 @@
+html,body{
+	min-height: 100%;
+	font-size: 12px;
+	font-family: "微软雅黑";
+}
+*{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+.box{
+	min-height: 100%;
+	max-width: 640px;
+	width: 100%;
+	margin: 0 auto;
+	font-size:14px;
+	height: 100%;
+}
+img{
+	vertical-align: middle;
+}
+.clear:after{
+	content: ".";     /*内容为“.”就是一个英文的句号而已。也可以不写。*/
+    display: block;   /*加入的这个元素转换为块级元素。*/
+    clear: both;     /*清除左右两边浮动。*/
+    visibility: hidden;      /*可见度设为隐藏。注意它和display:none;是有区别的。visibility:hidden;仍然占据空间，只是看不到而已；*/
+    line-height: 0;    /*行高为0；*/
+    height: 0;     /*高度为0；*/
+    font-size:0;    /*字体大小为0；*/
+
+}
+.layz-load{
+	background: url(../img/loading.gif) center center no-repeat;
+}
+.none{
+	display: none !important;
+}
+a{
+		color: inherit;
+		text-decoration: none;
+		color: inherit;-webkit-tap-highlight-color:rgba(0,0,0,0);
+	}
+a:link {
+color: inherit;
+text-decoration: none;-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+a:visited {
+color: inherit;
+text-decoration: none; -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+a:hover {
+color: inherit;
+text-decoration: none;
+-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+/*多余的文字为...(需加 -webkit-line-clamp:1||2||3)*/
+.text_overflow{
+	display: -webkit-box;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	-webkit-box-orient: vertical;
+}
+[v-cloak] {
+  display: none;
+}
+.scroll-content{
+    background-color:#f5f5f5;
+}
+.scrollload-bottom{
+	text-align: center;
+	clear: both;
+	float: none;
+}
+/**
+ * Lines
+ */
+@-webkit-keyframes line-scale {
+  0% {
+    -webkit-transform: scaley(1);
+            transform: scaley(1); }
+
+  50% {
+    -webkit-transform: scaley(0.4);
+            transform: scaley(0.4); }
+
+  100% {
+    -webkit-transform: scaley(1);
+            transform: scaley(1); } }
+@keyframes line-scale {
+  0% {
+    -webkit-transform: scaley(1);
+            transform: scaley(1); }
+
+  50% {
+    -webkit-transform: scaley(0.4);
+            transform: scaley(0.4); }
+
+  100% {
+    -webkit-transform: scaley(1);
+            transform: scaley(1); } }
+
+.line-scale > div:nth-child(1) {
+  -webkit-animation: line-scale 1s 0.1s infinite cubic-bezier(.2, .68, .18, 1.08);
+          animation: line-scale 1s 0.1s infinite cubic-bezier(.2, .68, .18, 1.08); }
+.line-scale > div:nth-child(2) {
+  -webkit-animation: line-scale 1s 0.2s infinite cubic-bezier(.2, .68, .18, 1.08);
+          animation: line-scale 1s 0.2s infinite cubic-bezier(.2, .68, .18, 1.08); }
+.line-scale > div:nth-child(3) {
+  -webkit-animation: line-scale 1s 0.3s infinite cubic-bezier(.2, .68, .18, 1.08);
+          animation: line-scale 1s 0.3s infinite cubic-bezier(.2, .68, .18, 1.08); }
+.line-scale > div:nth-child(4) {
+  -webkit-animation: line-scale 1s 0.4s infinite cubic-bezier(.2, .68, .18, 1.08);
+          animation: line-scale 1s 0.4s infinite cubic-bezier(.2, .68, .18, 1.08); }
+.line-scale > div:nth-child(5) {
+  -webkit-animation: line-scale 1s 0.5s infinite cubic-bezier(.2, .68, .18, 1.08);
+          animation: line-scale 1s 0.5s infinite cubic-bezier(.2, .68, .18, 1.08); }
+.line-scale > div {
+  background-color: #fff;
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  margin: 2px;
+  -webkit-animation-fill-mode: both;
+          animation-fill-mode: both;
+  display: inline-block; }
+input,
+input[type="submit"],
+ input[type="reset"],
+ input[type="button"],
+ button { -webkit-appearance: none; }
+
+ html {
+     font-size: 625%
+ }
+
+ @media screen and (min-width: 320px) {
+     html {
+         font-size: 88.85px;
+     }
+ }
+
+ @media screen and (min-width: 360px) {
+     html {
+         font-size: 100px;
+     }
+ }
+
+ @media screen and (min-width: 375px) {
+     html {
+         font-size: 104.17px;
+     }
+ }
+
+ @media screen and (min-width: 384px) {
+     html {
+         font-size: 106.67px;
+     }
+ }
+
+ @media screen and (min-width: 400px) {
+     html {
+         font-size: 111.11px;
+     }
+ }
+
+ @media screen and (min-width: 414px) {
+     html {
+         font-size: 115px;
+     }
+ }
+
+ @media screen and (min-width: 424px) {
+     html {
+         font-size: 117.78px;
+     }
+ }
+
+ @media screen and (min-width: 480px) {
+     html {
+         font-size: 133.33px;
+     }
+ }
+
+ @media screen and (min-width: 540px) {
+     html {
+         font-size: 150px;
+     }
+ }
+
+ @media screen and (min-width: 640px) {
+     html {
+         font-size: 170px;
+     }
+ }
+ .footer{
+ 	position: fixed;
+ 	bottom: 0;
+ 	width: 100%;
+ 	max-width: 640px;
+ 	background: white;
+ 	border-top: 1px solid #F3F3F3;
+ 	text-align: center;
+ 	padding-top: 0.06rem;
+ 	padding-bottom: 0.03rem;
+ 	z-index: 999999;
+ }
+ .footer li{
+ 	float:left;
+ 	width:20%;
+ }
+ .footer li img{
+ 	height: 0.18rem;
+ }
+ .footer li{
+ 	/*padding-top: 0.03rem;*/
+ 	color: #0E0E0E;
+ }
+ .footer li.active a{
+ 	color: #DF3F3F;
+ }
+ .footer_space{
+ 	height: 0.6rem;
+ }
+ .foot-icon{
+ 	display: block;
+ 	height: 0.2rem;
+ 	width: 100%;
+ 	background-position: center center;
+ 	background-repeat: no-repeat;
+ 	background-size: 0.18rem;
+ }
+ .foot-icon.home{
+ 	background-image: url(../img/footer_home_icon.png);
+ }
+ .foot-icon.category{
+ 	background-image: url(../img/cate.png);
+ }
+ .foot-icon.shopcar{
+ 	background-image: url(../img/footer_05.png);
+ }
+ .foot-icon.service{
+ 	background-image: url(../img/footer_07.png);
+ }
+ .foot-icon.user{
+ 	background-image: url(../img/footer_09.png);
+ }
+ /*active*/
+ .active .foot-icon.home{
+ 	background-image: url(../img/footer_03.png);
+ }
+ .active .foot-icon.category{
+ 	background-image: url(../img/cate_selected.png);
+ }
+ .active .foot-icon.shopcar{
+ 	background-image: url(../img/footer_shopcar_select_icon.png);
+ }
+ .active .foot-icon.service{
+ 	background-image: url(../img/footer_service_select_icon.png);
+ }
+ .active .foot-icon.user{
+ 	background-image: url(../img/footer_my_selected_icon.png);
+ }

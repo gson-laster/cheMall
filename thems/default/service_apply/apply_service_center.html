@@ -1,0 +1,123 @@
+{extend name="public/base" /} {block name="headcss"}
+<link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/swiper-3.4.2.min.css">
+<link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/index.css">
+<style type="text/css">
+  .swiper-slide {
+    max-height: auto !important;
+    height: 100% !important;
+  }
+  .scrollload-content .content .distance, .scrollload-content .content .address{
+    margin-top: 10px;
+  }
+  .i_call{
+    margin-top:12px;
+  }
+  .scrollload-content .content .left-img img{
+    min-height: 80px;
+  }
+  .scrollload-content .content .right-txt{
+    top: 16px;
+  }
+  .img img{
+    width: 65px;
+  }
+  .img{
+    padding-top: 108px;
+    text-align: center;
+    padding-bottom: 30px;
+  }
+  .wenzi{
+    text-align: center;
+    color: #7B848B;
+  }
+
+</style>
+{/block} {block name="title"}首页{/block} {block name="headjs"}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/swiper-3.4.2.jquery.min.js"></script>
+<script src="__HOME_STATIC__/js/echo.min.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Apttc2OLQjWTvhBRRfhHQQ2p"></script> {/block} {block name="content"}
+
+<body>
+  <div class="container">
+    <div class="seach">
+      <div class="position">
+        <img src="__HOME_STATIC__/img/position.png" />
+        <span id="address"></span>
+      </div>
+      <div class="inputK">
+        <input id="keyword" type="text" placeholder="请输入关键词进行搜索" />
+      </div>
+      <div onclick="seach()" class="seachBtn">搜索</div>
+    </div>
+    <div class="content-container scrollload-container">
+      <div class="scrollload-content">
+        <div class="scrollload-content">
+          {volist name="list" id="item"}
+          <div class="content">
+            <div class="describe">
+              <a href="javascript:;">
+                <div class="left-img">
+                <img src="{$item.thumb_pic}" alt=""> </div>
+                <div class="right-txt">
+                  <p class="shopTitle">{$item.title}</p>
+                  <div class="distance">
+                    <span>地区</span>
+                    <span>{$item.area}</span>
+                  </div>
+                </div>
+              </a>
+              <a href="javascript:;" onclick="addApply({$item.id})">
+                <div class="i_call">立即申请</div>
+              </a>
+            </div>
+          </div>
+          {/volist}
+        </div>
+      </div>
+    </div>
+        <div class="applyagent box none">
+      <div class="img">
+        <img src="__HOME_STATIC__/img/smilimg.png"/>
+      </div>
+      <div class="wenzi">
+        抱歉,您还未达到申请要求!
+      </div>
+    </div>
+    {include file='/public/Footer/footer'/}
+  </div>
+  <script type="text/javascript">
+    function addApply(id){
+      $.ajax({
+      	type:"post",
+      	url:"{:url('addApply')}",
+      	data:{
+      	  'server_id': id
+        },
+      	async:true,
+      	success: function(res){
+      	  if(res.code == 2000) {
+//    	    layer.msg('申请成功,联系客户，上传资料')
+            layer.open({
+              content: '申请成功,联系客户,上传资料'
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+            });
+          }else{
+//    	    layer.msg('申请失败，请重试！')
+            layer.open({
+              content: res.data
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+            });
+          }
+      	}
+      });
+    }
+  </script>
+</body>
+{/block}
+
+</html>

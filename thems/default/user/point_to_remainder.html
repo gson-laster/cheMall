@@ -1,0 +1,116 @@
+{extend name='/public/base'/} 
+{block name='title'}积分{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/point_to_remainder.css">
+    <link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/paypassword.css"/>
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+{/block}
+{block name="content"}
+<body style="background-color:#f3f3f3;">
+  <div class="point-to-remainder">
+      <header class="point-to-remainder-header">
+        <div class="point-wrapper">
+            <p class="text">当前积分</p>
+            <p class="content">{:session('userInfo')['record']}</p>
+        </div>
+      </header>
+      <section class="point-number">
+        <div class="left">
+            积分转换
+        </div>
+        <div class="right">
+          <input onchange="change('integral', this)" type="text" placeholder="请输入需要转换的积分数量">
+          <p class="percent">积分转换率10%</p>
+        </div>
+      </section>
+      <div onclick="remainder()" class="btn">确认提交</div>
+                <div class="passwordcontent" style="display: none;">
+      <div class="password_box">
+        <div class="payexplain">
+          <span onclick="cancelpassword()">x</span>
+          请输入6位支付密码
+        </div>
+        <div class="paycode_box">
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix onepayinput" autofocus="autofocus" readonly style="border-left:1px solid #ccc"/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+        </div>
+        <!--唤起数字键盘-->
+        <input type="tel" name="" value="" class="pwd-input" id="pwd-input" unselectable="on">
+        <button onclick="confirmTransfer()">确认</button>
+      </div>
+    </div>
+  </div>  
+{block name='footermenu'} {include file="thems/default/public/Footer/footer.html"}{/block}
+  <script type="text/javascript">
+    var ajaxurl = '{:url("user/check_password")}'
+    var click = 1;
+  </script>
+<script src="__HOME_STATIC__/js/checkpassword.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+     {php}
+        $password = session('userInfo')['pay_password'];
+      {/php}
+        {empty name="password"}
+        layer.open({
+          content: '您还未设置支付密码,前往设置吗？'
+          ,btn: ['确定', '不要']
+          ,yes: function(index){
+            location.href = '{:url('user/checkpaypassword')}?to=1'
+          }
+        });
+        {/empty}
+  var paramer = {
+    integral: '',
+    user_id: {:session('userInfo')['id']}
+  }
+  var click = 1
+	function remainder(){
+	  if (click) {
+	  	click = 0
+	  	if (paramer.integral == '' || paramer.integral < 100 || paramer.integral > {:session('userInfo')['record']}) {
+          layer.open({
+              content: '输入的积分不得小于100且不能大于{:session('userInfo')['record']}'
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+          });
+	  		click = 1
+	  		return
+	  	}
+passwordshow();      
+	  }
+	}
+	function callback(){
+	        $.ajax({
+        type:"post",
+        url:"{:url('Integral/integralChangeVb')}",
+        async:true,
+        data: paramer,
+        success: function(res){
+            layer.open({
+              content: res.data
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+            });
+          if (res.code == 200) {
+            setTimeout(function(){
+              location.href = '{:url('user/index')}'
+            }, 1500)
+          } else {
+            click = 1
+          }
+        }
+      });
+	}
+	function change(t, o){
+	  paramer[t] = $(o).val()
+	}
+	
+</script>
+</body>
+{/block}

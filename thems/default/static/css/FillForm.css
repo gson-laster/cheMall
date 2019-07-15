@@ -1,0 +1,342 @@
+.box{
+	background: #F3F3F3;
+}
+.FillForm .user_information{
+	position: relative;
+	background: white;
+	border-bottom: 1px solid #DBDBDB;
+	padding: 12px;
+}
+.FillForm .user_go{
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	margin-top:-12px;
+	height: 24px;
+	line-height: 24px;
+}
+.FillForm .user_address{
+	padding-top: 10px;
+}
+.FillForm .user_address img{
+	height: 16px;
+	margin-right: 6px;
+}
+.FillForm .user_go img{
+	height: 24px;
+}
+.FillForm .user{
+	margin-right: 30px;
+}
+.FillForm .text{
+	margin-left: 90px;
+	color: #909090;
+	margin-top: 10px;
+}
+.FillForm .shop_name{
+	color: #909090;
+	padding-bottom: 12px;
+}
+.FillForm .shop_name img{
+	height: 15px;
+}
+.FillForm .two{
+	background: white;
+}
+.FillForm .content{
+	margin-left: 12px;
+	/*border-bottom:1px solid #dbdbdb;*/
+	margin-top: 10px;
+  background: white;
+  padding-top: 10px;
+}
+.FillForm .content:last-child{
+	border:none;
+}
+.FillForm .warry{
+	position: relative;
+	padding-bottom: 26px;
+	border-bottom: 1px solid #DBDBDB;
+	min-height: 60px;
+}
+.FillForm .warry img{
+	width: 80px;
+	position: absolute;
+	height: 80px;
+}
+.FillForm .conntent{
+	margin-left: 90px;
+	margin-right: 80px;
+	min-height: 40px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+.FillForm .count{
+	position: absolute;
+	right: 12px;
+	top: 0;
+	color: #0E0E0E;
+}
+.FillForm .count p{
+	color: #9E9E9E;
+	text-align: right;
+}
+.FillForm .text span{
+	margin-right: 5px;
+}
+.FillForm .buyCount{
+	padding: 20px 0;
+	position: relative;
+	border-bottom: 1px solid #DBDBDB;
+	color: #4A4A4A;
+}
+.FillForm .item li{
+	float: left;
+}
+.FillForm .item{
+	position: absolute;
+	right: 12px;
+	top: 15px;
+}
+.FillForm .item ul{
+	border: 1px solid #DBDBDB;
+	border-radius: 4px;
+}
+.FillForm .item li{
+	padding:5px 10px;
+}
+.FillForm .item li:not(:first-child){
+	border-left: 1px solid #DBDBDB;
+}
+.FillForm .item li:not(:nth-child(2)){
+	color: #909090;
+}
+.FillForm .methods{
+	border-bottom: 1px solid #DBDBDB;
+	padding: 10px 12px;
+	color: #4A4A4A;
+	position: relative;
+}
+.FillForm .methods_1{
+	position: absolute;
+	right: 12px;
+	padding: 10px 0;
+	top: 0;
+}
+.btn{
+  display: inline-block;
+  border: 1px solid #f0f0f0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 24px;
+  margin: 0 4px;
+  cursor: pointer;
+}
+.moneyCount{
+	margin-top: 12px;
+	background: white;
+}
+.mar_left{
+	margin-left:12px;
+	padding-left: 0 !important;
+}
+.FillForm .FillForm_footer{
+	position: fixed;
+	bottom: 0;
+	max-width: 640px;
+	width: 100%;
+	height: 42px;
+	background: white;
+	border-top:1px solid #DBDBDB;
+	box-shadow: 0 1px 1px 2px #ddd;
+}
+.FillForm .submit{
+	height: 42px;
+	line-height: 42px;
+	background: #DD2727;
+	color: white;
+	font-size: 15px;
+	text-align: center;
+	width: 35%;
+	overflow: hidden;
+	float: right;
+}
+.FillForm .ActualPayment{
+	height: 42px;
+	line-height: 42px;
+	color: #0E0E0E;
+	background: #fff;
+	float: left;
+	width: 64%;
+	overflow: hidden;
+}
+.FillForm .ActualPayment span{
+	padding-left: 20px;
+}
+.FillForm .footer_space{
+	height: 40px;
+}
+.address_warrp{
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+	background: #fff;
+}
+.user_info{
+	height: 30px;
+	font-size: 16px;
+}
+.user_info .user_name{
+	width: 60%;
+	height: 30px;
+	line-height: 30px;
+	display: inline-block;
+	overflow: hidden;
+}
+.user_info .user_phone{
+	float: right;
+	height: 30px;
+	line-height: 30px;
+	display: inline-block;
+	overflow: hidden;
+}
+.user_address{
+	font-size: 14px;
+}
+.active{
+	background: #5D7897;
+	color: #fff;
+}
+.active .weui-icon-checked::before{
+	color: #fff !important;
+}
+.weui-picker__item{
+	height: 34px;
+	line-height: 34px;
+	padding:0 !important;
+}
+.noaddress{
+	height: 36px;
+	line-height: 36px;
+}
+.address_header{
+	height: 42px;
+	line-height: 42px;
+	background: #f5f5f5;
+	text-align: center;
+	border-bottom: 1px solid #ddd;
+}
+.address_header h3{
+	font-size: 14px;
+	font-weight: normal;
+}
+.address_selected{
+	height: 100%;
+	position: relative;
+}
+.address-add_btn{
+	position: absolute;
+	bottom:0;
+	left: 0;
+	right:0;
+	height: 38px;
+	line-height: 38px;
+	/*font-size:0.14rem;*/
+	text-align: center;
+	background: #F86D30;
+	color: #fff;
+}
+.add-address-warrp{
+	position: fixed;
+	top: 0;
+	bottom:0;
+	left: 0;
+	right:0;
+	background: #fff;
+	overflow: scroll;
+}
+.address_area_list{
+	margin-top:12px;
+}
+.address_area_list li{
+	height: 40px;
+	line-height: 40px;
+	border-top: 1px solid #ddd;
+	background: #eee;
+	padding: 0 12px;
+	/*font-size: 0.14rem;*/
+}
+.address_area_form{}
+.form-item{
+	height: 42px;
+	line-height: 42px;
+	border-bottom: 1px solid #ddd;
+	position: relative;
+}
+.form-item i{
+	position: absolute;
+	right: 15px;
+}
+.form-item i img{
+	height: 20px;
+}
+.form-item input{
+	border:none;
+	margin-left: 12px;
+	height: 40px;
+	width: 60%;
+	outline: none;
+}
+
+.loading{
+	width: 100px;
+	height: 50px;
+	background: rgba(0,0,0,0.6);
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -25px;
+	margin-left: -50px;
+	text-align: center;
+	color: #fff;
+	border-radius: 5px;
+}
+.count_{
+	text-align: center;
+	display: table;
+	border: 1px solid #f0f0f0;
+	border-radius: 5px;
+}
+.count_ li{
+	display: table-cell;
+	padding: 2px 6px;
+}
+.count_ li input{
+	border: none;
+	outline: none;
+	width: 20px;
+	text-align: center;
+}
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+}
+input::-webkit-outer-spin-button {
+-webkit-appearance: none;
+}
+.count_ li:first-child{
+	border-right: 1px solid #f0f0f0;
+	padding: 2px 10px;
+}
+.count_ li:last-child{
+	border-left: 1px solid #f0f0f0;
+	padding: 2px 10px;
+}

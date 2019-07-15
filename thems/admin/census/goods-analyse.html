@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link href="__ADMIN_STATIC__/assets/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="__ADMIN_STATIC__/css/style.css" />
+  <link rel="stylesheet" href="__ADMIN_STATIC__/assets/css/font-awesome.min.css" />
+  <link href="__ADMIN_STATIC__/assets/css/codemirror.css" rel="stylesheet">
+  <link rel="stylesheet" href="__ADMIN_STATIC__/font/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="__ADMIN_STATIC__/css/census.css">
+  <script src="__ADMIN_STATIC__/assets/js/ace-extra.min.js"></script>
+  <script src="__ADMIN_STATIC__/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+  <!-- <![endif]-->
+  <script src="__ADMIN_STATIC__/assets/dist/echarts.js"></script>
+  <script src="__ADMIN_STATIC__/assets/dist/chart/bar.js"></script>
+  <script src="__ADMIN_STATIC__/assets/dist/chart/line.js"></script>
+  <script src="__ADMIN_STATIC__/assets/js/bootstrap.min.js"></script>
+  <style>
+    .goods-analysis-container {
+      padding: 20px;
+      border: 1px solid #f3f3f3;
+      width: 850px;
+    }
+
+    .goods-analysis-container .item-container {
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .goods-analysis-container li {
+      width: 248px;
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    .goods-analysis-container .item-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333333;
+    }
+
+    .goods-analysis-container .item-content {
+      text-align: center;
+      margin: 10px 0;
+      background-color: #f3f3f3;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      color: #666666;
+    }
+
+    .goods-analysis-container .item-content.red {
+      background-color: #d15b47;
+      color: #fff !important;
+    }
+
+    .goods-analysis-container .item-bottom {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .goods-analysis-container .item-bottom {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333333;
+    }
+
+    .goods-analysis-container .item-bottom .right {
+      color: #d15b47;
+    }
+  </style>
+</head>
+
+<body>
+  <div class=" page-content clearfix">
+    <div class="transaction_style">
+      <ul class="state-overview clearfix">
+        <a href="{:url('sailer_count')}">
+          <li class="Info green" style="color:#fff;">
+            销售统计
+            <span class="icon"></span>
+          </li>
+        </a>
+        <a href="{:url('Census/devide_detail')}">
+          <li class="Info blue" style="color:#fff;">
+            分成明细
+            <span class="icon"></span>
+          </li>
+        </a>
+        <!--<li class="Info yellow" style="color:#fff;">
+          服务质量
+          <span class="icon"></span>
+        </li>-->
+        <a href="{:url('Census/goodsAnalyse')}">
+          <li class="Info red" style="color:#fff;">
+            商品分析
+            <span class="icon"></span>
+          </li>
+        </a>
+      </ul>
+    </div>
+    <div class="select-time-container">
+      <form class="" action="{:url('Census/goodsAnalyse')}" method="get">
+        <div class="search_style">
+          <ul class="search_content clearfix">
+            <li><label class="l_f">开始时间</label><input value="" class="inline laydate-icon" id="start"
+                name="start" style=" margin-left:10px;cursor:pointer"></li>
+            <li><label class="l_f">结束时间</label><input class="inline laydate-icon" id="end" name="end" style=" margin-left:10px;cursor:pointer"></li>
+            <li style="width:90px;"><button id="submit" type="submit" class="btn_search"><i class="fa fa-search"></i>查询</button></li>
+          </ul>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="goods-analysis-container">
+    <ul class="item-container">
+      <li class="clearfix">
+        <div class="item-title">
+          最热销商品
+        </div>
+        <div class="item-content">
+          <div class="content-detail">
+            {$hot_sailer.goods_name|default=''}
+          </div>
+        </div>
+        <div class="item-bottom">
+          <div class="left">
+            成交笔数
+          </div>
+          <div class="right">
+            {$hot_sailer.number|default=0}
+          </div>
+        </div>
+      </li>
+      <li class="clearfix">
+        <div class="item-title">
+          销售金额最多
+        </div>
+        <div class="item-content">
+          <div class="content-detail">
+            {$money_best.goods_name|default=''}
+          </div>
+        </div>
+        <div class="item-bottom">
+          <div class="left">
+            成交金额
+          </div>
+          <div class="right">
+            {$money_best.goods_total|default=0}
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-title">
+          获得利润最多
+        </div>
+        <div class="item-content">
+          <div class="content-detail">
+            {$profit_best.goods_name|default=''}
+          </div>
+        </div>
+        <div class="item-bottom">
+          <div class="left">
+            获得利润
+          </div>
+          <div class="right">
+            {$profit_best.profit|default=0}
+          </div>
+        </div>
+      </li>
+      <!--<li class="clearfix">
+        <div class="item-title">
+          访客最多
+        </div>
+        <div class="item-content">
+          <div class="content-detail">
+            暂无
+          </div>
+        </div>
+        <div class="item-bottom">
+          <div class="left">
+            访客数
+          </div>
+          <div class="right">
+            暂无
+          </div>
+        </div>
+      </li>-->
+      <!--<li class="clearfix">
+        <div class="item-title">
+          成交率最大
+        </div>
+        <div class="item-content">
+          <div class="content-detail">
+            暂无
+          </div>
+        </div>
+        <div class="item-bottom">
+          <div class="left">
+            成交率
+          </div>
+          <div class="right">
+            暂无
+          </div>
+        </div>
+      </li>-->
+    </ul>
+  </div>
+  <script>
+    //时间选择
+    laydate({
+      elem: '#start',
+      event: 'focus'
+    });
+    laydate({
+      elem: '#end',
+      event: 'focus'
+    });
+    $('.item-container').on('click', 'li', function (e) {
+        $(this).find('.item-content').addClass('red').parent('li').siblings().find('.item-content').removeClass('red');
+    });
+  </script>
+</body>
+
+</html>

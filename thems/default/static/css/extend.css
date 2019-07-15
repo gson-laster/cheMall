@@ -1,0 +1,73 @@
+html body {
+  width: 100%;
+  height: 100%;
+}
+
+.box.extend {
+  height: 100%;
+  position: relative;
+}
+
+.extend .big_bg {
+  height: 100%;
+  text-align: center;
+  padding: 10px 0 0 0;
+}
+
+.extend .content {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  width: 120px;
+  margin-left: -60px;
+  text-align: center;
+}
+
+.extend .content>img {
+  width:80px;
+}
+
+.extend .content h2{
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.extend .content p{
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.extend .big_bg>img {
+  width: 90%;
+}
+.extend .code{
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  margin-left: -32px;
+  width: 86px;
+}
+
+.extend .code>img {
+  width: 64px;
+}
+
+.extend .bottom-line{
+  position: relative;
+  margin:30px auto 0 auto;
+}
+.extend .bottom-line > img{
+  width: 100%;
+}
+.extend p{
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  margin: -12px auto;
+  
+}
+
+
+
+
+

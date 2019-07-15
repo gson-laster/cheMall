@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>配货劵明细</title>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="__HOME_STATIC__/css/coupon.css" />
+  </head>
+  <body style="background-color: #F3F3F3;">
+    {php}
+      $trading_stamp = session('userInfo')['trading_stamp'];
+    {/php}
+    <div class="box coupon-warrp">
+      <div class="header">
+        <p style="font-size: 14px">我的赠品劵</p>
+        <p>{$trading_stamp |default = 0}</p>
+        <p><a href="{:url('Integral/exchangetra')}">立即兑换</a></p>
+      </div>
+      <div class="lists">
+        {empty name="data"}
+        <div class="empty-list-item">暂无记录</div>
+        {else/}
+        {volist name="data" id="l"}
+        <div class="list">
+          <p>{$l['change_remake']}</p>
+          <p>{:date('Y-m-d h:i:s',$l['updatetime'])}</p>
+          {php}
+            if($l['change_symbol'] == '+'){
+              $c = 'add';
+            } else {
+              $c = 'reduce';
+            }
+          {/php}
+          <div class="pos {$c}">
+            {$l['change_symbol']}{$l['change_num']}</div>
+        </div>
+        {/volist}
+        {/empty}
+      </div>
+    </div>
+  </body>
+</html>

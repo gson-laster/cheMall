@@ -1,0 +1,163 @@
+{extend name='/public/base' /}
+{block name='title'}在线充值{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+{/block}
+{block name="content"}
+	<body>
+		<div class="box recharge">
+			<section>
+					<div class="one">
+					<ul>
+						<li onclick="liclick(this,2)">自定义金额</li>
+						<li onclick="liclick(this,1)">选择金额</li>
+					</ul>
+					<div class="clear">
+						
+					</div>
+				</div>
+			</section>
+			<section style="background: #F3F3F3; height: 20px;"></section>
+			<section>
+				<div id="two" class="content">
+					<div class="choice">
+						请输入您要申请的金额(元)
+					</div>
+					<div class="self">
+						<input style="color: black;" onchange="change(this)" type="number" placeholder="请输入整数" />
+					</div>
+				</div>
+				<div id="one" class="content" style="display: none;">
+					<div class="choice">
+							请选择您要申请的金额
+					</div>
+					<div class="money">
+						<ul>
+							<li><button onclick="recharge(this,500)">500元</button></li>
+							<li><button  onclick="recharge(this,1000)">1000元</button></li>
+							<li><button  onclick="recharge(this,3000)">3000元</button></li>
+							<li><button  onclick="recharge(this,5000)">5000元</button></li>
+						</ul>
+						<div class="clear">
+							
+						</div>
+					</div>
+				</div>
+					<div class="sm">
+						申请说明:验证的用户每日单笔转账<span style="color: #DD4B39;">5万元</span>。
+					</div>
+			</section>
+			<section class="recharge_footer_space">
+				<div onclick="sublimt()" class="recharge_footer">
+					确认申请
+				</div>
+			</section>
+		</div>
+	</body>
+{/block}
+{block name="footerjs"}
+	<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+	<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var uid={$Request.session.qt_userId};
+		var type=2;
+		var othermoney=500;
+		function liclick(obj,num){
+			var obj=$(obj);
+			obj.css('color','#DD4B39');
+			obj.siblings().css('color','#333333');
+			obj.css('border-bottom','3px solid #DD4B39');
+			obj.siblings().css('border-bottom','none');
+			if(num==1){
+				$("#two").css('display','none');
+				$("#one").css('display','block');
+			}
+			if(num==2){
+				$("#one").css('display','none');
+				$("#two").css('display','block');
+			}
+			type=num;
+		};
+		function recharge(obj,num){
+			othermoney=num;
+			var obj=$(obj);
+			obj.css('background','#DD4B39');
+			obj.css('color','white');
+			obj.parents('li').siblings().children('button').css('background','white');
+			obj.parents('li').siblings().children('button').css('color','#DD4B39');
+		};
+		var click=true;//
+		function sublimt(){
+		  var loading = //提示
+        layer.open({
+          skin: 'msg',
+          type: 2,
+          content: '正在申请充值...',
+	        time: false
+        });
+			if(click){
+			click=false;
+			var money="";
+			if (type==2) {
+				var money=$(".self input").val();
+			}
+			if (type==1) {
+				money=othermoney+"";
+			}
+//        money<100||
+				if(!money||money.trim()==""||money.indexOf('.')!=-1){
+					layer.close(loading)
+			    alert("请正确输入,输入金额大于100");
+					click=true;
+					
+					return false;
+				}
+				var json={user_id:uid,money:money};
+				$.ajax({
+						type:"Post",
+						data:json,
+						async:true,
+						url:'{:url("applyRecharge")}',
+						success:function(data){
+						  layer.close(loading)
+							if (data.code!=1) {
+								click=true;
+							}
+							alert(data.msg);
+							if (data.code==1) {
+								//setTimeout(function(){location.href='{:url("message/dialogList")}?consignee_id=-2&content=2'},1000);
+								window.location.href="/home/{:strtolower(cache_data('site_config')['current_payway'])}/topay/?orderId="+data.data + '&order_type=recharge&backurl=/home/user/index'
+							}
+						}
+					});
+				}
+					};
+				function change(obj){
+				var obj=$(obj);
+				var a=obj.val();
+				if (a<1) {
+				selfmoney=false;
+					  layer.open({
+					    content: '请输入正数'
+					    ,skin: 'msg'
+					    ,time: 2 //2秒后自动关闭
+					  });
+				  return false;
+			}
+			else if(a.indexOf('.')!==-1){
+				selfmoney=false;
+					alert("请输入整数");
+				  return false;
+			}
+			selfmoney=a;
+		}
+		function alert(content,time){
+			var time=time||2;
+				  layer.open({
+					    content: content
+					    ,skin: 'msg'
+					    ,time: time //2秒后自动关闭
+					  });
+		}
+	</script>
+{/block}

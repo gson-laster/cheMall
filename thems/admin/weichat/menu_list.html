@@ -1,0 +1,282 @@
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+
+
+<body>
+<style>
+	#Member_Ratings{
+	}
+	.menu_list{
+		padding-top: 40px;
+		padding-bottom: 12px;
+	}
+	.firstMenu input{
+		float: left;
+		width: 50%;
+	}
+	.edit{
+		display: flex;
+		display: -webkit-flex;
+		text-align: center;
+	}
+	.firstMenu span{
+		margin-left: 20px;
+		border-radius: 4px;
+		align-items: center;
+	}
+	.url input{
+		width: 90%;
+	}
+	.type select{
+		width: 50%;
+	}
+	.secondMenu input{
+		margin-left: 149px;
+		width: 50%;
+	}
+	.secondMenu span{
+		margin-left: 20px;
+	}
+	.mar_bottom{
+		margin-bottom: 40px;
+	}
+	.secondlist td{
+		background-color: white !important;
+	}
+</style>
+<div class="page-content clearfix">
+	<div class="menu_list">
+		菜单列表
+	</div>
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <div class="table_menu_list">
+                    <ul>
+	                
+                    </ul>
+                <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="200">菜单名称</th>
+                        <th width="100">菜单类型</th>
+                        <th width="200">值</th>
+                        <th width="20">提交</th>
+                    </tr>
+                    </thead>
+                    {volist name="list_first" id="name_"}
+                    	<tbody class="module" data-id={$name_.id}>
+	         					<tr data-id={$name_.id} data-level={$name_.level}>
+	         					<td class="firstMenu"><div class="edit"><input  type="text" value="{$name_.name}"/><span onclick="addSecondMenu(this)" class="btn">添加二级菜单</span><span onclick="delete_(this)" class="btn">删除</span></div></td>
+	         					<td class="type">
+	         						<select >
+	         							<option {if condition='$name_.type eq "click"'} selected="selected" {/if} value="click">点击推事件</option>
+	         							<option {if condition='$name_.type eq "view"'} selected="selected" {/if} value="view">跳转url</option>        						
+	         							<option {if condition='$name_.type eq "scancode_push"'} selected="selected" {/if} value="scancode_push">扫码推事件</option>
+	         							<option {if condition='$name_.type eq "scancode_waitmsg"'} selected="selected" {/if} value="scancode_waitmsg">扫码推事件且弹出</option>
+	         							<option {if condition='$name_.type eq "pic_sysphoto"'} selected="selected" {/if} value="pic_sysphoto">弹出系统拍照发图</option>
+	         							<option {if condition='$name_.type eq "pic_photo_or_album"'} selected="selected" {/if} value="pic_photo_or_album">弹出系统拍照或者相册发图</option>
+	         							<option {if condition='$name_.type eq "pic_weixin"'} selected="selected" {/if} value="pic_weixin">弹出微信相册发图器</option>
+	         							<option {if condition='$name_.type eq "location_select"'} selected="selected" {/if} value="location_select">弹出地理位置选择器</option>
+	         							<option {if condition='$name_.type eq "media_id"'} selected="selected" {/if} value="media_id">下发消息（除文本消息）</option>
+	         							<option {if condition='$name_.type eq "view_limited"'} selected="selected" {/if} value="view_limited">跳转图文消息URL</option>
+	         						</select>
+	         					</td>
+	         					<td class="url"><input  type="text" value="{$name_.value}" /></td>
+	         					<td class="url">
+	         						<div onclick="levelOne(this)" class="btn">
+	         							确定
+	         						</div>
+	         					</td>
+	         				</tr>
+	         			{volist name="list_second" id="name_second"}
+						{if condition="$name_second.pid eq $name_.id"}
+		      				<tr data-id="{$name_second.id}" class="secondlist">
+	         					<td class="secondMenu"><div class="edit"><input type="text" value="{$name_second.name}"/><span onclick="delete_(this)" class="btn">删除</span></div></td>
+	         					<td class="type">
+	         						<select >
+	         							<option {if condition='$name_.type eq "click"'} selected="selected" {/if} value="click">点击推事件</option>
+	         							<option {if condition='$name_.type eq "view"'} selected="selected" {/if} value="view">跳转url</option>        						
+	         							<option {if condition='$name_.type eq "scancode_push"'} selected="selected" {/if} value="scancode_push">扫码推事件</option>
+	         							<option {if condition='$name_.type eq "scancode_waitmsg"'} selected="selected" {/if} value="scancode_waitmsg">扫码推事件且弹出</option>
+	         							<option {if condition='$name_.type eq "pic_sysphoto"'} selected="selected" {/if} value="pic_sysphoto">弹出系统拍照发图</option>
+	         							<option {if condition='$name_.type eq "pic_photo_or_album"'} selected="selected" {/if} value="pic_photo_or_album">弹出系统拍照或者相册发图</option>
+	         							<option {if condition='$name_.type eq "pic_weixin"'} selected="selected" {/if} value="pic_weixin">弹出微信相册发图器</option>
+	         							<option {if condition='$name_.type eq "location_select"'} selected="selected" {/if} value="location_select">弹出地理位置选择器</option>
+	         							<option {if condition='$name_.type eq "media_id"'} selected="selected" {/if} value="media_id">下发消息（除文本消息）</option>
+	         							<option {if condition='$name_.type eq "view_limited"'} selected="selected" {/if} value="view_limited">跳转图文消息URL</option>
+	         						</select>
+	         					</td>
+	         					<td class="url"><input  type="text"  value="{$name_second.value}"/></td>
+	         					<td><div onclick="levelTwo(this)" class="btn">
+	         						确定
+	         					</div></td>
+	         			</tr>
+						{/if}
+		         				{/volist}
+         				</tbody>
+                    {/volist}
+                </table>
+                <div onclick="addfirstMenu(this)" class="btn mar_bottom">
+                	添加一级菜单
+                </div>
+            </div>
+            <div  style="text-align: center;">	
+                <div onclick="publist()" class="btn">
+					发布菜单
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	//发布菜单
+	function publist(){
+			 util.ajaxPost('{:url("home/Weichat/createWechatMenu")}').done(function (res) {
+			              if(res.code>0){
+			              	layer.msg(res.msg);
+			              	setTimeout(function(){location.href=res.url;},1500);
+			              }
+			              if(res.code==0){
+			              	layer.msg(res.msg);
+			              }
+			            }).fail(function (error) {
+			              	layer.msg(error.msg);
+			            }
+			            )
+	}
+	//添加二级菜单
+	function addSecondMenu(obj){
+		if ($(obj).parents('.module').find('tr').length>5) {
+			layer.msg('最多添加五个二级菜单', {
+	          icon: 2,
+	          time: 1000
+	        });
+	        return false;
+		}
+		var str='<tr class="secondlist"><td class="secondMenu"><div class="edit"><input  type="text"/><span onclick="delete_(this)" class="btn">删除</span></div></td><td class="type"><select ><option value="click">点击推事件</option><option value="view">跳转url</option><option  value="scancode_push">扫码推事件</option><option  value="scancode_waitmsg">扫码推事件且弹出</option><option  value="pic_sysphoto">弹出系统拍照发图</option><option value="pic_photo_or_album">弹出系统拍照或者相册发图</option><option  value="pic_weixin">弹出微信相册发图器</option><option  value="location_select">弹出地理位置选择器</option><option  value="media_id">下发消息（除文本消息）</option><option value="view_limited">跳转图文消息URL</option></select></td><td class="url"><input  type="text"  /></td><td><div onclick="levelTwo(this)" class="btn ajax">确定</div></td></tr>';
+		$(obj).parents('tbody').append(str);
+	}
+	function delete_(obj){
+		var tr=$(obj).parents("tr");
+		var id=tr.attr("data-id");
+		var level=tr.attr("data-level");
+		if (level==1) {
+			var list_id_arr=[];
+			list_id_arr.push(id);
+			layer.confirm('确认要删除吗？', function(index) {
+				var secondList=tr.parents('tbody').find(".secondlist");
+				secondList.each(function(){
+					list_id_arr.push($(this).attr("data-id"));
+				})
+			for (var i of list_id_arr) {
+					if (i) {
+						 util.ajaxPost('{:url("delete")}',{'id':i,'table':'menu'}).done(function (res) {
+			              if(res.code>0){
+			                layer.msg(res.msg);
+			                $(obj).parents('tr').remove();
+			                layer.msg('已删除!', {
+			                  icon: 1,
+			                  time: 1000
+			                });
+			         	    setTimeout(function () {
+			                window.location.href=location.href;
+			              },2000);
+			              }else{
+			                layer.msg(res.msg);
+			                return false;
+			              }
+			            }).fail(function (error) {
+			              layer.msg(error.status+"服务器发生错误");
+			              return false;
+			            }
+			            )
+				}
+			};
+			tr.parent().remove();
+		    });
+		}
+		else{
+			layer.confirm('确认要删除吗？', function(index) {
+				if (id) {
+						 util.ajaxPost('{:url("delete")}',{'id':id,'table':'menu'}).done(function (res) {
+			              if(res.code>0){
+			                layer.msg(res.msg);
+			                tr.remove();
+			                layer.msg('已删除!', {
+			                  icon: 1,
+			                  time: 1000
+			                });
+			         	    setTimeout(function () {
+			                window.location.href=location.href;
+			              },2000);
+			              }else{
+			                layer.msg(res.msg);
+			              }
+			            }).fail(function (error) {
+			              layer.msg(error.status+"服务器发生错误");
+			            }
+			            )
+				}
+		    });
+		}
+
+	}
+	function addfirstMenu(obj){
+		if ($(".module").length>2) {
+			layer.msg('最多添加三个一级菜单', {
+	          icon: 2,
+	          time: 1000
+	        });
+	        return false;
+		}
+		var str='<tbody class="module"><tr><td class="firstMenu"><div class="edit"><input  type="text"/><span onclick="addSecondMenu(this)" class="btn">添加二级菜单</span><span onclick="delete_(this)" class="btn">删除</span></div></td><td class="type">	<select ><option value="click">点击推事件</option><option value="view">跳转url</option><option  value="scancode_push">扫码推事件</option><option  value="scancode_waitmsg">扫码推事件且弹出</option><option  value="pic_sysphoto">弹出系统拍照发图</option><option value="pic_photo_or_album">弹出系统拍照或者相册发图</option><option  value="pic_weixin">弹出微信相册发图器</option><option  value="location_select">弹出地理位置选择器</option><option  value="media_id">下发消息（除文本消息）</option><option value="view_limited">跳转图文消息URL</option></select></td><td class="url"><input  type="text"  /></td><td><div onclick="levelOne(this)" class="btn ajax">确定</div></td></tr></tbody>';
+		$(".table").append(str);
+	}
+	function levelOne(obj){
+		ajaxMenu(obj,1,true);// 元素  | 菜单层级 | 是否传pid 下同
+	}
+	function levelTwo(obj){
+		ajaxMenu(obj,2,false);
+	}
+		//提交菜单
+	function ajaxMenu(obj,level,qid){ // 元素  | 菜单层级 | 是否传pid
+		var tr=$(obj).parents('tr');
+		if (!tr.parents('tbody').attr('data-id')&&level==2) {
+			 layer.msg('请先提交一级菜单!', {
+	          time: 1000
+	       });
+	        return false;
+		}
+		var level=tr.find('td:first-child').hasClass('firstMenu')?1:2;
+		var url=tr.find('.url').children().val();
+		var name=tr.find('.edit').children('input').val();
+		var type=tr.find('.type').children('select').val();
+		var pid=tr.parents("tbody").attr("data-id");
+		var id=tr.attr("data-id");
+		var data=qid?{'name':name,'type':type,'value':url,'level':level, 'pid': 0}:{'name':name,'type':type,'value':url,'level':level,'pid':pid}
+		if (id) {
+			data.id=id;
+		}
+			  util.ajaxPost('{:url("weichatmenu")}',data).done(function (res) {
+              if(res.code>0){
+                layer.msg(res.msg);
+                tr.parents("tbody").attr("data-id",res.data.last_id);
+                tr.attr("data-id",res.data.last_id);
+                setTimeout(function () {
+                  window.location.href=location.href;
+                },2000);
+              }else{
+                layer.msg(res.msg);
+              }
+            }).fail(function (error) {
+              layer.msg(error.status+"服务器发生错误");
+            }
+        )};
+</script>
+</body>

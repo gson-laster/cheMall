@@ -1,0 +1,68 @@
+<style>
+    input{
+        margin: 0;
+        padding: 0;
+    }
+    html{
+        height: 100%;
+    }
+    body{
+        position: relative;
+        height: 100%;
+    }
+    .articleCollect{
+        position: absolute;
+        width: 50%;
+        left: 50%;
+        top: 40%;
+        transform: translate(-50%,-50%);
+    }
+    .articleCollect .linkInput{
+        width: 60%;
+        height: 50px;
+        line-height: 50px;
+        text-indent:10px;
+        font-size: 16px;
+    }
+    .collectBtn{
+        width:100px;
+        background:#2b7dbc;
+        color: #fff;
+        height: 60px;
+        line-height: 60px;
+        display:inline-block;
+        text-align: center;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 6px;
+    }
+    .collectBtn:hover{
+        text-decoration: none;
+    }
+    .collectBtn:active{
+        color: #fff;
+    }
+    .collectBtn:visited{
+        color: #fff;
+    }
+</style>
+<form action="{:url('getwxarticle')}" method="Get">
+  <div class="articleCollect">
+        <input type="text" name="htmlurl" value="" placeholder="请输入完整的采集地址" class="linkInput" id="linkInput">
+        <input href="javascript:;" type="submit" id="collectBtn" class="collectBtn" value="采集">
+</div>  
+</form>
+<script>
+    $(document).ready(function(){
+        var reg = /http:\/\/mp.weixin.qq.com\/[^\s]*/g;
+        $('#collectBtn').on('click',function(e){
+        var address =$.trim($('#linkInput').val());
+        if(reg.test(address)){
+        }else{
+           layer.alert('请输入正确的微信文章地址'); 
+           e.preventDefault();  
+        }    
+        });
+    });
+</script>

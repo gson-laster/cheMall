@@ -1,0 +1,116 @@
+{extend name="/public/base" /}
+{block name="title"}全民商城-我的收藏{/block}
+{block name="headcss"}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css" />
+<style type="text/css">
+    .opacity {
+        animation: opacity 1s linear;
+    }
+
+    @-webkit-keyframes opacity {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+    @keyframes opacity {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="box">
+    <section class="one_commodity ">
+        <div class="lists">
+            {volist name='collect_list' id='list'}
+            <a href='{:url("home/goods/index",array("gid"=>$list["id"]))}' style='text-decoration: none'>
+                <div class="collGoods_item clear">
+                    <div class="left">
+                        <img style="width: 100%;" src="{$list.thumb}" alt="">
+                    </div>
+                    <div class="right">
+                        <p class="desc">{$list.title}</p>
+                        <p class="size"></p>
+                        <p class="price">￥{$list.shop_price}</p>
+                    </div>
+                </div>
+            </a>
+            {/volist}
+        </div>
+    </section>
+    {block name="footermenu"}{include file="thems/default/public/Footer/footer.html"}{/block}
+    {/block}
+</div>
+{/block}
+
+{block name="footerjs"}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+<script>
+  (function ($) {
+      /*封装alert方法*/
+    window.alert = function (message) {
+      layer.open({
+        content: message,
+        skin: 'msg',
+        time: 2
+      })
+    }
+    let page = 1, pageSize = 10;
+    new Scrollload({
+      container: document.querySelector('.one_commodity'),
+      content: document.querySelector('.lists'),
+      loadMore: function (sl) {
+        page++;
+        $.ajax({
+          url: '{:url("collect")}?page=' + page + '&pageSize=' + pageSize,
+          dataType: 'json',
+          success: function (res) {
+            if (res.code == 1001) {
+              if (res.data.data.length > 0) {
+                let content = htmlFn(res.data.data);
+                $('.lists').append(content);
+                if(page>parseInt(res.data.total/parseInt(res.data.per_page))){
+                  sl.lock();
+                  sl.noMoreData();
+                }else {
+                  sl.noMoreData();
+                }
+
+              } else {
+                sl.noMoreData();
+              }
+            }
+
+          },
+          error: function (xhr, type) {
+            sl.throwException();
+          }
+        })
+
+      }
+    });
+
+      /*拼接html*/
+    function htmlFn(arr) {
+      if (arr.length <= 0) {
+        return false;
+      } else {
+        var html = '';
+        for (let i = 0; i < arr.length; i++) {
+          html += '<a href="../goods/index/gid/' + arr[i]['goods_id'] + '.html" style="text-decoration: none" class="opacity"><div class="collGoods_item clear"><div class="left"><img src="' + arr[i].thumb + '" alt=""/></div><div class="right">' +
+            '<p class="desc">' + arr[i].title + '</p><p class="size"></p><p class="price">' + arr[i].shop_price + '</p></div></div></a>'
+        }
+      }
+      return html;
+    }
+  })(Zepto)
+</script>
+{/block}

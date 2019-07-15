@@ -1,0 +1,104 @@
+<body>
+<div class="margin clearfix">
+ <div id="refund_style">
+   <div class="search_style">
+
+      <ul class="search_content clearfix">
+       <li><label class="l_f">订单号</label><input name="" type="text" class="text_add" placeholder="输入产品名称" style=" width:250px"></li>
+       <li><label class="l_f">退款时间</label><input class="inline laydate-icon" id="start" style=" margin-left:10px;"></li>
+       <li style="width:90px;"><button type="button" class="btn_search"><i class="fa fa-search"></i>查询</button></li>
+      </ul>
+    </div>
+     <!--退款列表-->
+     <div class="refund_list">
+        <table class="table table-striped table-bordered table-hover" id="sample-table">
+		<thead>
+		 <tr>
+				<th width="120px">订单编号</th>
+				<th width="100px">交易金额</th>
+        <th width="100px">交易时间</th>
+				<th width="100px">退款金额</th>
+				<th width="70px">状态</th>
+        <!--<th width="200px">说明</th>
+				<th width="200px">操作</th>-->
+			</tr>
+		</thead>
+        <tbody>
+          {volist name="list" id="l"}
+         <tr>
+           <td>{$l.order_sn}</td>
+           <td>{$l.order_amount}</td>
+           <td>{$l.pay_time|date="Y-m-d H:i:s", ###}</td>
+           <td>{$l.order_amount}</td>
+           <td class="td-status">{eq name="l['order_status']" value="4"}<span class="label label-success radius">已关闭</span>{else/}<span class="label radius">已退款</span>{/eq}</td>
+           <!--<td></td>
+           <td></td>-->
+           <!--<td>
+           <a onClick="Delivery_Refund(this,{$l.order_id})"  href="javascript:;" title="退款"  class="btn btn-xs btn-success">退款</a>
+           <a title="退款订单详细"  href="{:url('admin/order/detail',['order_id'=>$l['order_id']])}"  class="btn btn-xs btn-info Refund_detailed" >详细</a>
+           <a title="删除" href="javascript:;"  onclick="Order_form_del(this,{$l.order_id})" class="btn btn-xs btn-warning" >删除</a>
+           </td>-->
+         </tr>
+         {/volist}
+        </tbody>
+    </table>
+
+     </div>
+ </div>
+</div>
+</body>
+</html>
+<script>
+	function Order_form_del(obj,id){
+		 layer.confirm('是否删除！',function(index){
+         $.ajax({
+           url: '{:url("deleteOrder")}',
+           data: {"id": id},
+           type: 'POST',
+           success: function (res) {
+             if(res.code>0){
+               location.href=res.url;
+            }
+            layer.msg(res.msg);
+           }
+         });
+
+			});
+	}
+ function Delivery_Refund(obj,id){
+			 layer.confirm('是否退款当前商品价格！',function(index){
+         $.ajax({
+           url: '{:url("refund")}',
+           data: {"order_id": id},
+           type: 'POST',
+           success: function (res) {
+             if(res.code ==1002){
+               $(obj).parents("tr").find(".td-manage").prepend('<a style=" display:none" class="btn btn-xs btn-success" onClick="member_stop(this,id)" href="javascript:;" title="已退款">退款</a>');
+           		$(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt  radius">已退款</span>');
+           		$(obj).remove();
+            }
+            layer.msg(res.msg);
+           }
+         });
+
+			});
+
+
+};
+//面包屑返回值
+var index = parent.layer.getFrameIndex(window.name);
+parent.layer.iframeAuto(index);
+$('.Refund_detailed').on('click', function(){
+	var cname = $(this).attr("title");
+	var chref = $(this).attr("href");
+	var cnames = parent.$('.Current_page').html();
+	var herf = parent.$("#iframe").attr("src");
+    parent.$('#parentIframe').html(cname);
+    parent.$('#iframe').attr("src",chref).ready();;
+	parent.$('#parentIframe').css("display","inline-block");
+	parent.$('.Current_page').attr({"name":herf,"href":"javascript:void(0)"}).css({"color":"#4c8fbd","cursor":"pointer"});
+	//parent.$('.Current_page').html("<a href='javascript:void(0)' name="+herf+" class='iframeurl'>" + cnames + "</a>");
+    parent.layer.close(index);
+
+});
+</script>

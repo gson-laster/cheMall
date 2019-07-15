@@ -1,0 +1,145 @@
+{extend name="public/base" /}
+{block name="headcss"}
+   <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/swiper-3.4.2.min.css">
+   <link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/index.css">
+    <style type="text/css">
+      .swiper-slide{
+        max-height: auto !important;
+        height: 100% !important;
+      }
+      </style>
+{/block}
+{block name="title"}首页{/block}
+{block name="headjs"}
+  <script src="__HOME_STATIC__/js/zepto.js"></script>
+  <script src="__HOME_STATIC__/js/swiper-3.4.2.jquery.min.js"></script>
+  <script src="__HOME_STATIC__/js/echo.min.js"></script>
+  <script src="__HOME_STATIC__/js/Scrollload.js" type="text/javascript" charset="utf-8"></script>
+  <script src="__HOME_STATIC__/js/layer.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Apttc2OLQjWTvhBRRfhHQQ2p"></script>
+  
+  {/block}
+{block name="content"}
+<body>
+  <div class="container">
+    <div class="seach">
+      <div class="position">
+        <img src="__HOME_STATIC__/img/position.png"/><span id="address"></span>
+      </div>
+      <div class="inputK">
+        <input id="keyword" type="text" placeholder="请输入关键词进行搜索"  />
+      </div>
+      <div onclick="seach()" class="seachBtn">
+        搜索
+      </div>
+    </div>
+    <div class="content-container scrollload-container">
+      <div class="scrollload-content">
+        <div class="loader">
+          
+        </div>
+      </div>
+    </div>
+     {include file='/public/Footer/footer'/}
+  </div>
+  <script type="text/javascript">
+    var position = {
+      address: {},
+      point: {}
+    };
+    var list = [];
+    {volist name="list" id="li"}
+      list.push({$li})
+    {/volist}
+    setList()
+function setList(){
+      new Promise(function(resolve, reject){
+      var point = new BMap.Point(116.331398,39.897445);
+      var geolocation = new BMap.Geolocation();
+      geolocation.getCurrentPosition(function(r){
+        if(this.getStatus() == BMAP_STATUS_SUCCESS){
+          resolve(r)
+        }
+        else {
+          alert('failed'+this.getStatus());
+          
+          resolve(false)
+        }
+      })
+    }).then(function(r){
+      if (r){
+        position.address = r.address;
+        position.point = r.point;
+        $('#address').html(position.address.city)
+        for(var i = 0; i < list.length; i ++) {
+          list[i].distance = distance(list[i].dimensionality, list[i].longitude)
+        }
+        list.sort(function(x, y){
+          return x.distance - y.distance;
+        })
+        var str = ''
+        for(var j = 0; j < list.length; j ++){
+          var s = '' +
+           ' <div class="content">' +
+             ' <div class="describe"><a href="{:url('serviceCenterDetail')}?id='+ list[j]['id'] +'">' +
+               ' <div class="left-img">' +
+                '  <img  src="'+ list[j].thumb_pic+'" alt="">' +
+               ' </div>' +
+                '<div class="right-txt">' +
+                 ' <p class="shopTitle">' + list[j].title + '</p>' +
+                 ' <div class="distance">' +
+                  '  <span>距离</span>' +
+                   ' <span>'+ list[j].distance + 'km</span>' +
+                 ' </div>' +
+                 ' <div class="address">' +
+                   ' <span>地址</span>' +
+                    '<span>' + list[j].address+ '</span>' +
+                  '</div>' +
+               ' </div></a>' +
+               ' <a href="{:url('showmap')}?id='+ list[j]['id'] +'"><div class="i_call">' +
+                '  一键导航' +
+               ' </div></a>' +
+              '</div>' +
+         ' </div>' +
+       ' '
+       str = str + s;
+        }
+        $('.loader').addClass('none');
+        $(".scrollload-content").append(str)
+      }
+    }).catch(function(e){
+      console.log(e)
+    })
+}
+      var map = new BMap.Map("allmap");
+    function distance(dimensionality, longitude){
+        // 百度地图API功能
+      var pointA = new BMap.Point(position.point.lng,position.point.lat);  // 创建点坐标A--大渡口区
+      var pointB = new BMap.Point(dimensionality, longitude);  // 创建点坐标B--江北区
+      return (map.getDistance(pointA,pointB) / 1000).toFixed(2) 
+    }
+    //搜索列表
+    function seach(){
+      location.href = "{:url('search')}?keyword=" + $("#keyword").val()
+    }
+  </script>
+  <script>
+  Echo.init({
+    offset: 0,
+    throttle: 0
+  });
+    $(document).ready(function () {
+      var mySwiper = new Swiper('.swiper-container', {
+        direction: 'horizontal',
+        // 如果需要分页器
+        pagination: '.swiper-pagination',
+         autoplay: 2500,
+         loop:true,
+        autoplayDisableOnInteraction: false
+      });
+
+    });
+  </script>
+</body>
+{/block}
+</html>

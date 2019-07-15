@@ -1,0 +1,562 @@
+{extend name='/public/base'/}
+{block name='title'}全民商城-确认订单{/block}
+{block name='headcss'}
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/FillForm.css" />
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/weui.css" />
+{/block}
+{block name='headjs'}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  var address;
+  $.ajax({
+    url: '/public/data/area_data.json',
+    async: false,
+    success: function (res) {
+      address = res;
+    }
+  })
+  function writeAddress(province, city, area, town) {
+    var town_name = town * 1 ? address[town]['name'] : '';
+    var txt = address[province]['name'] + address[city]['name'] + address[area]['name'] + town_name;
+    return txt;
+  }
+</script>
+{/block}
+{block name='content'}
+<body bgcolor="#F3F3F3">
+    <div id="app">
+      <div class="box FillForm">
+          <!-- 收货地址 -->
+          <section>
+              <div class="user_information" onclick="address_warrp()">
+                  <div class="user">
+                        <a href="javascript:;"  v-cloak v-show="nowAddress.length == 0"><div class="noaddress">
+                          还没有收货地址,快去添加吧!
+                        </div></a>
+                      <div class="user_info" v-cloak v-show="nowAddress.length > 0">
+                          <span id="address_name" class="user_name">收件人:{if condition="isset($user_address['name'])"}{$user_address['name']}{else/}{/if}</span><span id="address_phone" class="user_phone">{if condition="isset($user_address['phone'])"}{$user_address['phone']}{else/}{/if}</span>
+                      </div>
+                      <div class="user_address">
+                          <img src="__HOME_STATIC__/img/FillForm_03.png" /><span id="address_info"></span>
+                      </div>
+                  </div>
+                  <div class="user_go">
+                      <img src="__HOME_STATIC__/img/FillForm_04.png" />
+                  </div>
+              </div>
+          </section>
+          <!-- 购物车商品 -->
+          <section>
+              <div class="two">
+                  <div  class="content">
+                      <div class="warry">
+                          <img src='{$goodslist.thumb}' />
+                          <div class="conntent">{$goodslist.title}</div>
+                          <div class="text">
+                          </div>
+                          <div class="count" id="price">
+                          	￥{$goodslist.mkt_price}
+                              <p class="saa">x<span>1</span>{$unit_arr[$goodslist['unit']]}</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+          <section>
+              <div class="moneyCount">
+                  <div class="methods mar_left" style="color: #DD2727">
+                    VIP专享价
+                      <div class="methods_1">
+                          ￥<span id="goods_total_price">{$goodslist.shop_price}</span>
+                      </div>
+                  </div>
+                    <div id="count" class="methods mar_left">
+                                                      购买数量
+                      <div class="methods_1">
+                          <div onclick="reduce(this)" class="reduce btn none">
+                      		-
+                          </div>
+                          <span>
+                          1
+                          </span>
+                          <div onclick="add(this)" class="add btn">
+                          +
+                          </div>
+                      </div>
+                  </div>
+                  <div class="methods">
+                      运费
+                      <div class="methods_1">
+                          +<span id="shipping_free">0</span>
+                      </div>
+                  </div>
+                <div class="methods need_chajia none">
+                   		   代理折扣（<em style="color:#ff0000">付款后将会返还</em>）
+                      <div class="methods_1">
+                          -<span></span>
+                      </div>
+                  </div>
+              </div>
+          </section>
+          <!-- 底部统计 -->
+          <section class="footer_space">
+              <div class="FillForm_footer">
+                  <div class="ActualPayment" style="padding-left: 20px;">
+                  	实付款:<span></span>
+                  </div>
+                  <div style="position: absolute; right: 0;" class="submit" id="createOrder" onclick="createorder()">
+                      提交订单
+                  </div>
+              </div>
+          </section>
+      </div>
+      <aside class="address_warrp none">
+        <div class="address_selected">
+          <div class="address_header">
+            <h3>选择收货地址</h3>
+            <span style="position: absolute;top: 0;right: 0.14rem;" onclick="$('.address_warrp').fadeOut('fast');">取消</span>
+          </div>
+          <div class="weui-cells weui-cells_radio">
+
+              <label class="weui-cell weui-check__label address-item" v-cloak  v-for="(item, index) in addressList" v-if="item != undefined" :for="'x'+index" :class="{active: item.id == {if condition='isset($user_address["id"])'}{$user_address.id}{else/}0{/if} }" :data-id="item.id">
+                  <div class="weui-cell__bd">
+                      <div class="user_info">
+                        <span class="user_name">收货人: {{item.name}}</span>
+                        <span class="user_phone">{{item.phone}}</span>
+                      </div>
+                      <div class="user_address">
+                        <span>收货地址:{{addressText(item.id)}}{{item.address_info}}</span>
+                      </div>
+                  </div>
+                  <div class="weui-cell__ft">
+                      <input type="radio" class="weui-check" v-model="address_select" name="radio1" :id="'x'+index">
+                      <span class="weui-icon-checked"></span>
+                  </div>
+              </label>
+
+            </div>
+            <div class="address-add_btn" id="add-address" @click="addAddress">
+              <span>新增收货地址</span>
+            </div>
+        </div>
+      </aside>
+      <section class="add-address-warrp" v-cloak :class="{'none': !addAddressShow}">
+        <div class="address_header">
+          <h3>选择收货地址</h3>
+          <span style="position: absolute;top: 0;right: 0.14rem;" @click="cancel">取消</span>
+        </div>
+        <div class="address_area_list " :class="{'none': !areaShow}">
+          <ul>
+            <li v-for="(item, index) in areaList" @click="areaSet(index)">{{item.name}}</li>
+          </ul>
+        </div>
+        <div class="address_area_form" :class="{'none': !areaFormShow}">
+          <div class="form-item">
+            <input type="text" readOnly placeholder="请输入详细地址" v-model="areaText">
+            <i><img src="__HOME_STATIC__/img/FillForm_04.png" /></i>
+          </div>
+          <div class="form-item">
+            <input id="detailtown" type="text" placeholder="请输入详细地址" v-model="area_db_need.address_info">
+            <i><img src="__HOME_STATIC__/img/FillForm_04.png" /></i>
+          </div>
+          <div class="form-item">
+            <input id="goodsname" type="text" placeholder="请输入收人姓名" v-model="area_db_need.name">
+            <i><img src="__HOME_STATIC__/img/FillForm_04.png" /></i>
+          </div>
+          <div class="form-item">
+            <input id="goodsphone" type="text" placeholder="请输入收货人电话" v-model="area_db_need.phone">
+            <i><img src="__HOME_STATIC__/img/FillForm_04.png" /></i>
+          </div>
+          <div class="address-add_btn" @click="save" >
+            <span>保存收货地址</span>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="loading none" id="loading">
+      <div class="loader-inner line-scale">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <p>正在创建订单,请勿操作...</p>
+    </div>
+</body>
+{/block}
+{block name='footerjs'}
+    <script src="__HOME_STATIC__/js/count.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/static/js/util.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__HOME_STATIC__/js/weui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__HOME_STATIC__/js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    	//加载收货地址
+    	  var order_address={notempty name="user_address"}{$user_address.id}{else/}0{/notempty};
+        var goodid=location.search.split('?')[1].split('=')[1];//商品ID
+        var content = $('.content');
+//      var totalprice =  $(".ActualPayment span");
+        var bool = true;
+		   	var gotoOrder = 0; //0不可以提交订单。1可以提交订单
+        var goods = {$goodslist.id};
+        var ev_num = 1;
+        var nowProvinceId = {notempty name="user_address"}{$user_address.province}{else/}0{/notempty};
+        fact(ev_num);
+        function fact(num){
+         $.ajax({
+          type:'Post',
+          data:{goods_ids:goodid, num:ev_num, need_chajia:true, province: nowProvinceId},
+          url:'{:url('countOrderPrice')}',
+          success:function(data){
+                 if (nowProvinceId == 4670 || nowProvinceId == 8558 || nowProvinceId == 41103 || nowProvinceId == 46047) {
+                    $('#shipping_free').text(60 * parseInt(ev_num));
+                  } else{
+                   $('#shipping_free').text(0);
+                  }
+            gotoOrder = 1;
+            if(data.chajia&&data.chajia>0){
+                var chajia=$(".need_chajia");
+                chajia.find('span').html(data.chajia);
+                chajia.removeClass('none');
+            }
+           $(".ActualPayment span").html('￥'+data.total_price);
+            bool = false;
+          }
+         })
+        }
+        {empty name="user_address"}
+        {else/}
+        $("#address_info").html(address[{$user_address.province}].name+address[{$user_address.city}].name+address[{$user_address.area}].name+"{$user_address.address_info}");
+        {/empty}
+        var transport = {php}echo json_encode(convert_arr_key($user_address, 'value'), true);{/php};
+        var user_province={notempty name="user_address"}{$user_address.province}{else/}0{/notempty},
+        user_city={notempty name="user_address"}{$user_address.city}{else/}0{/notempty},
+        user_area={notempty name="user_address"}{$user_address.area}{else/}0{/notempty};
+        function address_warrp(){
+            $(".address_warrp").removeClass('none').show();
+        }
+        var clickStatus=1;
+        function createorder(){
+          if (bool || gotoOrder == 0) {
+          	return false;
+          }
+        	 if(!order_address){
+                  alert('请选择收货地址');
+                  return false;
+              }
+              if(clickStatus==1){
+                 clickStatus=0;
+                 $("#loading").removeClass('none');
+              //发送请求
+              var data = {
+                  'addressId' : order_address,
+                  'goodsid':goodid,
+                  'number':parseInt($(".saa span").text().trim())
+              };
+              $.ajax({
+                  url:"{:url('setorderadd')}",
+                  data: data,
+                  type: 'POST',
+                  dataType: 'json',
+                  async: true
+              }).done(function(res){
+                  if(res.code == 1002){
+                      alert(res.msg, 2);
+                      setTimeout(()=>window.location.href = res.url, 2000);
+                  }else{
+                      alert(res.msg);
+                  }
+                  $("#loading").addClass('none');
+
+              }).fail(function (err) {
+                  $("#loading").addClass('none');
+                  alert(err.status+'服务器发生错误')
+              })
+              }
+        }
+      $(document).ready(function () {
+//        getCount();
+          //地址列表
+          //选地址 detail
+          $(".weui-cells").on('click', function (e) {
+            gotoOrder = 0;
+              var target = $(e.target).hasClass('address-item') ? $(e.target) : $(e.target).parents(".address-item");
+              if(target.hasClass('address-item')){
+                  var id = target.data('id');
+                  var addressInfo = vm.addressList[id];
+                  order_address = id;
+//                getCount();
+                  $("#address_name").html('收货人：'+addressInfo.name);
+                  $("#address_phone").html(addressInfo.phone);
+                  var address_info = writeAddress(addressInfo.province, addressInfo.city, addressInfo.area);
+                  user_province = addressInfo.province;
+                  user_city = addressInfo.city;
+                  user_area = addressInfo.area;
+                  $("#address_info").html(address_info+addressInfo.address_info);
+                  $(".address_warrp").hide();
+                  target.addClass('active');
+                  target.siblings('.address-item').removeClass('active')
+                  vm.nowAddress = [1];
+                  nowProvinceId = user_province;
+                fact(ev_num);
+              }
+          })
+      })
+        
+
+        //获取配送方式地址和配置
+        function getTransportArea(id, cb){
+            $.ajax({
+                url: "{:url('getshippingarea')}",
+                data: {'transportid': id},
+                type: 'POST',
+                dataType: 'json'
+            }).done(function (res) {
+                cb&&cb(res)
+            }).fail(function (err) {
+                alert(err.status + '服务器发生错误')
+            })
+        }
+        //计算费用
+//      function getCount(){
+//          if(!order_address){
+//              return false;
+//          }
+//          var data = {
+//              'addressId': order_address,
+//          };
+//          $.ajax({
+//              url: '{:url("countPrice")}',
+//              data: data,
+//              type: 'get',
+//              dataType: 'json'
+//          }).done(function (res) {
+//              if(res.code == 1002){
+//                  $("#shipping_free").html(res.data.shipping_free)
+//              }
+//          }).fail(function (err) {
+//              alert(err.status + '服务器发生错误')
+//          })
+//      }
+        function add(obj){
+          bool = true;
+          var obj = $(obj).prev();
+          var num = parseInt(obj.text().trim()) + 1;
+          ev_num = num;
+          obj.text(num);
+          $(".saa span").text(num);
+          obj.prev().removeClass('none');
+          fact(num);
+        }
+        function reduce(o){
+          bool = true;
+          var obj = $(o).next();
+          var num = parseInt(obj.text().trim()) - 1;
+          ev_num = num;
+          obj.text(num);
+          if (num  == 1) {
+          	$(o).addClass('none');
+          }
+          $(".saa span").text(num);
+          fact(num);
+        }
+//更新购物车
+function updateShopCar(id, key, value){
+  $.ajax({
+    url: "{:url('api/base/changeStatu')}",
+    data: {
+      "table": 'shopcar',
+      'id_name': 'id',
+      'id_value': id,
+      'field': key,
+      'value': value
+    },
+    type: 'get',
+    success: function (res) {
+      if(res.code > 0){
+
+      }else{
+        alert('更新失败')
+      }
+    }
+  })
+}
+//校验库存
+//function checkStoreCount(carid, gid, num){
+//var num = 0;
+//$.ajax({
+//  url: "{:url('checkGoodsStoreCount')}",
+//  data: {
+//    "carid" : carid,
+//    "gid"   : gid,
+//    "num"   : gid
+//  },
+//  type: 'Get',
+//  async: false,
+//  success: function (responce) {
+//    //console.log(responce.data.store_count)
+//    num = responce.data.store_count;
+//  }
+//})
+//return num;
+//}
+    </script>
+    <script>
+      var province;
+      $.ajax({
+        url: "{:url('api/base/getProvince')}",
+        async: false,
+        success: function (res) {
+          province = res;
+        }
+      });
+
+      function getAddress(pid){
+        var data;
+        $.ajax({
+          url: "{:url('api/base/getRegion')}",
+          data: {type: "json",parent_id: pid},
+          async: false,
+          success: function (res) {
+            data = res;
+          }
+        })
+        return data
+      }
+      function setAddress(data, succFn){
+      	var phone=$("#goodsphone").val();
+      	if ($("#detailtown").val().trim()=="") {
+      		alert("请输入详细地址");
+      		return false;
+      	}
+      		if ($("#goodsname").val().trim()=="") {
+      		alert("请输入收货人姓名");
+      		return false;
+      	}
+  			if(phone.trim()=="") {
+      		alert("请输入收货人电话");
+      		return false;
+      	}
+  			if(!/^\d{11}$/.test(phone)){
+  				alert("请输入正确的手机号");
+      		return false;
+  			}
+        $.ajax({
+          url: "{:url('home/Address/save')}",
+          data: data,
+          type: "post",
+          success: function (res) {
+            if(res.code > 0){
+              succFn(res)
+            }
+            alert(res.msg);
+          }
+        })
+      }
+
+      Vue.config.devtools = true;
+
+      var vm = new Vue({
+        el: "#app",
+        data: {
+          areaList: province,
+          area_db_need: {
+            province: 0,
+            city: 0,
+            area: 0,
+            town: 0,
+            address_info: '',
+            name: '',
+            phone: '',
+            id:0
+          },
+          areaText: '',
+          addAddressShow: 0,
+          areaShow: 0,
+          areaFormShow: 0,
+          address_select: {if condition="isset($user_address.id)"}  {$user_address.id}{else/}0{/if},
+          addressList: {php}echo json_encode(convert_arr_key($address, 'id'));{/php},
+          nowAddress: {php}echo json_encode($user_address);{/php},
+        },
+        filter: {
+        },
+        computed: {
+
+        },
+        methods: {
+          areaSet: function(index){
+            var pid = this.areaList[index].id;
+            var text = this.areaList[index].name;
+            if(!this.area_db_need.province){
+              this.area_db_need.province = pid;
+            }else if(!this.area_db_need.city){
+              this.area_db_need.city = pid;
+            }else if(!this.area_db_need.area) {
+              this.area_db_need.area = pid;
+            }else{
+              this.area_db_need.town = pid;
+            }
+            this.areaList = getAddress(pid)
+            this.areaText += text;
+
+            if(this.areaList.length == 0){
+              this.areaShow = 0
+              this.areaFormShow = 1
+            }
+          },
+          addAddress: function() {
+            this.addAddressShow = 1
+            this.areaShow = 1
+            this.areaList = province
+            this.area_db_need = {
+              province: 0,
+              city: 0,
+              area: 0,
+              town: 0,
+              address_info: '',
+              name: '',
+              phone: '',
+              id: 0
+            }
+            // this.areaFormShow = 1
+          },
+          save: function() {
+            var _this = this;
+            setAddress(this.area_db_need, function (res) {
+              _this.addAddressShow = 0;
+              _this.areaShow = 0;
+              _this.areaFormShow = 0;
+              _this.area_db_need.id = res.data.last_id * 1
+              _this.addressList[res.data.last_id] = res.data.address_last
+
+              var id = res.data.last_id;
+              var addressInfo = _this.addressList[id];
+
+              order_address = id;
+//            getCount();
+              $("#address_name").html('收货人：'+addressInfo.name);
+              $("#address_phone").html(addressInfo.phone);
+              var address_info = writeAddress(addressInfo.province, addressInfo.city, addressInfo.area);
+              user_province = addressInfo.province;
+              user_city = addressInfo.city;
+              user_area = addressInfo.area;
+              $("#address_info").html(address_info+addressInfo.address_info);
+              $(".address_warrp").fadeOut('fast');
+              _this.nowAddress = [1];
+            })
+          },
+          cancel: function() {
+            this.addAddressShow = 0
+            this.areaShow = 0
+            this.areaFormShow = 0
+          },
+          addressText: function(value) {
+           if(!value || value =='') return '';
+           var data = this.addressList[value]
+           return writeAddress(data.province, data.city, data.area, data.town);
+         }
+       
+        }
+      });
+    </script>
+{/block}

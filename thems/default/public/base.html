@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    {block name="meta"}
+    <meta name="keywords" content="{:cache_data('site_config')['site_keywords']}"/>
+    <meta name="description" content="{:cache_data('site_config')['site_description']}"/>
+    {/block}
+    <!--UC QQ浏览器头部地址栏 无法触发scroll和resize;-->
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <link rel="stylesheet" href="__HOME_STATIC__/css/common.css"/>
+    <link rel="stylesheet" href="__HOME_STATIC__/css/reset.css"/>
+    <title>{:cache_data('site_config')['site_title']}-{block name="title"}{/block}</title>
+    <!-- 加载js -->
+    <script type="text/javascript" src="__HOME_STATIC__/js/layer.js"></script>
+    
+    {block name="headjs"}<!--<script src="http://wechatfe.github.io/vconsole/lib/vconsole.min.js?v=2.5.2"></script>
+    <style>
+        #__vconsole .vc-switch {
+            display: block;
+            position: fixed;
+            right: 10px;
+            bottom: 80px !important;
+            color: #fff;
+            background-color: #04be02;
+            line-height: 1;
+            font-size: 14px;
+            padding: 8px 16px;
+            z-index: 10000;
+            border-radius: 4px;
+            box-shadow: 0 0 8px rgba(0,0,0,.4);
+        }
+    </style>-->{/block}
+    <!-- 加载css -->
+    {block name="headcss"}{/block}
+</head>
+<body>
+
+
+  <!-- 正文内容 -->
+{block name="content"}
+  <!-- 底部菜单 -->
+  {block name="footermenu"}{/block}
+{/block}
+{block name="footerjs"}{/block}
+</body>
+</html>

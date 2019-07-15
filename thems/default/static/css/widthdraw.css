@@ -1,0 +1,95 @@
+.user_withdraw{
+    width: 100%;
+}
+.withdraw_header{
+    height: 0.4rem;
+    background-color: #cc2727;
+    text-align: center;
+    color: #fff;
+    line-height: 0.4rem;
+    font-size: 0.16rem;
+    position: relative;
+}
+.withdraw_header .left{
+    position: absolute;
+    width: 0.16rem;
+    height: 0.16rem;
+    background: url("../../static/img/leftarrow.png") no-repeat center;
+    top: 50%;
+    left: 10%;
+    margin-top: -0.08rem;
+}
+.user_withdraw .withdraw_item{
+    padding: 0 0.1rem 0rem 0.1rem;
+    margin: 0.2rem 0;
+    font-size: 0.14rem;
+    border-bottom: 1px solid #eee;
+    line-height: 0.2rem;
+}
+.withdraw_item input[type='text']{
+    outline: none;
+    border: 1px solid #fff;
+    background: #fff;
+    padding-left: 0.08rem;
+    height: 0.36rem;
+    font-size: 0.12rem;
+    line-height: 0.36rem;
+}
+.withdraw_submit{
+    width: 90%;
+    height: 0.32rem;
+    background-color: #cc2727;
+    border-radius: 0.04rem;
+    font-size: 0.14rem;
+    line-height: 0.32rem;
+    color: #fff;
+    text-align: center;
+    margin: 0 auto;
+}
+img.active{
+    border: 1px solid rgba(255,0,0,0.4);
+    box-shadow: 1px 1px 3px rgba(255,0,0,0.5);
+    border-radius: 0.04rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

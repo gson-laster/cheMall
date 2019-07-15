@@ -1,0 +1,37 @@
+.GoodsParameter .one_img img{
+	width: 100%;
+}
+.GoodsParameter .content{
+	text-align: center;
+	padding: 0.12rem 0;
+	color: #0e0e0e;
+	border-bottom: 1px solid #DBDBDB;
+}
+.GoodsParameter .context{
+	color: #808080;
+	font-weight: 300;
+}
+.GoodsParameter .context p{
+	padding-left: 0.1rem;
+	padding-top: 0.12rem;
+}
+.GoodsParameter .context{
+	margin-top: 0.16rem;
+}
+.GoodsParameter .context span{
+	padding-left: 0.08rem;
+}
+.GoodsParameter .GoodsParameter_footer{
+	bottom: 0;
+	color: white;
+	height: 0.38rem;
+	background: #DD2727;
+	width: 100%;
+	max-width: 640px;
+	text-align: center;
+	line-height: 0.38rem;
+    position: absolute;
+}
+.GoodsParameter .space{
+	height: 0.5rem;
+}

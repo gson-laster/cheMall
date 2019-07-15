@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>订单管理</title>
+		<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/manageorder.css"/>
+		<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+	  {PHP}
+	    $status = ['失败', '成功'];
+	  {/PHP}
+	  <div class="box scrollload-container">
+	  	<section>
+	  	  <div class="header">
+	  	  	<span onclick="change(1, this)" class="active">会员充值</span><span onclick="change(2, this)">积分换货</span>
+	  	  </div>
+	  	</section>
+	  	<section class="content scrollload-content">
+	  	  {volist name="data" id="d"}
+	  	  <div class="list">
+	  	    <a href="{:url('userRechargeDetail')}?id={$d['id']}" >
+	  	  	<div class="left">
+	  	  		<p><img src="__HOME_STATIC__/img/recharge_detail.png"/>充值状态:{$status[$d['status'] - 1]}</p>
+	  	  		<p>充值账号:{$d['phone']}</p>
+	  	  		<p>{notempty name="$d['paytime']"}交易时间:{:date('m-d h:i:s', $d['paytime'])}{else /}下单时间:{:date('m-d h:i:s', $d['createtime'])}{/notempty}</p>
+	  	  	</div>
+	  	  	<div class="right">
+	  	  		￥{$d['money']}
+	  	  	</div>
+	  	  	</a>
+	  	  </div>
+	  	  {/volist}
+	  	</section>
+	  	<section class="twocontent none"></section>
+	  	{$data -> render()}
+	  </div>
+	</body>
+	<script src="__HOME_STATIC__/js/Scrollload.js"></script>
+	<script type="text/javascript">
+    var $status = ['失败', '成功'], type = 1;
+    
+    $(document).ready(function () {
+      let page =1,pageSize=10, url;
+      url = type == 1 ? '{:url("userRechargeList")}?page='+page+'&pageSize='+pageSize : '{:url("BalanceChange/getBalanceChangeList")}?page='+page;
+      new Scrollload({
+        container:document.querySelector('.scrollload-container'),
+        content:document.querySelector('.scrollload-content'),
+        loadMore:function (me) {
+          page++;
+          $.ajax({
+            url: url,
+            type:'GET',
+            dataType:'json',
+            async:false,
+            success:function (res) {
+              if(res.code==200){
+                let data=res['data'],content='';
+                
+                if(data.length == 0) {
+                  me.lock();
+                  me.noMoreData();
+                  return;
+                }
+                
+                content= type == 1 ? htmlParseHandler(data) : recodeHtmlHandle(data);
+                if(type == 1){
+                  $('.scrollload-content').append(content);
+                } else{
+                  $('.twocontent').append(content);
+                }
+                
+                if(res['data']['current_page']>parseInt(res['data']['total']/parseInt(res['data']['per_page']))){
+                  me.lock();
+                  me.noMoreData();
+                }else{
+                  me.unLock();
+                }
+              }else{
+                me.noMoreData();
+              }
+            },
+            error:function (xhr,type) {
+              console.log('ajax错误');
+              me.throwException();
+            }
+          })
+        }
+      });
+    })
+    
+    function htmlParseHandler(data){
+      if(data.length == 0 ) return '';
+      var htmlStr = '';
+      
+      for(var i = 0; i < data.length; i ++) {
+        var _d = data[i]
+        htmlStr += '<div class="list">' +
+	        '<a href="{:url('userRechargeDetail')}?id='+d['id']+'}" >' +
+	          '<div class="left">' +
+	            '<p><img src="__HOME_STATIC__/img/recharge_detail.png"/>充值状态:'+status[_d['status'] - 1]+'</p>' +
+	            '<p>充值账号:'+_d['phone']+'</p>';
+        if(_d['paytime'] != null) {
+          htmlStr+= '交易时间:'+new Date(_d['paytime']*1000).Format('yyyy-MM-dd hh:mm:ss')
+        }else{
+          htmlStr += '下单时间:'+new Date(_d['createtime']*1000).Format('yyyy-MM-dd hh:mm:ss')
+        }
+	         
+          htmlStr+='</div>' +
+          '<div class="right">' + _d['money'] +'</div></a></div>'
+      }
+      return htmlStr
+    }
+
+    /**
+     * 积分html解析
+     * @param list
+     */
+    function recodeHtmlHandle(list){
+      var str = '';
+      for (var i = 0; i < list.length; i ++) {
+        var type = ''
+        if (list[i].updatetime) {
+          type = '交易时间:' + time(list[i].updatetime);
+        }
+        str += '<div class="list">' +
+          '<a href="{:url('Balance_change/getbalanceChange')}?id='+ list[i].id +'" >' +
+        '<div class="left">' +
+        '<p><img src="__HOME_STATIC__/img/recharge_detail.png"/>充值状态:成功</p>' +
+        '<p>充值账号:'+ list[i].phone +'</p>' +
+        '<p>' + type + '</p>' +
+        '</div>' +
+        '<div class="right">' + list[i].change_num +
+        '积分</div>' +
+        '</a>' +
+        '</div>';
+      }
+      return str
+    }
+    
+//	  var $status = ['失败', '成功'],
+    var content = $(".content"),
+	  twocontent = $(".twocontent");
+//		function change(){
+		  console.log(1)
+      $.ajax({
+      	type:"post",
+      	url: '{:url("BalanceChange/getBalanceChangeList")}',
+            data: {change_type: 1},
+      	       async:true,
+      	       success: function(res){
+                if (res.code == 200) {
+                	var list = res.data.data;
+                  var str = recodeHtmlHandle(list)
+              	twocontent.html(str)
+                }
+            }
+      });
+
+		//}
+		function time(t){
+
+		  var d = new Date(t)
+		  return num(d.getMonth() + 1) + '-' + num(d.getDate()) + ' ' + num(d.getHours()) + ':' + num(d.getMinutes()) + ':' + num(d.getSeconds())
+		}
+		function num(n){
+		  n = n < 10 ? ('0' + n) : n;
+		  return n;
+		}
+		function change(t, o){
+		  $(o).addClass('active')
+		  $(o).siblings().removeClass('active')
+			type = t
+		  t == 2 ? (content.addClass('none'), twocontent.removeClass('none')) : (twocontent.addClass('none'), content.removeClass('none'))
+		}
+	</script>
+</html>
+

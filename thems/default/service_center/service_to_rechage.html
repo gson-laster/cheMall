@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>商家充值</title>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="__HOME_STATIC__/css/service_center.css">
+    <script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="box">
+      <div class="addressbox">
+        当前充值额度:&nbsp;{:cache_data('service_coupon_recharge_quota')}
+        <a href="{:url('applyrechargelist')}">
+          <div class="chongzhijilu">
+        	 充值记录
+          </div>
+        </a>
+      </div>
+        <div class="content">
+          充值金额&nbsp;&nbsp;<span style="color: #999999;">(3000元起充值)</span>
+          <div class="inputBox">
+            <input onchange="edit(this)" type="text" placeholder="请输入要充值的金额" name="" id="" value="" />
+          </div>
+          <div onclick="confirm()" class="queding">
+            提交申请
+          </div>
+          <div class="beizhu">
+          	备注:提交申请后请联系客服完成充值!
+          </div>
+      </div>
+    </div>
+    {block name="footermenu"}{/block}
+    {block name="footerjs"}
+    <script type="text/javascript">
+      var click = 1;
+      var paramter = {
+        money: '',
+      }
+      function confirm(){
+        if (click) {
+          click = 0
+          if (paramter.money == '' || paramter.money < 3000) {
+            layer.open({
+              content: '输入的金额不得小于3000'
+              ,skin: 'msg'
+              ,time: 2 //2秒后自动关闭
+            });
+            click = 1;
+            return false
+          }
+          $.ajax({
+            url:'{:url('applyRechage')}',
+            data: paramter,
+            type: 'POST',
+            success: function(res){
+              if (res.code == 2000) {
+                setTimeout(function(){
+                  location.href = '{:url('index')}'
+                }, 1500)
+              } else {
+                click = 1
+              }
+                layer.open({
+                  content: res.msg
+                  ,skin: 'msg'
+                  ,time: 2 //2秒后自动关闭
+                });
+            }
+          })
+        }
+      }
+      function edit(o){
+        paramter.money = $(o).val()
+      }
+    </script>
+    {/block}
+  </body>
+</html>

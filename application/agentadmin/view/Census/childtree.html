@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__css/bootstrap.min.css">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__css/font-awesome.min.css">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__css/tree.css">
+    <link rel="Stylesheet" type="" href="__AGENT_ADMIN_STATIC__css/ace.min.css">
+    <script src="__AGENT_ADMIN_STATIC__js/jquery-1.9.1.min.js"></script>
+    <title>层级树</title>
+</head>
+<body>
+    <div class="tree well">
+        <ul>
+            {volist name='user_list' id='ul'}
+            <li>
+                <span data-id='{$ul["id"]}' data-role='{$ul["hasChild"]}'><b class="{if condition='$ul["hasChild"] eq "1"'}icon-plus-sign{else/}icon-minus-sign{/if}"></b>{$ul['nickname']|default=$ul['phone']}</span>
+                <b>手机号码:</b><label class="label">{$ul.phone}</label>
+                 {if condition='$ul["agent_type"] eq "1"'}
+                <b>代理类型:</b><label class="label label-success">省级代理</label> {elseif condition='$ul["agent_type"] eq "2"'/}
+                <b>代理类型:</b><label class="label label-success">市级代理</label> {elseif condition='$ul["agent_type"] eq "3"'/}
+                <b>代理类型:</b><label class="label label-success">县级代理</label> {elseif condition='$ul["agent_type"] eq "4"'/}
+                <b>代理类型:</b><label class="label label-success">经销商</label> {else}
+                <b>代理类型:</b><label class="label label-success">普通会员</label> {/if}
+                <b>下级代理数:</b><label class="label label-important">{$ul['childCount']}</label> {if condition='$ul["hasChild"] eq "1"'}
+                <b>是否有下级:</b><label class="label label-info">有</label>
+                <ul>
+                </ul>
+                {else/}
+                <b>是否有下级:</b><label class="label label-info">无</label> {/if}
+            </li>
+            {/volist}
+        </ul>
+    </div>
+    <script>
+        $(document).ready(function () {
+            //给有下级的li添加parent_li的类名;
+            $('.tree li:has(ul)').addClass('parent_li').find('>span').attr('title', 'Collapse this branch');
+
+            $('.tree').on('click', ' li.parent_li > span', function (e) {
+                var _e = e.target;
+                var pid = $(_e).attr('data-id');
+                var children = $(_e).parent('li.parent_li').find('>ul >li');
+                 //下级已经加载完并且渲染出来了：
+                if(children.length>0){
+                    // 根据children的visible属性来判断是隐藏还是现实：
+                    if(children.is(':visible')){
+                        children.hide('fast');
+                        $(_e).attr('title','Expand this branch').find('>b').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+                    }else{
+                        children.show('fast');
+                        $(_e).attr('title','Collapse this branch').find('>b').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+                    }
+                }else{
+                     if(pid){
+                         $(_e).attr('title','Collapse this branch').find('>b').addClass('icon-minus-sign').removeClass('icon-plus-sign');   
+                         ajaxLowLever(pid, this);
+                     }   
+                }
+            })
+        });
+
+
+        //  请求下级的方法;
+        function ajaxLowLever(pid, element) {
+            var html = '';
+            $.ajax({
+                url: '{:url("childTree")}?pid=' + pid,
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 2000) {
+                        var data = res.data;
+                        html = htmlFn(data);
+                        $(element).siblings('ul').append(html);
+                    }
+                },
+                error: function (xhr, type) {
+                    alert(xhr.status + '服务器错误');
+                }
+            });
+        }
+
+
+       // 拼接字符串;
+        function htmlFn(data) {
+            var html = '';
+            var nickname;
+            var email;
+            var parentLi;
+            var childContent;
+            var iconContent;
+            if (data.length > 0) {
+                for (var b = 0; b < data.length; b++) {
+                    nickname = data[b]['nickname'] ? data[b]['nickname'] : data[b]['phone'];
+                    email = data[b]['email'] ? data[b]['email'] : '无';
+
+                    // 判断是否有下级;
+                    if (data[b]['hasChild']) {
+                        parentLi = '<li class="parent_li">';
+                        childContent = '<b>是否有下级:</b><label class="label label-info">有;</label>' + '<ul></ul>'
+                        iconContent = '<b class="icon-plus-sign"></b>'
+                    } else {
+                        parentLi = '<li>';
+                        childContent = '<b>是否有下级:</b><label class="label label-info">无;</label>'
+                        iconContent = '<b class="icon-minus-sign"></b>'
+                    }
+
+                    html += parentLi + '<span data-id=' + data[b]['id'] + ' data-role=' + data[b]['hasChild'] +
+                        '>' + iconContent +
+                        nickname + '</span>' +
+                        '<b>手机号码:</b><label class="label">' + data[b]["phone"] + '</label>' +
+                        isWhichAgent(data[b]["agent_type"]) +
+                        '<b>下级代理数:</b><label class="label label-important">' + data[b]["childCount"] + '</label>' +
+                        childContent + '</li>'
+                }
+            }
+            return html;
+        }
+
+         // 判断是哪级别代理;
+        function isWhichAgent(number) {
+            var content = '';
+            switch (number) {
+                case 1:
+                    content = '<b>代理类型:</b>' + '<label class="label label-success">省级代理</label>';
+                    break;
+                case 2:
+                    content = '<b>代理类型:</b>' + '<label class="label label-success">市级代理</label>';
+                    break;
+                case 3:
+                    content = '<b>代理类型:</b>' + '<label class="label label-success">县级代理</label>';
+                    break;
+                case 4:
+                    content = '<b>代理类型:</b>' + '<label class="label label-success">经销商</label>';
+                    break;
+                case 0:
+                    content = '<b>代理类型</b>' + '<label class="label label-success">普通会员</label>';
+                    break;
+            }
+            return content;
+        }
+    </script>
+</body>
+
+</html>

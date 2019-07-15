@@ -1,0 +1,370 @@
+<script src="__ADMIN_STATIC__/assets/js/typeahead-bs2.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/layer/layer.js" type="text/javascript"></script>
+<script src="__ADMIN_STATIC__/assets/laydate/laydate.js" type="text/javascript"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script src="__ADMIN_STATIC__/js/lrtk.js" type="text/javascript"></script>
+</script>
+<link rel="stylesheet" href="__ADMIN_STATIC__/css/style.css" />
+<style>
+  .user-lower-uper {
+    margin-top: 20px;
+    padding: 12px;
+  }
+
+  .user-lower-uper li {
+    padding-left: 30px;
+    position: relative;
+  }
+
+  .user-lower-uper li p {
+    height: 32px;
+    line-height: 32px;
+  }
+
+  .user-lower-uper li:before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 10px;
+    top: 7px;
+    background: url('__ADMIN_STATIC__/images/st_node.gif') no-repeat;
+  }
+
+  .user-lower-uper .list-1 {
+    position: relative;
+    line-height: 32px;
+  }
+
+  .user-lower-uper .list-1 i {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    left: 0;
+    top: 12px;
+    background: url('__ADMIN_STATIC__/images/st_icon.png') no-repeat;
+  }
+
+  .user-lower-uper div.open i {
+    background: url('__ADMIN_STATIC__/images/st_icon_open.png') no-repeat;
+  }
+
+  p>a {
+    display: inline-block;
+  }
+
+  p>a:hover {
+    color: red;
+  }
+
+  .public-user-list span {
+    height: 32px;
+    line-height: 32px;
+  }
+
+  .hasData>div>p {
+    color: red;
+  }
+
+
+  .box {
+    width: 100%;
+  }
+
+  .select-box a {
+    display: block;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    color: #000;
+    text-decoration: none;
+    float: left;
+    background-color: #f3f3f3;
+  }
+
+  .select-box a.label-info {
+    color: #fff;
+  }
+
+  .logobox-container {
+    position: absolute;
+    right: 18%;
+    top: 24%;
+  }
+
+  .delete-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    text-align: center;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  #upload img {
+    width: 100%;
+    max-height: 300px;
+    max-width: 120px;
+    /*height: 200px;*/
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .logoupload .btnbox a {
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+  input:disabled{
+  	color: red !important;
+  	background-color: white !important;
+  }
+</style>
+<title>设置分成代理</title>
+<body>
+  <div class="page-content clearfix">
+    <div id="Member_Ratings">
+      <div class="d_Confirm_Order_style">
+        <div class="search_style">
+          <ul class="search_content clearfix">
+          </ul>
+        </div>
+        <div class="border clearfix">
+          <span style="width: 100%;" class="l_f">
+              <div class="set_agent">
+              		<!--<a onclick="setdivice(0)"  class="btn btn-info">分成0</a>
+                  <a onclick="setdivice(1500)" class="btn btn-info">分成1500</a>
+                  <a onclick="setdivice(3000)" class="btn btn-info">分成3000</a>
+                  <a onclick="setdivice(5000)" class="btn btn-info">分成5000</a>
+                  <a onclick="setdivice(10000)" class="btn btn-info">分成10000</a>
+                  <a onclick="setdivice(15000)" class="btn btn-info">分成15000</a>
+                  <a onclick="setdivice(20000)" class="btn btn-info">分成20000</a>
+                  <a onclick="setdivice(-1)" class="btn btn-info">永久分成</a>-->
+                  <a href="javascript:;" class="btn btn-info"onclick="deletes()">取消分成</a>
+                  <!--<span style="display: inline-block; position: relative;top: 6px;color: red;"><i>*</i>设置完请保存</span>-->
+              </div>
+      	</span>
+          <span class="r_f">共：<b></b>条</span>
+        </div>
+        <div class="table_menu_list">
+          <table class="table table-striped table-bordered table-hover" id="sample-table">
+            <thead>
+              <tr>
+                <th width="100">批量处理</th>
+                <th width="100">昵称(手机号)</th>
+                <th width="100">账户余额</th>
+                <th width="100">身份</th>
+                <th width="100">已分成</th>
+                <th width="100">分成总数</th>
+                <th width="180">加入时间</th>
+                <th width="100">操作</th>
+              </tr>
+            </thead>
+            <tbody class="tb">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var fencheng = [500, 1000, 1500, 2000, 2500, 3000, 5000, 10000, 20000, -1];
+    var str = ''
+    for (var i = 0; i < fencheng.length; i ++) {
+      var s = fencheng[i] == -1 ? '永久分成' : ('分成' + fencheng[i])
+      str += '<a onclick="setdivice('+ fencheng[i] +')" class="btn btn-info">' + s + '</a>'      
+    }
+    $(".set_agent").prepend(str);
+    var agentListStr = {php}echo json_encode($list);{/php} || '';
+    var userIdList = [];
+    var agentList = {};
+    for(var f in agentListStr){
+      if (typeof agentListStr[f] != 'function') {
+        userIdList.push(agentListStr[f].user_id);
+        agentList[agentListStr[f].user_id] = agentListStr[f];
+      }
+    }
+    userIdList = JSON.stringify(userIdList)
+      $.ajax({
+        url: '{:url("api/Base/getUserAgent")}',
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          if (data.code == 2000) {
+          	var res = data.data;
+          	var list = '';
+          	for (var j = 0; j < res.length; j ++) {
+          	  var agent = res[j].agent_type == 1 ? '<td>代理商</td>' : '<td>经销商</td>';
+          	  var balance = '<td>' + res[j].user_vb + '</td>'
+          	  var name = '<td>' + res[j].nickname + '(' + res[j].phone + ')</td>';
+          	  var time = '<td>' + res[j].createtime + '</td>';
+          	  var money = '';
+          	  var total_share_money = '';
+          	  var sel = '';
+          	  var operate = '';  //保存
+          	  var agentId = ''//  
+          		if (userIdList.indexOf(res[j].id) == -1) {
+          		  agentId = -1;
+          		  sel = '<td><input class="check" value="-1&' +  res[j].id  + '" type="checkbox" /></td>'
+          		  money = '<td>0</td>'
+      	        total_share_money = '<td class="total_money"><input type="text" value="0"/></td>';
+          		  operate = '<td><div onclick="save(-1,' + res[j].id + ', this)" class="btn">保存</div></td>';
+          		} else {
+          		  agentId = agentList[res[j].id].id;
+          		  sel = '<td><input class="del check" value="' + agentId + '&'+ res[j].id +'" type="checkbox" /></td>'
+          		  operate = '<td><div onclick="save('+ agentId + ', ' + res[j].id + ', this)" class="btn">保存</div>' + '<div onclick="del(this,'+ agentId + ')" class="btn">取消分成</div></td>';
+          		  money = '<td class="money">' + agentList[res[j].id].money + '</td>'
+      	        total_share_money = '<td class="total_money"><input type="text" value="' + (agentList[res[j].id].total_share_money == -1 ? '永久分成': agentList[res[j].id].total_share_money)  + '"/></td>';
+          		}
+          		list += '<tr>' + sel + name + balance + agent + money + total_share_money + time + operate + '</tr>';
+          	}
+          	$('.tb').append(list)
+          } else {
+            layer.msg(data.msg);
+          }
+        },
+        error: function (xhr, type) {
+          layer.alert(xhr.status + '服务器错误');
+        }
+      })
+function setdivice (num){
+  var st = num;
+  if (num == -1) {
+    st = '永久分成'
+  }
+    var result = confirm('确定设置分成' + st + '吗')
+    if (result) {
+  var check = $(".check");
+  var newAgent = '';
+  var newjson="[";
+  var oldjson="[";
+  var oldAgent = '';
+  check.each(function () {
+    var t = $(this);
+    if (t.prop('checked')) {
+      var v = t.val()
+      var split = v.split('&')
+    	if (split[0] == -1) {
+        newjson +='{"user_id":'+ split[1] +',"total_share_money":'+ num +'},'
+    		
+    	} else {
+        oldjson +='{"id": '+ split[0] +',"user_id":'+ split[1] +',"total_share_money":'+ num +'},'
+    	}
+    }
+  })
+  if (newjson != '[') {
+    newjson = newjson.slice(0,-1);
+  }
+  if (oldjson != '[') {
+    oldjson = oldjson.slice(0,-1);
+  }
+  newjson += "]";
+  oldjson += "]";
+  $.ajax({
+    type:"Post",
+    data:{insertJsonData: oldjson, UpdateJsonData: newjson },
+    url:'{:url('User/createagentforgetmoney')}',
+    async:true,
+    success:function(data){
+      if (data.code == 1) {
+        layer.msg('保存成功');
+        setTimeout(function(){
+              location.reload();
+        },1500)
+      	
+      } else{
+        layer.msg('保存失败');
+      }
+    }
+  })
+  }
+}
+function deletes () {
+  var result = confirm('确定批量取消代理分成吗')
+  let arr = [];
+  if(result) {
+    var dels = $(".del");
+    dels.each(function () {
+      if ($(this).prop('checked')) {
+      	arr.push($(this).val())
+      }
+    })
+  }
+  deleteonegetmoney(arr, function () {
+    location.reload()
+  })
+}
+function del(obj, id) {
+  var result = confirm('确定取消此代理分成吗')
+    if (result) {
+  deleteonegetmoney(id, function () {
+    var par = $(obj).parents('tr');
+//  par.find('.money').html(0)
+    par.find('.total_money input').val(0)
+    $(obj).remove()
+  })
+    }
+}
+  function deleteonegetmoney(ids, fn) {
+      $.ajax({
+        type:'Post',
+        url:'{:url('User/deleteonegetmoney')}',
+        data:{
+          ids:ids
+        },
+        success:function(data){
+          if (data.code == 2000) {
+            layer.msg('取消成功');
+            fn && fn()
+          } else {
+            layer.msg('取消失败');
+          }
+        }
+      })
+  }
+  function save(ids, userid, obj){
+  var result = confirm('确定设置此代理分成吗')
+  if (result) {
+    var obj = $(obj);
+    var json = '';
+    var num = obj.parents('tr').find('.total_money input').val();
+    var data = {};
+    if (num == '永久分成') {
+    	num = -1
+    }
+    if (ids == -1) {
+      json = '[{"user_id":'+ userid +',"total_share_money":'+ num +'}]';
+      data.insertJsonData = json;
+      data.UpdateJsonData = "[]"
+    } else {
+      json = '[{"id": ' + ids +',"user_id":'+ userid +',"total_share_money":'+ num +'}]';
+      data.insertJsonData = "[]";
+      data.UpdateJsonData = json
+    }
+    $.ajax({
+    type:"Post",
+    data: data,
+    url:'{:url('User/createagentforgetmoney')}',
+    async:true,
+    success:function(data){
+      if (data.code == 1) {
+        layer.msg('保存成功');
+        setTimeout(function(){
+          location.reload();
+        },1500)
+        
+      } else{
+        layer.msg('保存失败');
+      }
+    }
+  })
+  }
+  }
+  </script>
+</body>
+</html>

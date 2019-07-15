@@ -1,0 +1,243 @@
+{extend name='/public/base' /}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/address.css"/>
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/MultiPicker.css">
+{/block}
+{block name='title'}全民商城-修改收货地址{/block}
+
+{block name='content' }
+<div class="box NewAddress">
+    <section>
+        <div class="one">
+            <div class="user">
+                <div class="userinformation">
+                    收件人：
+                </div>
+                <div class="userinput">
+                    <input type="text" value="{$address.name}" id="receive_name"/>
+                </div>
+            </div>
+            <!----------->
+            <div class="user">
+                <div class="userinformation">
+                    联系电话：
+                </div>
+                <div class="userinput">
+                    <input type="text" id="new_phone" value='{$address.phone}'/>
+                </div>
+            </div>
+            <!--------->
+            <div class="user">
+                <div class="userinformation">
+                    所在地区：
+                </div>
+                <div class="userinput">
+                    <input readonly id="new_district" value=''></input>
+                </div>
+                <div class="btn">
+                    <button>
+                        <img src="__HOME_STATIC__/img/NewAddress_03.png"/>
+                    </button>
+                </div>
+            </div>
+            <div class="user">
+                <div class="userinformation">
+                    街道:
+                </div>
+                <div class="userinput">
+                    <input readonly id="street" type="text" value="请选择街道地址"/>
+                </div>
+                <div class="btn">
+                    <button>
+                        <img src="__HOME_STATIC__/img/NewAddress_03.png"/>
+                    </button>
+                </div>
+            </div>
+            <div class="user">
+                <div class="userinformation">
+                    详细地址：
+                </div>
+                <div class="userinput">
+                    <input type="text" id="new_address" value='{$address.address_info}'/>
+                </div>
+            </div>
+            <div class="user">
+                设置默认地址
+                <p>
+                    注:每次下单时会使用该地址
+                </p>
+                <!--是否选为默认地址-->
+                <div class="eclipse"><div class="circle"></div></div>
+            </div>
+        </div>
+    </section>
+    <!--multipicker插件插入的容器-->
+    <section>
+        <div id="targetContainer"></div>
+    </section>
+    <section>
+        <div id="anotherContainer"></div>
+    </section>
+    <section class="footer_space">
+        <div class="footer_use">
+            <div class="use update"><a href="javascript:void(0)">更新地址</a></div>
+        </div>
+    </section>
+</div>
+{/block}
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/NewAddress.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/MultiPicker.js"></script>
+<script src="__HOME_STATIC__/js/rewriteAddress.js"></script>
+<script>
+  let oPrivince = '{$address.province}';
+  let oCity = '{$address.city}';
+  let oArea ='{$address.area}';
+  let oStreet='';
+  let user_Id ='{$address['id']}',user_uid='{$address['uid']}';
+  if(parseInt(user_Id)===parseInt(user_uid)){
+    $('.eclipse').trigger('click');
+  }
+  $(document).ready(function () {
+    ajaxAddress(function (res) {
+      $('#street').val('');
+        /*每次调整省市县的时候都要重新调用获取街道的方法*/
+      var townId =res[res.length-1]['id'];
+      getTown(townId,'json');
+      oPrivince=res[0]['id'];
+      oCity=res[1]['id'];
+      oArea=res[2]['id'];
+    })
+      /*根据id获取值*/
+    function getValById(id) {
+      let str='';
+      $.ajax({
+        url:'/public/data/area_data.json',
+        type:'GET',
+        dataType:'json',
+        async:false,
+        success:function (res) {
+          try {
+            str=res[id].name
+          }catch(e){
+            console.log('返回没有name的值');
+          }
+        },
+        error:function (xhr,type) {
+
+        }
+      })
+      return str;
+    }
+      /*设置省市县区的值*/
+    setProCiArea();
+    function setProCiArea() {
+      let text='';
+      let pro=getValById({$address.province}),cit=getValById({$address.city}),area=getValById({$address.area}),street=getValById({$address.town});
+      text=pro+cit+area;
+      $('#new_district').val(text);
+      $('#street').val(street);
+
+        /*调用获取镇的方法*/
+      getTown({$address.area});
+    }
+
+      /*获取town*/
+    function getTown(parent_id,atype) {
+        /*清空前面残留的信息*/
+      let type=atype||'json';
+      $.ajax({
+        url:'{:url("api/base/getTwon")}?parent_id='+parent_id+'&type='+type,
+        type:'GET',
+        dataType:'json',
+        async:false,
+        success:function (res) {
+          try {
+            fnMultiPicker(res,'street','anotherContainer',function (arr) {
+              oStreet=arr[0].id;
+            })
+          }
+          catch (e){
+            alert('咦,这里好像没有街道诶!')
+          }
+        },
+        error:function (xhr,type) {
+          alert('获取街道错误');
+        }
+      })
+    }
+      /*点击更新地址*/
+    $(".footer_use").find(".use.update").click(function () {
+
+        /*收件人*/
+      let receiveVal = $("#receive_name").val();
+
+        /*联系电话*/
+      let phoneVal =trimStr($("#new_phone").val());
+
+        /*获取所在地区省市区/县*/
+      let districtVal = $("#new_district").val();
+
+        /*详细地址*/
+      let addDetailVal = $("#new_address").val();
+
+        /*获取用户id*/
+      let id = {$address.id};
+
+        /*去除电话空格*/
+      function trimStr(str) {
+        return str.replace(/(^\s*)|(\s*$)/g,'');
+      }
+
+      if (receiveVal == '') {
+        toast("收件人不能为空");
+      } else if (phoneVal == ''||isNaN(phoneVal)) {
+        toast("手机输入错误");
+      } else if (districtVal == '') {
+        toast("请选择所在地区");
+      }else if(addDetailVal.length>32){
+        toast("详细地址太长")
+      }
+      else {
+          /*获取当前用户uid*/
+        let uid ={$Request.session.qt_userId};
+
+          /**********************************/
+        let data = {
+          name: receiveVal,
+          phone: phoneVal,
+          province: oPrivince,
+          city: oCity,
+          area: oArea,
+          town:oStreet,
+          uid:uid,
+          'address_info':addDetailVal,
+          id:id
+        }
+          /*************************************/
+        $.ajax({
+          url:'{:url("update")}',
+          type:'POST',
+          data:data,
+          success:function (res) {
+            if(res.code==1){
+              toast(res.msg);
+              if(eclipse_bool){
+                ajaxDefault(id, uid);
+              }
+              location.href=res.url;
+            }else if(res.code==0){
+              toast(res.msg);
+            }
+          },
+          error:function (res) {
+            alert(res.msg);
+          }
+        })
+      }
+      return false;
+    })
+  });
+</script>
+{/block}

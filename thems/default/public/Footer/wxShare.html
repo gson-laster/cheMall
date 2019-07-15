@@ -1,0 +1,21 @@
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script>
+  //分享代码weichat_config
+  wx.config({$weichat_config->config(array('onMenuShareQQ','onMenuShareWeibo','onMenuShareQZone','onMenuShareTimeline','onMenuShareAppMessage'), false)});
+  wx.ready(function (){
+    var description =  $("meta[name='description']").eq(0).text();
+    var desc = description != '' ? description : "{:cache_data('site_config')['site_wechat_default_desc']}";
+    var options = {
+          title: $("title").eq(0).text(),
+          desc: desc,
+        }
+    util.wxShare(options, shareSucc, shareFail);
+    function shareSucc(data){
+      alert('分享成功-_-');
+    }
+    function shareFail(data){
+      alert('分享失败-_-');
+    }
+  })
+</script>

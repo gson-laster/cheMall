@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="__HOME_STATIC__/css/common.css">
+    <link rel="stylesheet" href="__HOME_STATIC__/css/reset.css">
+    <script type="text/javascript" src="__HOME_STATIC__/js/layer.js"></script>
+    <script type="text/javascript" src="__HOME_STATIC__/js/zepto.js"></script>
+    <script>
+        var allAddress;
+        $.ajax({
+            url: '/public/data/area_data.json',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (res) {
+                allAddress = res;
+            },
+            error: function (xhr, type) {
+                console.log('没有获取到所有的省市县信息');
+            }
+        })
+        function getAddressById(proId, cityId, areaId, townId) {
+            var townText = '';
+            if (!parseInt(townId)) {
+                townText = '';
+            } else {
+                townText = allAddress[townId]["name"];
+            }
+            return (allAddress[proId]['name'] + allAddress[cityId]['name'] + allAddress[areaId]['name'] + townText);
+        }
+    </script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        .none {
+            display: none;
+        }
+
+        .wihe-ee {
+            color: #666;
+            font-family: song, arial;
+            font-size: 14px;
+            margin: 0 auto;
+            text-align: center;
+            background: url('__HOME_STATIC__/img/pay_success_bg.png') no-repeat center center;
+            height: 101px;
+            background-size: 100%, auto;
+        }
+
+        .tac-sd .ispaying {
+            color: #666;
+            font-family: song, arial;
+            font-size: 14px;
+            margin: 0 auto;
+            text-align: center;
+            background: url('__HOME_STATIC__/img/paying_bg.png') no-repeat center center;
+            height: 101px;
+            background-size: 100%, auto;
+        }
+
+        .tac-sd .address {
+            font-size: 13px;
+            margin-top: 24px;
+            padding: 0 10px 20px 10px;
+            border-bottom: 1px solid #f3f3f3;
+        }
+
+        .tac-sd .address p {
+            margin-top: 18px;
+        }
+
+        .tac-sd .address .receive-address {
+            height: 20px;
+            line-height: 20px;
+            padding-bottom: 10px;
+        }
+
+        .tac-sd .bottom {
+            width: 80%;
+            margin: 0 auto;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .tac-sd .bottom .btn {
+            width: 90px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 6px;
+            border: 1px solid #f3f3f3;
+            text-decoration: none;
+            display: inline-block;
+            color: #000;
+            font-size: 13px;
+        }
+
+        .tac-sd .hint {
+            margin: 0 auto;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .fail-fasu a:hover {
+            background-color: #ee9775
+        }
+
+        .fail-fasu a {
+            padding: 8px 24px;
+            background-color: #f8a584;
+            display: table;
+            margin: 0 auto;
+            color: #fff;
+            text-decoration: none;
+            margin-top: 10px
+        }
+        .success-fasu{
+          text-align: center;
+          padding-top: 20px;
+        }
+        .success-fasu p{
+          padding-top: 4px;
+        }
+        .re-qtzfgg a,
+        .success-fasu a {
+            padding: 8px 24px;
+            background-color: #eee;
+            display: table;
+            margin: 0 auto;
+            color: #999;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .re-qtzfgg a:hover,
+        .success-fasu a:hover {
+            background-color: #ddd;
+        }
+    </style>
+    <title>支付</title>
+</head>
+
+<body>
+    <div class="tac-sd">
+
+        <!--支付中-->
+        <div class="ispaying-container {eq name='res' value='success'}none{/eq}  {eq name ='res' value='fail'}none{/eq}">
+        <div class="ispaying ">
+
+        </div>
+        <div class="hint">
+            请等待...
+        </div>
+        </div>
+
+        <!--支付完成-->
+        {eq name ="res" value="success"}
+        <div class="wihe-ee">
+        </div>
+        <div class="address">
+            <p class="receive-man">收货人:&nbsp;&nbsp;<span>{$address_info['consignee']}&nbsp;&nbsp;</span><span>{$address_info['mobile']}</span></p>
+            <p class="receive-address">收货款地址:&nbsp;&nbsp;<span> <script>document.write(getAddressById('{$address_info["province"]}','{$address_info["city"]}','{$address_info["district"]}','{$address_info["twon"]}'))</script> {$address_info['address']}</span></p>
+        </div>
+        <div class="bottom">
+            <a href="{:url('home/Order/detail',array('order_id'=>$order_id))}" class="btn">查看订单</a>
+            <a href="{:url('home/Index/index')}" class="btn">返回首页</a>
+        </div>
+        {/eq} 
+        
+        {eq name="res" value="fail"}
+        <div class="success-fasu">
+            <img src="__HOME_STATIC__/img/suc_sb.png" />
+            <p>支付遇到问题</p>
+            <br>
+            <a href="{:url('home/order/detail',array('order_id'=>$order_id))}">支付失败</a>
+        </div>
+        <div class="re-qtzfgg">
+            <a href="{:url('home/order/detail',array('order_id'=>$order_id))}">返回选择其他支付方式</a>
+        </div>
+        {/eq}
+
+    </div>
+    <script type="text/javascript">
+        {eq name = "res" value = "topay"}
+        setTimeout(function () {
+            window.location.href = "{$toPay}"
+        }, 2000); 
+        {/eq}
+    </script>
+</body>
+</html>

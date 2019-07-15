@@ -1,0 +1,604 @@
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<!--<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>-->
+<!--<script type="text/javascript" src="__ADMIN_STATIC__/js/Hfumanxdmin.js"></script>-->
+<body>
+<style>
+    .td{
+        margin: 12px;
+    }
+</style>
+
+
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <!---->
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加配送区域</a>
+                      <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('deletearea')}"><i class="icon-trash"></i>批量删除</a>
+                    </span>
+                <span class="r_f">共：<b></b>条</span>
+            </div>
+            <!---->
+            <div class="table_menu_list">
+                <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                        <th width="80">ID</th>
+                        <th width="180">配送区域</th>
+                        <!--<th width="80">排序</th>-->
+                        <th width="180">加入时间</th>
+                        <!--<th width="70">状态</th>-->
+                        <th width="250">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name='list' id='item'}
+                    <tr>
+                        <td><label><input type="checkbox" name="ids[]" value="{$item.shipping_area_id}" class="ace" {eq name="$item['is_default']" value="1"}disabled{/eq}><span class="lbl"></span></label></td>
+                        <td id="transport" data-id="{$item.transport_id}">{$item.shipping_area_id}</td>
+                        <td>{$item.shipping_area_name}</td>
+                        <!--<td></td>-->
+                        <td>{$item.updatetime}</td>
+                        <!--<td class="td-status"><span class="label label-success radius"></span></td>-->
+                        <td class="td-manage">
+                            <!--添加运费模板配置-->
+                            <!--<a href="" class="btn btn-xs btn-info"><i class="icon-th bigger-120"></i></a>-->
+                            <a title="编辑" onclick="member_edit({$item.shipping_area_id},{$item.is_default})" href="javascript:;" class="btn btn-xs btn-info"><i class="icon-edit bigger-120"></i></a>
+                            {neq name='$item.is_default' value='1'}
+                            <a title="删除" href="javascript:;" onclick="member_del(this, {$item.shipping_area_id})" class="btn btn-xs btn-warning"><i class="icon-trash  bigger-120"></i></a>
+                            {/neq}
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+    <ul class=" page-content">
+        <li class="adderss"><label class="label_name">配送区域：</label><span class="add_name"><input id="shipping_area_name" name="name" type="text"  class="text_add" style=" width:350px" required data-title="配送区域"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss" style="height:auto;"><label class="label_name">首&nbsp;&nbsp;重：</label>
+            <span class="add_name" style="float:none">
+            <select name="first_weight" id="first_weight">
+
+                {for start="500" end="8000" step="500" name="v"}
+                    <option value="{$v}">{$v}</option>
+                {/for}
+
+            </select>
+            克以内费用:<input type="text" value="0" id="first_money" name="first_money" class="input-txt" data-role="add"/>单位：元
+          </span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss" style="height:auto;"><label class="label_name">续重每</label>
+            <span class="add_name" style="float:none">
+            <select name="second_weight" id="second_weight">
+                {for start="500" end="8000" step="500" name="v"}
+                    <option value="{$v}">{$v}</option>
+                {/for}
+            </select>
+            克或其零数的费用：
+            <input type="text" value="0" name="second_money" id="second_money" class="input-txt" data-role="add"/>单位：元
+          </span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li id="delivery_select" class="adderss" style="height:auto;"><label class="label_name">配送区域名称：</label>
+            <span class="add_name" style="float:none">
+            <select id="province" size="10"  onChange="get_city(this,0)">
+              <option value="0">请选择省份</option>
+                <option value="-1">全国</option>
+                 {volist name="province" id = "p"}
+                    <option value="{$p.id}">{$p.name}</option>
+                {/volist}
+            </select>
+            <select id="city" size="10"  onChange="get_area(this)">
+                <option value="0">请选择城市</option>
+            </select>
+            <select id="district" size="10">
+                <option value="0">请选择</option>
+            </select>
+            <button onclick="addArea()" class="btn btn-info" type="button">
+                <i class="icon-plus"></i>
+            </button>
+          </span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li id="delivery_area" class="adderss" style="height:auto"><span class="label_name">配送区域：</span><span class="add_name" id="area_list"></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <input type="hidden" name="config" value="" id="config"/>
+    </ul>
+</div>
+<script>
+
+    /*保存市县区的id的数组*/
+    var areaIdVal=[];
+
+    /*保存首重续重的值的json对象*/
+    var confObj={};
+
+    /*添加配送区域*/
+    function addArea() {
+      var province = $("#province").val(); // 省份
+      var city = $("#city").val();        // 城市
+      var district = $("#district").val(); // 县镇
+      var text = '';  // 中文文本
+      var tpl = ''; // 输入框 html
+      var is_set = 0; // 是否已经设置了
+
+        /*首重重量*/
+      var first_weight=$('#first_weight').val();
+        /*首重价格,没有填默认为0*/
+      var first_money=$('#first_money').val()==''?0:$('#first_money').val();
+
+        /*续重重量*/
+      var second_weight=$('#second_weight').val();
+        /*续重价格,没有填默认为0*/
+      var second_money=$('#second_money').val()==''?0:$('#second_money').val();
+
+      // 设置 县镇
+      if(district > 0){
+        text = $("#district").find('option:selected').text();
+        tpl = '<span class="area_list_sec"><input style="margin-left: 10px" class="area_list" type="checkbox" checked name="area_list" value="'+district+'">'+text+'</span>';
+        is_set = district; // 街道设置了不再设置市
+        areaIdVal.push(district);
+//      confObj.text = text;
+      }
+      // 如果县镇没设置 就获取城市
+      if(is_set == 0 && city > 0){
+        text = $("#city").find('option:selected').text();
+        tpl = '<span class="area_list_sec"><input style="margin-left: 10px" class="area_list" type="checkbox" checked name="area_list" value="'+city+'">'+text+'</span>';
+        is_set = city;  // 市区设置了不再设省份
+        areaIdVal.push(city);
+//      confObj.text = text;
+      }
+      // 如果城市没设置  就获取省份
+      if(is_set == 0 && (province > 0 || province == -1)){
+        text = $("#province").find('option:selected').text();
+        tpl = '<span class="area_list_sec"><input style="margin-left: 10px" class="area_list" type="checkbox" checked name="area_list" value="'+province+'">'+text+'</span>';
+        is_set = province;
+        areaIdVal.push(province);
+//      confObj.text = text;
+      }
+
+      var obj = $("input[class='area_list']"); // 已经设置好的复选框拿出来
+      var exist = 0;  // 表示下拉框选择的 是否已经存在于复选框中
+      $(obj).each(function(){
+        if($(this).val() == is_set){  //当前下拉框的如果已经存在于 复选框 中
+          layer.alert('已经存在该区域', {icon: 2});  // alert("已经存在该区域");
+          exist = 1; // 标识已经存在
+        }
+      })
+      if(!exist){
+          /*confObj保存的是首重续重的json*/
+        confObj.first_weight = first_weight;
+        confObj.first_money = first_money;
+        confObj.second_weight = second_weight;
+        confObj.second_money = second_money;
+        //合并
+        $('#area_list').append(tpl); // 不存在就追加进去;
+      }
+    }
+</script>
+<script>
+    /*气泡提示*/
+    jQuery(function($) {
+
+      $('table th input:checkbox').on('click', function() {
+        var that = this;
+        $(this).closest('table').find('tr > td:first-child input:checkbox')
+          .each(function() {
+            this.checked = that.checked;
+            $(this).closest('tr').toggleClass('selected');
+          });
+
+      });
+      $('[data-rel="tooltip"]').tooltip({
+        placement: tooltip_placement
+      });
+
+      function tooltip_placement(context, source) {
+        var $source = $(source);
+        var $parent = $source.closest('table')
+        var off1 = $parent.offset();
+        var w1 = $parent.width();
+
+        var off2 = $source.offset();
+        var w2 = $source.width();
+
+        if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+        return 'left';
+      }
+    });
+
+    /*弹层配送区域添加删除*/
+    $('#area_list').on('click',function (e) {
+      var target =e.target;
+      if($(target).find('input').prop('checked')){
+        $(target).find('input').prop('checked',false);
+        var inputValue =$(target).find('input').val();
+        $(target).remove();
+
+          /*从数组中删除取消选择的元素*/
+        var index =$.inArray(inputValue,areaIdVal);
+        areaIdVal.splice(index,1);
+      }else{
+        $(target).find('input').prop('checked',true);
+      }
+    });
+    /*用户-添加*/
+    $('#member_add').on('click', function() {
+      openPanle('add', null);
+      layer.open({
+        type: 1,
+        title: '添加配送区域',
+        maxmin: true,
+        shadeClose: true, //点击遮罩关闭层
+        area: ['800px', '600px'],
+        content: $('#add_menber_style'),
+        btn: ['提交', '取消'],
+        yes: function(index, layero) {
+          var num = 0;
+          var str = "";
+          var province = $("#province").val(); // 省份
+          var city = $("#city").val();        // 城市
+          var district = $("#district").val(); // 县镇
+          //不能为空
+          $(".add_menber input[type$='text']").each(function(n) {
+            if ($(this).attr('name') == 'name' && $(this).val() == "") {
+
+              layer.alert(str += "" + $(this).attr("data-title") + "不能为空！\r\n", {
+                title: '提示框',
+                icon: 0,
+              });
+              num++;
+              return false;
+            }
+          });
+          if(!province && !city&& !district){
+            layer.alert(str += '至少选择一个地区', {
+              title: '提示框',
+              icon: 1,
+            });
+            num++;
+            return false;
+          }
+          if (num > 0) {
+            return false;
+          } else {
+            var data = serializeData();
+            util.ajaxPost("{:url('addEditShippingArea')}", data).done(function (res) {
+              if(res.code > 0){
+                layer.close(index);
+                layer.msg(res.msg)
+                setTimeout(function () {  window.location.href = res.url;},2000)
+              }else{
+                layer.msg(res.msg)
+              }
+
+            }).fail(function (err) {
+              layer.msg(err.status+"服务器发生错误")
+            });
+          }
+        }
+      });
+    });
+
+    /*用户-编辑*/
+    function member_edit(id,defaultId) {
+      openPanle('edit', id, function () {
+        layer.open({
+          type: 1,
+          title: '修改用户信息',
+          maxmin: true,
+          shadeClose: false, //点击遮罩关闭层
+          area: ['800px', '600px'],
+          content: $('#add_menber_style'),
+          btn: ['提交', '取消'],
+          yes: function(index, layero) {
+            var num = 0;
+            var first_weight=$('#first_weight').val(),second_weight=$('#second_weight').val();
+            confObj.first_weight=first_weight;
+            config.second_weight=second_weight;
+
+            //不能为空
+            $(".add_menber input[type$='text']").each(function(n) {
+              if ($(this).attr('name') == 'name' && $(this).val() == "") {
+
+                layer.alert(str += "" + $(this).attr("data-title") + "不能为空！\r\n", {
+                  title: '提示框',
+                  icon: 0,
+                });
+                num++;
+                return false;
+              }
+            });
+            if (num > 0) {
+              return false;
+            } else {
+                /*判断是否为默认*/
+              if(defaultId===1){         //默认
+                var data =defaultSerializeData();
+                data+='&shipping_area_id='+id;
+                util.ajaxPost("{:url('addEditShippingArea')}", data).done(function (res) {
+                  if(res.code > 0){
+                    layer.close(index);
+                    layer.msg(res.msg)
+                    setTimeout(function () {  window.location.href = res.url;},2000)
+                  }else{
+                    layer.msg(res.msg)
+                  }
+                }).fail(function (err) {
+                  layer.msg(err.status+"服务器发生错误")
+                });
+
+              }else if(defaultId===0){                    //非默认
+                var data = serializeData();
+                data+='&shipping_area_id='+id;
+                util.ajaxPost("{:url('addEditShippingArea')}", data).done(function (res) {
+                  if(res.code > 0){
+                    layer.close(index);
+                    layer.msg(res.msg)
+                    setTimeout(function () {  window.location.href = res.url;},2000)
+                  }else{
+                    layer.msg(res.msg)
+                  }
+                }).fail(function (err) {
+                  layer.msg(err.status+"服务器发生错误")
+                });
+              }
+            }
+          }
+        });
+      })
+    }
+
+    /*用户删除*/
+    function member_del(obj, id) {
+      layer.confirm('确认要删除吗？', function(index) {
+        adminAjax('Get', '{:url('deletearea')}', util.jsonToUrlStr({"id":id}), false, function () {
+          $(obj).parents("tr").remove();
+          layer.msg('已删除!', {
+            icon: 1,
+            time: 1000
+          });
+        })
+      });
+    }
+
+
+
+    /*非默认的格式化数据*/
+    function serializeData() {
+      var data;
+        /*获取配送区域的值*/
+      var deliveryArea=$('#shipping_area_name').val();
+      var areaStr = areaIdVal.join('|');
+        /*要传入的配置参数*/
+      confObj.areaId=areaStr;
+        /*获取transport_id的值*/
+      var transport_id =$('#transport').attr('data-id');
+      data = 'transport_id='+transport_id+'&shipping_area_name='+deliveryArea+'&config='+JSON.stringify(confObj);
+      return data;
+    }
+
+    /*默认的格式化数据*/
+    function defaultSerializeData() {
+      var data;
+      var defaultConfig={};
+      var deliveryArea=getInputVal('#shipping_area_name');
+      var transport_id =$('#transport').data('id');
+      var first_weight=getInputVal('#first_weight');
+      var second_weight=getInputVal('#second_weight');
+      var first_money=getInputVal('#first_money');
+      var second_money=getInputVal('#second_money');
+      defaultConfig['first_weight']=first_weight;
+      defaultConfig['first_money']=first_money;
+      defaultConfig['second_weight']=second_weight;
+      defaultConfig['second_money']=second_money;
+
+      return data='shipping_area_name='+deliveryArea+'&transport_id='+transport_id+'&config='+JSON.stringify(defaultConfig);
+    }
+
+
+    /*获取值的方法*/
+    function getInputVal(obj) {
+      return $(obj).val();
+    }
+
+
+    /*打开面板的方法*/
+    function openPanle(type, id, fn){
+
+        /*添加数据前先清空以前的数据*/
+      showSelect();
+      if(type == 'add'){
+        //清空input
+        $(".add_menber input[type$='text']").each(function(n) {
+          $(this).val('');
+        });
+        confObj={};
+        areaIdVal=[];
+        $("#area_list").html('');
+      }else{
+        adminAjax('Get', '{:url('getshippingbyid')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+          var data = res.data;
+              /*设置弹层配送区域的值*/
+          $('#shipping_area_name').val(data['shipping_area_name']);
+              /*将获取到的config转为json*/
+          var configJson=JSON.parse(data.config);
+
+              /*设置配送区域首重续重的值*/
+          var eles =$('*[data-role="add"]');
+          for (var i=0;i<eles.length;i++){
+            var idName=$(eles[i]).attr('id');
+            $(eles[i]).val(configJson[idName]);
+          }
+              /*设置select选中的值*/
+          var firstWeight=configJson['first_weight'];
+          var secondWeight=configJson['second_weight'];
+          $('#first_weight').find('option[value="'+firstWeight+'"]').attr('selected',true);
+          $('#second_weight').find('option[value="'+secondWeight+'"]').attr('selected',true);
+
+
+              /*请求public/data/area_data.json的数据*/
+          $.ajax({
+            url:'/public/data/area_data.json',
+            type:'GET',
+            dataType:'json',
+            async:false,
+            success:function (res) {
+              var areaIds=[];
+              var str='';
+              var areaName='';
+                /*获取areaId*/
+              var areaId =configJson['areaId'];
+//              console.log(areaId);
+              if(areaId){         //判断是否存在areaId;
+                areaIds=areaId.split('|');
+                for (var i=0;i<areaIds.length;i++){
+                  areaName=res[areaIds[i]]['name'];
+                  str+='<span class="area_list_sec"><input style="margin-left: 10px" class="area_list" type="checkbox" checked name="area_list" value="'+areaIds[i]+'">'+areaName+'</span>';
+                }
+
+              }else{
+                  /*调用隐藏选择框的方法*/
+                hideSlect();
+              }
+
+
+                /*点击编辑打开面板的时候要获取当前areaId的值*/
+              confObj=configJson;
+              areaIdVal=areaIds;
+
+              $("#area_list").html(str);
+//              console.log(configJson);
+
+              fn&fn();
+            },
+            error:function (xhr,type) {
+              console.log('请求area_data.json错误');
+            }
+          })
+        });
+      }
+    }
+</script>
+
+<script>
+
+    /*隐藏选择框*/
+    function hideSlect() {
+      $('#delivery_select').css('display','none');
+      $('#delivery_area').css('display','none');
+      $('.layui-layer').css('height','300px');
+    }
+
+    /*显示选择框*/
+    function showSelect() {
+      $('#delivery_select').css('display','block');
+      $('#delivery_area').css('display','block');
+    }
+
+
+    /*获取省市区乡镇*/
+    /**
+     * 获取省份
+     */
+    function get_province(){
+      var url = '{:url('api/Base/getRegion')}?level=1&parent_id=0';
+      $.ajax({
+        type : "GET",
+        url  : url,
+        error: function(request) {
+          alert("服务器繁忙, 请联系管理员!");
+          return;
+        },
+        success: function(v) {
+          v = '<option value="0">选择省份</option>'+ v;
+          $('#province').empty().html(v);
+        }
+      });
+    }
+
+    /**
+     * 获取城市
+     * @param t  省份select对象
+     */
+    function get_city(t){
+      var parent_id = $(t).val();
+      if(!parent_id > 0){
+        return;
+      }
+      $('#district').empty().css('display','none');
+      $('#twon').empty().css('display','none');
+      var url = '{:url('api/base/getRegion')}?level=2&parent_id='+ parent_id;
+      $.ajax({
+        type : "GET",
+        url  : url,
+        error: function(request) {
+          alert("服务器繁忙, 请联系管理员!");
+          return;
+        },
+        success: function(v) {
+          v = '<option value="0">选择城市</option>'+ v;
+          $('#city').empty().html(v);
+        }
+      });
+    }
+
+    /**
+     * 获取地区
+     * @param t  城市select对象
+     */
+    function get_area(t){
+      var parent_id = $(t).val();
+      if(!parent_id > 0){
+        return;
+      }
+      $('#district').empty().css('display','inline');
+      $('#twon').empty().css('display','none');
+      var url = '{:url('api/base/getRegion')}?level=3&parent_id='+ parent_id;
+      $.ajax({
+        type : "GET",
+        url  : url,
+        error: function(request) {
+          alert("服务器繁忙, 请联系管理员!");
+          return;
+        },
+        success: function(v) {
+          v = '<option>选择区域</option>'+ v;
+          $('#district').empty().html(v);
+        }
+      });
+    }
+    // 获取最后一级乡镇
+    function get_twon(obj){
+      var parent_id = $(obj).val();
+      var url = '{:url('api/base/getTwon')}?parent_id='+ parent_id;
+      $.ajax({
+        type : "GET",
+        url  : url,
+        success: function(res) {
+          if(parseInt(res) == 0){
+            $('#twon').empty().css('display','none');
+          }else{
+            $('#twon').css('display','inline');
+            $('#twon').empty().html(res);
+          }
+        }
+      });
+    }
+</script>
+
+</body>
+</html>

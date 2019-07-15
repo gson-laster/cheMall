@@ -1,0 +1,60 @@
+<body>
+    <div class="margin clearfix">
+        <div class="amounts_style">
+            <div class="Record_list">
+                <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                        <tr>
+                            <th width="100px">序号</th>
+                            <th width="200px">订单编号</th>
+                            <th width="180px">成交时间</th>
+                            <th width="120px">成交金额(元)</th>
+                            <th width="180px">状态</th>
+                            <th width="180px">查看</th>
+                            <th width="180px">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {volist name="list" id="l"}
+                        <tr>
+                            <td>{$l.order_id}</td>
+                            <td>{$l.order_sn}</td>
+                            <td>{$l.confirm_time|date="Y-m-d H:i:s", ###}</td>
+                            <td>{$l.order_amount}</td>
+                            <td>{if condition="$l.order_status eq 7"}已分成{elseif condition="$l.order_status eq 8"/}暂不分成{else/}待分成{/if}</td>
+                            <td>
+                              <a href="{:url('admin/order/delivery_info',['order_id'=>$l.order_id])}" class="btn btn-info">发货单</a>
+                              <a href="{:url('admin/order/detail',['order_id'=>$l.order_id])}" class="btn btn-info">订单详情</a>
+                            </td>
+                            <td>
+                              <a href="javascript:;" onclick="divideOrder(this, {$l.order_id}, 1)" class="btn btn-info">分成</a>
+                              <a href="javascript:;" onclick="divideOrder(this, {$l.order_id}, 2)" class="btn btn-danger">订单有问题暂不分成</a>
+                            </td>
+                        </tr>
+                      {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+function divideOrder(obj, id, type){
+  $.ajax({
+    url: "{:url('admin/order/divideOrder')}",
+    data: {'order_id': id, type: type},
+    type: "POST",
+    success: function (res) {
+      if(res.code == 1002){
+        setTimeout(()=>window.location.href=location.href)
+      }
+      layer.msg(res.msg)
+    },
+    error: function (err) {
+      layer.msg(err.status + '服务器发生错误')
+    }
+  });
+}
+</script>
+
+</html>

@@ -1,0 +1,146 @@
+{extend name="/public/base" /}
+{block name="title"}我的订单-订单详情{/block}
+{block name="headcss"}
+<link rel="stylesheet" href="__HOME_STATIC__/css/ordersDetail.css"/>
+{/block}
+{block name="headjs"}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<!--获取省市区详细地址-->
+<script type="text/javascript">
+  var address;
+  $.ajax({
+    url:'/public/data/area_data.json',
+    type:'GET',
+    dataType:'json',
+    async:false,
+    success:function (res) {
+      address=res;
+    },
+    error:function (xhr,type) {
+      console.log('ajax错误')
+    }
+  })
+  function getAddressById(proId,cityId,areaId,townId) {
+    var town_name='';
+    if(townId>0){
+      town_name=address[townId];
+    }else{
+      town_name='';
+    }
+    return address[proId]['name']+address[cityId]['name']+address[areaId]['name']+town_name;
+  }
+</script>
+{/block}
+{block name="content"}
+<!--快递-->
+<div class="box">  
+<div class="order_top">
+    <div class="trade_identi">
+        <div class="trade_hint">
+            <p>
+                {if condition="$orderlist['pay_status'] eq 1"}待付款
+                {elseif condition="($orderlist['pay_status'] == 2) AND ($orderlist['shipping_status'] == 1) AND
+                ($orderlist['order_status'] <3) "}待发货
+                {elseif condition="($orderlist['pay_status'] == 2) AND ($orderlist['shipping_status'] > 1) AND
+                ($orderlist['order_status'] < 3) "}待收货
+                {elseif condition="($orderlist['pay_status'] ==2) AND ($orderlist['shipping_status'] > 1) AND
+                ($orderlist['order_status'] ==3)"} 交易成功
+                {elseif condition="($orderlist['order_status'] ==5)"} 已完成
+                {elseif condition="($orderlist['order_status'] ==6)"} 已取消
+                {elseif condition="($orderlist['order_status']) ==7"} 退款中
+                {/if}
+            </p>
+        </div>
+    </div>
+</div>
+
+<!--商品-->
+<div class="order_item clear">
+    <div class="order_shop">
+        <div class="shop_content">
+            <p>订单号:{$orderlist['order_sn']}</p>
+        </div>
+    </div>
+    <div class="shop_goods clear">
+        {php}$totalPrice=0;{/php}
+        {volist name='goods' id='g'}
+            <div class="shop_goods_content">
+                <a href="{:url('home/goods/index',array('gid'=>$g['goods_id']))}">
+                <img src="{$g['thumb']}" alt=""/>
+                <div class="content_desc ">
+                    <p class="desc text_overflow">{$g['goods_name']}</p>
+                    <p class="color text_overflow">{$g['spec_key_name']}</p>
+                </div>
+                </a>
+                <div class="price">
+                    <p>￥{$g['goods_price']}</p>
+                    <span class="number">x{$g['goods_num']}</span>
+                    {if condition="($orderlist['pay_status'] ==2) AND ($orderlist['shipping_status'] > 1) AND($orderlist['order_status'] ==3)"}
+                    <a href="{:url('home/Comment/editorcomment',array('rec_id'=>$g['rec_id']))}"><input type="button" value="去评价"/></a>
+                    {/if}
+                </div>
+
+            </div>
+
+        {php}$totalPrice += $g['goods_total'];{/php}
+        {/volist}
+        <!-- <div class="service clear">
+             <button class="btn">申请售后</button>
+         </div>-->
+    </div>
+    <div class="shop_goods_total">
+        <div class="goods_container">
+            <div class="total_header">
+                <div>商品总价</div>
+                <div>运费(快递)</div>
+                <!--<div>运费险(卖家赠送)</div>-->
+                <div>订单总价</div>
+            </div>
+            <div class="total_right">
+                <div>￥{$totalPrice}</div>
+                <div>￥{$orderlist.shipping_price}</div>
+                <!--<div>￥0.00</div>-->
+                <div>￥{$orderlist.total_amount}</div>
+            </div>
+        </div>
+        <div class="goods_payment">
+            <div class="left">实付款</div>
+            <div class="right">￥{$orderlist.order_amount}</div>
+        </div>
+    </div>
+</div>
+<!--查看运费险-->
+<div class="check_insurance">
+</div>
+
+<!--订单号-->
+<div class="order_number">
+    <div class="order_number_container">
+        <div class="">订单编号: <span>{$orderlist['goods_sn']}</span></div>
+        <div class="">创建时间: <span>{if condition="($orderlist['add_time']) AND ($orderlist['add_time'] != '')"  }{$orderlist['add_time']|date="Y-m-d H:i:s", ###}{/if}</span></div>
+        <div class="">付款时间: <span>{if condition="$orderlist['pay_time'] AND $orderlist['pay_time'] != ''"  }{$orderlist['pay_time']|date="Y-m-d H:i:s", ###}{/if}</span></div>
+        <div class="">发货时间: <span>{if condition="$orderlist['shipping_time'] AND $orderlist['shipping_time'] != ''"  }{$orderlist['shipping_time']|date="Y-m-d H:i:s", ###}{/if}</span></div>
+        <div class="">成交时间: <span>{if condition="$orderlist['confirm_time'] AND $orderlist['confirm_time'] != ''"  }{$orderlist['confirm_time']|date="Y-m-d H:i:s", ###}{/if}</span></div>
+    </div>
+</div>
+{empty name="orderlist['invoice_no']"}
+{else /}
+<div class="check_more" style="">
+    <div class="more_container">
+        <!--自提不能查看物流-->
+        {if condition="$orderlist['shipping_code'] neq 'ZITI' AND $orderlist['shipping_code'] neq 'JIAXIN'"}
+        <a href="{:url('home/order/getshipping',array('shipping_code'=>$orderlist['shipping_code'],'logisticCode'=>$orderlist['invoice_no']))}" style="text-decoration: none">
+            <button class="btn">查看物流</button>
+        </a>
+        {/if}
+    </div>
+</div>
+{/empty}
+{include file="thems/default/public/Footer/footer.html"}
+{/block}
+</div>
+{block name="footerjs"}
+<script>
+  $(".footer li").eq(4).addClass('active');
+</script>
+{/block}

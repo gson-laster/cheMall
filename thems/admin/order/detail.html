@@ -1,0 +1,282 @@
+<link rel="stylesheet" href="__ADMIN_STATIC__/css/detail.css" />
+
+<script type="text/javascript">
+    var address;
+    $.ajax({
+        url: '/public/data/area_data.json',
+        async: false,
+        success: function(res) {
+            address = res;
+        }
+    })
+
+    function writeAddress(province, city, area, town) {
+        var town_name = town ? address[town]['name'] : '';
+        var txt = address[province]['name'] + address[city]['name'] + address[area]['name'] + town_name;
+        // console.log(txt)
+        return txt;
+    }
+</script>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.go(-1)" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>商品订单</h3>
+                <h5>商城实物商品交易订单查询及管理</h5>
+            </div>
+        </div>
+
+    </div>
+    <div class="ncap-order-style">
+        <div class="titile">
+            <h3></h3>
+        </div>
+
+        <div class="ncap-order-details">
+            <form id="order-action">
+                <div class="tabs-panels">
+                    <div class="misc-info">
+                        <h3>基本信息</h3>
+                        <dl>
+                            <dt>订单 ID:</dt>
+                            <dd>{$order.order_id}</dd>
+                            <dt>订单号:</dt>
+                            <dd>{$order.order_sn}</dd>
+                            <dt>会员:</dt>
+                            <dd>{$order.consignee}</dd>
+                        </dl>
+                        <dl>
+                            <dt>E-Mail:</dt>
+                            <dd>{$order.email}</dd>
+                            <dt>电话:</dt>
+                            <dd>{$order.mobile}</dd>
+                            <dt>应付金额:</dt>
+                            <dd>{$order.order_amount}</dd>
+                        </dl>
+                        <dl>
+                            <dt>订单状态:</dt>
+                            <dd>{$Think.config.ORDER_STATUS[$order['order_status']]} / {$pay_status[$order['pay_status']]}/ {$shipping_status[$order['shipping_status']]}</dd>
+                            <dt>下单时间:</dt>
+                            <dd>{$order.add_time|date="Y-m-d",###}</dd>
+                            <dt>支付时间:</dt>
+                            <dd>
+                                {if condition="$order.pay_time neq 0"}{$order.pay_time|date='Y-m-d H:i',###}
+                                    {else/}N{/if}
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>支付方式:</dt>
+                            <dd>{$order.pay_name|default='其他方式'}</dd>
+                        </dl>
+                    </div>
+
+                    <div class="addr-note">
+                        <h4>收货信息</h4>
+                        <dl>
+                            <dt>收货人：</dt>
+                            <dd>{$order.consignee}</dd>
+                            <dt>联系方式：</dt>
+                            <dd>{$order.mobile}</dd>
+                        </dl>
+                        <dl>
+                            <dt>收货地址：</dt>
+                            <dd>
+                                <script>
+                                    document.write(writeAddress({$order.province}, {$order.city}, {$order.district}, {$order.twon}))
+                                </script>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>配送方式：</dt>
+                            <dd>{$order.shipping_name}</dd>
+                        </dl>
+                    </div>
+                    <div class="goods-info">
+                        <h4>商品信息</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="2">商品</th>
+                                    <th>规格属性</th>
+                                    <th>数量</th>
+                                    <th>单品价格</th>
+                                    <th>单品小计</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {volist name="orderGoods" id="good"}
+                                <tr>
+                                    <td class="w30">
+                                        <div class="goods-thumb">
+                                            <a href="{:url('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank"><img alt="" src="{$good['goods_id']|goods_thum_images=200,200}" /> </a>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: left;"><a href="{:url('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank">{$good.goods_name}</a><br/></td>
+                                    <td class="w80">{$good.spec_key_name}</td>
+                                    <td class="w60">{$good.goods_num}</td>
+                                    <td class="w100">{$good.goods_price}</td>
+                                    <td class="w80">{$good.goods_total}</td>
+                                </tr>
+                                {/volist}
+                        </table>
+                    </div>
+                    <div class="total-amount contact-info">
+                        <h3>订单总额：￥{$order.goods_price}</h3>
+                    </div>
+                    <div class="contact-info">
+                        <h3>费用信息 </h3>
+                        <div class="form_class">
+                            <a class="btn green" href="{:url('Admin/Order/editprice',array('order_id'=>$order['order_id']))}"><i class="fa fa-pencil-square-o"></i>修改费用</a>
+                        </div>
+                        <dl>
+                            <dt>小计：</dt>
+                            <dd>{$order.goods_price}</dd>
+                            <dt>运费：</dt>
+                            <dd>+{$order.shipping_price}</dd>
+                        </dl>
+                        <dl>
+                            <dt>应付 : </dt>
+                            <dd><strong class="red_common">{$order.order_amount}</strong></dd>
+                        </dl>
+                    </div>
+                    <div class="contact-info">
+                        <h3>操作信息</h3>
+                        <dl class="row">
+                            <dt class="tit">
+                  	          <label for="note">操作备注</label>
+                  	        </dt>
+                            <dd class="opt" style="margin-left:10px">
+                                <textarea id="note" name="note" style="width:600px" rows="6" placeholder="请输入操作备注" class="tarea"></textarea>
+                            </dd>
+                        </dl>
+                        <dl class="row">
+                            <dt class="tit">
+                  	          <label for="note">可执行操作</label>
+                  	        </dt>
+                            <dd class="opt" style="margin-left:10px">
+                                {foreach name="button" item="vo" key="k"}
+                                  {if condition="$k eq 'pay_cancel'"}
+                                    <a class="ncap-btn-big ncap-btn-green" href="javascript:void(0)" data-url="{:url('Order/pay_cancel',array('order_id'=>$order['order_id']))}" onclick="pay_cancel(this)">{$vo}</a>
+                                  {elseif condition="$k eq 'delivery'"/}
+                                    <a class="ncap-btn-big ncap-btn-green" href="{:url('Order/delivery_info',array('order_id'=>$order['order_id']))}">{$vo}</a>
+                                  {elseif condition="$k eq 'refund'"/} {else/}
+                                    <a class="ncap-btn-big ncap-btn-green" onclick="ajax_submit_form('order-action','{:url('Admin/order/order_action',array('order_id'=>$order['order_id'],'type'=>$k))}');">{$vo}</a>
+                                  {/if}
+                                {/foreach}
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="goods-info">
+                    <h4>操作记录</h4>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>操作者</th>
+                          <th>操作时间</th>
+                          <th>订单状态</th>
+                          <th>付款状态</th>
+                          <th>发货状态</th>
+                          <th>描述</th>
+                          <th>备注</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {volist name="action_log" id="log"}
+                      	 <tr>
+                           <td class="text-center">
+                             {eq name="log['action_user']" value="0"}管理员{else/}
+                               {if condition="isset($users[$log['action_user']])"}
+                                 {$users[$log['action_user']]['nickname']}
+                                {/if}
+                              {/eq}</td>
+                          <td class="text-center">{$log.log_time|date='Y-m-d H:i:s',###}</td>
+                          <td class="text-center">{$order_status[$log['order_status']]}</td>
+                          <td class="text-center">{$pay_status[$log['pay_status']]}</td>
+                          <td class="text-center">{$shipping_status[$log['shipping_status']]}</td>
+                          <td class="text-center">{$log.status_desc}</td>
+                          <td class="text-center">{$log.action_note}</td>
+          	             </tr>
+                         {/volist}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    /**
+     * ajax 提交表单 到后台去验证然后回到前台提示错误
+     * 验证通过后,再通过 form 自动提交
+     */
+    before_request = 1; // 标识上一次ajax 请求有没回来, 没有回来不再进行下一次
+    function ajax_submit_form(form_id, submit_url) {
+
+        if (before_request == 0)
+            return false;
+
+        $("[id^='err_']").hide(); // 隐藏提示
+        $.ajax({
+            type: "POST",
+            url: submit_url,
+            data: $('#' + form_id).serialize(), // 你的formid
+            error: function(request) {
+                alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function(v) {
+                before_request = 1; // 标识ajax 请求已经返回
+                // var v = eval('(' + v + ')');
+                // 验证成功提交表单
+                if(typeof v != 'object') v = JSON.parse(v);
+                if (v.hasOwnProperty('status')) {
+                    //layer.alert(v.msg);
+                    layer.msg(v.msg, {
+                        icon: 1, // 成功图标
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+
+                    if (v.status == 1) {
+                        if (v.hasOwnProperty('data')) {
+                            if (v.data.hasOwnProperty('url')) {
+                                location.href = v.data.url;
+                            } else {
+                                location.href = location.href;
+                            }
+                        } else {
+                            location.href = location.href;
+                        }
+                        return true;
+                    }
+                    if (v.status == 0) {
+                        return false;
+                    }
+                    //return false;
+                }
+                // 验证失败提示错误
+                for (var i in v['data']) {
+                    $("#err_" + i).text(v['data'][i]).show(); // 显示对于的 错误提示
+                }
+            }
+        });
+        before_request = 0; // 标识ajax 请求已经发出
+    }
+
+
+    function delfun() {
+        // 删除按钮
+        layer.confirm('确认删除？', {
+            btn: ['确定'] //按钮
+        }, function() {
+            console.log("确定");
+        }, function() {
+            console.log("取消");
+        });
+    }
+    function pay_cancel(o){
+      window.location.href = $(o).data('url');
+    }
+</script>
+</body>
+
+</html>

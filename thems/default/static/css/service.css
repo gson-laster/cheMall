@@ -1,0 +1,228 @@
+.box.service {
+    /*background-color: #F5F5F5;*/
+    width: 100%;
+}
+
+.service-header {
+    color: #333;
+    font-size: 20px;
+    font-family: "微软雅黑";
+    width: 100%;
+    text-align: center;
+    padding: 24px 0;
+}
+
+.service_content li {
+    margin: 0 auto;
+    display: block;
+    padding-left: 72px;
+    width: 300px;
+    line-height: 60px;
+    background-size: 300px auto;
+    background-repeat: no-repeat;
+    margin-bottom: 20px;
+    background-position: center;
+    box-sizing: border-box;
+}
+
+.service_content li:first-child {
+    background-image: url(../img/service_01.png);
+}
+
+.service_content li:nth-child(2) {
+    background-image: url(../img/service_03.png);
+}
+
+.service_content li:last-child {
+    background-image: url(../img/service_05.png);
+}
+
+.service_content li div {
+    margin-top: 10px;
+    padding-left: 52px;
+}
+
+.service-body-bottom {
+    width: 300px;
+    margin: 0 auto;
+    color: #07bb07;
+    text-align: center;
+    font-size: 16px;
+    padding: 20px 0;
+}
+
+.service-body-bottom img {
+    width: 160px;
+    padding: 10px;
+    border: 1px solid #DBDBDB;
+    border-radius: 5px;
+    background: #FFF;
+    margin-bottom: 10px;
+}
+
+.payment .return_btn {
+    width: 75px;
+    height: 28px;
+    border-radius: 5px;
+    background-color: #fff;
+    line-height: 28px;
+    margin: 8px auto 0 auto;
+    text-align: center;
+    color: #818181;
+}
+
+.payment h2 {
+    text-align: center;
+    margin-top: 34px;
+}
+
+.payment .payment_choice li {
+    width: 270px;
+    height: 72px;
+    display: block;
+    background: url(../img/payment_bg.png);
+    background-size: 270px auto;
+    margin: 8px auto 0 auto;
+    background-repeat: no-repeat;
+}
+
+.payment .service-body {
+    width: 230px;
+    background-size: 224px;
+}
+
+.payment .hint {
+    font-size: 14px;
+    text-align: center;
+    height: 20px;
+    line-height: 20px;
+    color: #7c9f61;
+    margin: 20px auto;
+}
+
+.payment .payment_choice span {
+    width: 40px;
+    color: #fff;
+    height: 70px;
+    line-height: 70px;
+}
+
+.payment .payment_choice .left {
+    float: left;
+    margin-top: 21px;
+}
+
+.payment .payment_choice .left p {
+    text-align: center;
+    color: #fff;
+    padding-left: 2px;
+}
+
+.payment .payment_choice .right {
+    float: left;
+    margin-left: 18px;
+}
+
+.payment .payment_choice .right p {
+    padding: 4px 0;
+}
+
+
+/*联系客服问题列表-start*/
+
+.service .service-header {
+    height: 100px;
+    text-align: center;
+    background-color: #d70030;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.service .service-header img {
+    width: 60px;
+}
+
+.service .service-header p {
+    font-size: 14px;
+    height: 16px;
+    line-height: 16px;
+    padding: 10px;
+    letter-spacing: 1px;
+}
+
+.service .service-body .service-body-title {
+    background-color: #fff;
+}
+
+.service .service-body .service-body-title h2 {
+    font-weight: bold;
+    padding: 14px;
+}
+
+.service-body .service-body-content>.item {
+    display: flex;
+    justify-content: flex-start;
+    border-top: 1px solid #f3f3f3;
+}
+.service-body .service-body-content>.item:last-child{
+    border-bottom: 1px solid #f5f5f5;
+}
+
+
+
+
+.service-body-content .item .item-left {
+    text-align: center;
+    width: 70px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.service-body-content .item-left img {
+    width: 24px;
+}
+.service-body-content .item-left p{
+    padding: 4px;
+}
+
+.service-body-content .item-left .up_arrow {
+    display: inline-block;
+    background: url(../../static/img/uparrow.png) no-repeat center center;
+    background-size: 16px 16px;
+    width: 20px;
+    height: 20px;
+    transform:rotate(180deg);
+    transition: transform 0.3s ease-in;
+}
+.service-body-content .item .item-right{
+    flex-grow: 1;
+}
+
+.service-body-content .item .item-right li{
+    display: block;
+    text-align: left;
+    padding: 15px 0 15px  12px;
+    font-size: 14px;
+    border-bottom: 1px solid #f5f5f5;
+    border-left: 1px solid #f5f5f5;
+}
+.service-body-content .item .item-right li:last-child{
+    border-bottom: none;
+}
+
+.item-right span{
+  width: 40px;
+  display: inline-block;
+  text-align: right;
+  padding-right: 10px;
+}
+.item-right a{
+  display: inline-block;
+  height: 100%;
+}
+/*联系客服问题列表-end*/

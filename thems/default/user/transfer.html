@@ -1,0 +1,132 @@
+{extend name="/public/base" /} {block name="title"}全民商城-我的{/block} 
+{block name="headcss"}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/transfer.css"/>
+{/block} 
+{block name="content"}
+<body style="background: #EFEFEF;">
+	<div class="box">
+<div class="account">
+	  <div class="content">
+    请输入对方账号
+  </div>
+  <div class="transfer">
+    <div class="inp">
+      <input type="text" />
+    </div>
+    <div onclick="sub()" class="btn">
+      确认
+    </div>
+  </div>
+</div>
+<div class="two none">
+<div class="userInfo">
+  <div class="img">
+    <img src="{$Request.session.userInfo.userimg}"/>
+  </div>
+  <div class="phoneName">
+    <p>{$Request.session.qt_nickname}</p>
+    <p>{$Request.session.qt_userPhone}</p>
+  </div>
+</div>
+<div class="money">
+	<span class="title">金额(元)</span><div><input name="money" title="转账金额" class="mon" type="text" placeholder="必填,金额10-999999.99元" /></div>
+</div>
+<div class="money">
+  <span class="title">密码:</span><div><input name="password" title="密码" class="pas" type="password" placeholder="请输入密码" /></div>
+</div>
+<div class="shuoming">
+ 转账说明: 验证的客户每日单笔转账<span>5万元</span>
+</div>
+<div class="money">
+  <span class="title">备注:</span><div><input name="note" class="remark" type="text" placeholder="请输入备注" /></div>
+</div>
+<div onclick="transfer()" class="confirm">
+	确认转账
+</div>
+</div>
+</div>
+</body>
+{/block}
+{block name="footerjs"}
+  <script type="text/javascript">
+    var userVb = "{$Request.session.userInfo.user_vb}"
+    var pay_password = "{$Request.session.userInfo.pay_password}"
+    if (pay_password == '') {
+	    layer.open({
+        content: '您还未设置支付密码,前往设置吗？',
+        btn: ['确定', '不要'],
+        yes: function (index) {
+          location.href = "{:url('checkpaypassword')}?to=1"
+        }
+      });
+    }
+    var account = ''                    //对方账户      
+    var accountInp = $(".inp input");   //账户输入框
+//    var money = $(".mon");              //  金额
+//    var password = $(".pass");          // 密码
+//    var remark = $(".remark");          //备注
+    var inpBox = $(".two input")        //第二部分所有的input
+  	function sub() {
+  	  var num = accountInp.val();
+  	  if (!/\d{11}/.test(num)) {
+  	  	alert('请输入对方账户')
+  	  } else {
+  	    account = num
+  	    $(".account").addClass('none');
+  	    $("body").css('background', '#F3F3F3');
+  	    $(".two").removeClass('none')
+  	  }
+  	}
+  	function transfer () {
+  	  var json = {to_user_phone: account}
+  	  var submit = true
+  	  inpBox.each(function() {
+  	    var name = $(this).attr('name')
+  	    var val = $(this).val()
+  	    if ( name != 'note' && val == '') {
+  	    	alert($(this).attr('title') + '不能为空');
+  	    	submit = false;
+  	    	return true;
+  	    } else {
+  	      json[name] = val
+  	      if (name == 'money') {
+  	      	if (val < 100) {
+  	      	  alert('转账金额不能小于100元')
+  	      	  return false;
+  	    	    submit = false
+  	      	} 
+  	      	if ( val > userVb) {
+	      	    alert('转账金额不能大于余额')
+	      	    return false;
+              submit = false
+  	      	}
+  	      }
+  	    }
+  	  })
+  	  if (submit) {
+	    $.ajax({
+        type: "Post",
+        data: json,
+        dataType: 'json',
+        url: "{:url('transfer_account')}",
+        async: true,
+        success: function (data) {
+          alert(data.msg)
+          if (data.code == 2000) {
+            setTimeout(function () {
+              location.href = '{:url('mywallet')}'
+            }, 1500)
+          }
+        }
+      });
+  	  }
+//	  var mon = money.val()
+//	  if (mon < 100) {
+//	  	alert('转账金额需大于100')
+//	  } else {
+//	    
+//	  }
+  	}
+  </script>
+{/block}

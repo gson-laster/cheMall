@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="Stylesheet" type="text/css" href="../static/css/common.css">
+  <link rel="Stylesheet" type="text/css" href="../static/css/reset.css">
+  <link rel="Stylesheet" type="text/css" href="../static/css/listOrder.css">
+  <title>订单列表</title>
+</head>
+
+<body>
+  <div class="box listOrder">
+    <div class="header">
+      <input type="text" name="searbar" value="" placeholder="订单编号/用户ID">
+      <a href="javascript:void(0);">查询</a>
+    </div>
+    <div class="selectbar">
+      <ul class="item">
+        <li class="active">待支付 <span>(2)</span></li>
+        <li>已付款 <span>(1)</span></li>
+      </ul>
+    </div>
+    <p class="check">查询到<span>2</span>条</p>
+    <div class="selectContainer">
+      <ul>
+        <li>
+          <div class="orderDetail">
+            <div class="left">
+              <p>订单编号 <span>E201111111111111111111</span></p>
+              <p>收货人<span>小花(18500551104)</span></p>
+              <p>总金额<span>240.00</span></p>
+              <p>应付金额<span>210.00</span></p>
+            </div>
+            <div class="right">
+              <p>2017-06-09</p>
+              <div class="btn">
+                <a href="javascript:void(0)">付款</a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="orderDetail">
+            <div class="left">
+              <p>订单编号 <span>E201111111111111111111</span></p>
+              <p>收货人 <span>小花(18500551104)</span></p>
+              <p>总金额 <span>240.00</span></p>
+              <p>应付金额 <span>210.00</span></p>
+            </div>
+            <div class="right">
+              <p>2017-06-09</p>
+              <div class="btn paied">
+                <a href="javascript:void(0)">已付款</a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="orderDetail">
+            <div class="left">
+              <p>订单编号 <span>E201111111111111111111</span></p>
+              <p>收货人 <span>小花(18500551104)</span></p>
+              <p>总金额 <span>240.00</span></p>
+              <p>应付金额 <span>210.00</span></p>
+            </div>
+            <div class="right">
+              <p>2017-06-09</p>
+              <div class="btn paied">
+                <a href="javascript:void(0)">已付款</a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="orderDetail">
+            <div class="left">
+              <p>订单编号 <span>E201111111111111111111</span></p>
+              <p>收货人 <span>小花(18500551104)</span></p>
+              <p>总金额 <span>240.00</span></p>
+              <p>应付金额 <span>210.00</span></p>
+            </div>
+            <div class="right">
+              <p>2017-06-09</p>
+              <div class="btn paied">
+                <a href="javascript:void(0)">已付款</a>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!--第二部分-->
+    <div class="selectContainer">
+      <ul>
+        <li>
+          <div class="orderDetail">
+            <div class="left">
+              <p>订单编号 <span>E201111111111111111111</span></p>
+              <p>收货人 <span>小花(18500551104)</span></p>
+              <p>总金额 <span>240.00</span></p>
+              <p>应付金额 <span>210.00</span></p>
+            </div>
+            <div class="right">
+              <p>2017-06-09</p>
+              <div class="btn paied">
+                <a href="javascript:void(0)">已付款</a>
+              </div>
+            </div>
+          </div>
+
+
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script src="../static/js/zepto.js"></script>
+  <script>
+    $(document).ready(function () {
+      var alis = $('.selectContainer').find('li');
+      $('.selectbar').on('click', function (e) {
+        var _e = e.target;
+        var index = '';
+        if ($(_e).hasClass('active')) {
+          $(_e).removeClass('active').siblings().addClass('active');
+        } else {
+          $(_e).addClass('active').siblings().removeClass('active');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

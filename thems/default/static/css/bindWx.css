@@ -1,0 +1,70 @@
+body{
+    background-color:#F0EFED;
+}
+.bindWx{
+    width: 100%;
+}
+
+.bindWx .wx_header{
+    text-align: center;
+    background-color: #fff;
+    padding: 0.14rem;
+}
+.wx_header p{
+    font-family: "微软雅黑";
+}
+
+.login_wrapper{
+    width: 94%;
+    margin: 0.4rem auto 0 auto;
+    text-align: center;
+}
+.login_wrapper .phone,.login_wrapper .identify{
+    width: 100%;
+    background-color: #fff;
+    padding: 0.08rem 0;
+    position: relative;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.login_wrapper .identify{
+    margin-top: 0.2rem;
+}
+#phone,#identyfy{
+    width: 100%;
+    outline:none;
+    box-sizing: border-box;
+    border: none;
+    padding: 0.02rem 0.02rem 0.02rem 0.10rem;
+    font-size:0.14rem;
+}
+.phone .send_code{
+    position: absolute;
+    right: 0;
+    width: 1rem;
+    height: 0.2rem;
+    top: 50%;
+    margin-top: -0.1rem;
+    border-left: 1px solid #ccc;
+}
+#send_code{
+    background-color: #fff;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
+    height:0.2rem;
+    padding: 0.02rem 0;
+}
+
+.wx_footer{
+    width:94%;
+    margin: 0.4rem auto 0 auto;
+    background-color:#D70030;
+    text-align: center;
+    color: #fff;
+    height:0.42rem;
+    line-height: 0.42rem;
+    border-radius: 0.42rem;
+}
+
+

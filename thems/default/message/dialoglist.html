@@ -1,0 +1,699 @@
+{extend name='/public/base' /}
+{block name='title'}{/block}
+{block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css">
+<style>
+  html,body{
+    height: 100%;
+  }
+.paycode_box{
+  width: 240px;
+  height: 40px;
+  margin: 0 auto;
+}
+.paycode_box > input{
+  width: 40px;
+  float: left;
+}
+.password_box input[type="tel"]{
+  height: 40px;
+  line-height: 30px;
+  position: absolute;
+  left: 0;
+  top: -21px;
+  right:0;
+  bottom: 0;
+  margin: auto;
+  width:222px;
+  opacity: 0;
+  letter-spacing:32px;
+  color: transparent;
+  font-size:22px;
+}
+.bigimgshow{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  overflow: scroll;
+  background: rgba(255,255,255,0);
+  transition: all 100ms ease-in-out;
+}
+.bigimgshow img{
+  width: 100%;
+  transition: all 100ms ease-in-out;
+}
+/*.content{
+  height: 100%;
+  box-sizing: border-box;
+}*/
+.loading{
+  text-align: center;
+  height: 36px;
+  line-height: 36px;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+</style>
+{/block}
+{block name="content"}
+  <body style="background: #EBEBEB; height: 100%; overflow: hidden;" onload="window.scrollTo(0,document.body.scrollHeight); ">
+    <div class="box message_chat scrollload-container">
+      <div id="loading" class="loading">
+        <img src="__HOME_STATIC__/img/loading.gif"/>
+      </div>
+      <section style="overflow-y: scroll;" class="content scrollload-content" id="content">
+      
+      </section>
+      <section class="chat_footer_space">
+        <div id="chat_footer" class="chat_footer">
+          <div class="input_box">
+            <div onclick="scr()" class="addimg">
+            
+            </div>
+            <div class="input">
+              <input onfocus='scrollt("inp")' onblur='scrollt("inp")' id="val" type="text" placeholder="在此输入消息..."/>
+            </div>
+          </div>
+          <div class="btn">
+            <button onclick="send(1)" type="button">发送</button>
+          </div>
+          <div class="bottom_add">
+            <label for="getimg">
+              <div class="imgadd twoimg">
+                <P>图片</P>
+              </div>
+            </label>
+            <div onclick="transfer()" class="transfer twoimg">
+              <p>转账</p>
+            </div>
+            <div onclick="toorder()" class="toorder twoimg">
+              <p>返回订单</p>
+            </div>
+          <div onclick="tohome()" class="goindex twoimg">
+              <p>返回商城</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+      <!--转账-->
+      <section class="box transfer_box" style="display: none;">
+        <div class="transfer_content">
+          <div class="transferimg">
+            <div class="transfer_img">
+              <img src=""/>
+            </div>
+            <p class="transfername"></p>
+          </div>
+          <div class="transcontent">
+          <div class="balance">
+            您的余额:<span>{$user_vb}</span>
+          </div>
+          <div class="transfermoney">
+            <p>转账金额</p>
+            <div class="transinput">
+              <span>￥</span><input type="number" />
+            </div>
+            <div class="transferexplain">
+              <input id="note" type="text" placeholder="添加转账说明(非必填)..." />
+            </div>
+            <div class="confirmtransfer">
+              <button onclick="passwordshow()">转账</button>
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+    <div class="passwordcontent" style="display: none;">
+      <div class="password_box">
+        <div class="payexplain">
+          <span onclick="cancelpassword()">x</span>
+          请输入6位支付密码
+        </div>
+        <div class="paycode_box">
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly style="border-left:1px solid #ccc"/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+            <input onkeyup="testlength(event,this)" type="password" class="clearfix" readonly/>
+        </div>
+        <!--唤起数字键盘-->
+        <input type="tel" name="" value="" class="pwd-input" id="pwd-input" unselectable="on">
+        <button onclick="confirmTransfer()">确认</button>
+      </div>
+    </div>
+    <input onfocus="scrollt()" onblur="scrollt()" id="getimg" type="file" class="none"   multiple="multiple" onchange="getpicture(this)"/>
+    <div id="offsetH">
+
+    </div>
+    <div onclick="hideimgshow(this)" class="bigimgshow" style="visibility: hidden;">
+    
+    </div>
+  </body>
+  {/block}
+{block name="footerjs"}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/chat.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="__HOME_STATIC__/js/vconsole.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="__PUBLIC__/static/js/util.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+      //测试链接
+    var parameter=location.search.split('&'),consignee_id=parameter[0].split('=')[1],uid = {$Request.session.qt_userId},pay_code ='{$Request.session.userInfo.pay_password}', url, json,page=1,titleisok=0 ,message_chat=$(".message_chat"),transfer_box=$(".transfer_box"),body=$("body"),load=$("#loading"),content=$('#content'),defaultimg='__HOME_STATIC__/img/defalut_userimg.jpg',chat_footer=$(".chat_footer"),click=1,addimgshow=true,chat_footer_space=$(".chat_footer_space"), msg_timebetween,send_timeold=true,before_time=[],loadbool=true,transinput=$(".transinput input"),$paycodeInput =$('.paycode_box').find('input');
+    var automatic=parameter[1]?parameter[1].split('=')[1]:"";
+    var userimg='{php}echo str_replace("\\","/",session("userInfo")["userimg"]){/php}';
+    var messageVal = document.getElementById('val');
+    userimg=textuser(userimg);
+       if (consignee_id==-2 || consignee_id.indexOf('S') != -1) {
+          url='{:url('api/Message/dialogList')}';
+          json={consignee_id:uid,sender_id: consignee_id};
+          $(".transfer").css('display','none');
+    }
+        else{
+          url='{:url('dialogList')}';
+          json={consignee_id:consignee_id};
+        }
+      if (consignee_id==-2) {
+          $("title").html("售后客服");
+          titleisok=1
+         }
+      else if (consignee_id.indexOf('S')!=-1) {
+          $("title").html("售前客服");
+          titleisok=1
+       }
+      ws = new WebSocket("ws://139.199.227.135:7272");
+      content.css('height',body.height() - 75);//设置聊天面板的高度
+      ws.onopen = function (evt) { onOpen(evt) };
+      ws.onclose = function (evt) { onClose(evt) };
+      ws.onmessage = function (evt) { onMessage(evt) };
+      ws.onerror = function (evt) { onError(evt) };
+      //连接socket成功触发
+        function onOpen(evt) {
+    loading(false);
+     }
+    if (automatic&&automatic!="") {
+      if (automatic==1) {
+        send(1,'余额不足,如何充值？');
+      }
+      else if(automatic==2){
+        send(1,'成功申请,请发收款方式');
+      }
+    }
+    var Dchat = document.getElementById('chat_footer');
+    var Dcontent = document.getElementById('content');
+        //自动滑到底部
+  function scrollt(type){
+    if ( type == "inp") {
+        Dchat.scrollIntoView(true);
+    }
+    content.scrollTop(Dcontent.scrollHeight);
+    body.scrollTop(body.height());
+  }
+  function scrollimg(){
+    var img=$(".onloadimg");
+    img.each(function(){
+      $(this).load(function(){
+    content.scrollTop(Dcontent.scrollHeight);
+      })
+    })
+  }
+  function settitle(){
+      titleisok=1;
+      $.ajax({
+        type:"Get",
+        url:'{:url('api/base/getUser')}',
+        async:true,
+        data:{'id':consignee_id},
+        success:function(data){
+     if(data){
+            var img=data.userimg==""?defaultimg:data.userimg;
+          $('.transfer_img img').attr('src',img);
+              if (data&&data.nickname) {
+                var a="";
+                a='与&nbsp'+data.nickname+"&nbsp聊天";
+                    $('.transfername').html(data.nickname);
+                $("title").html(a);
+              }
+     } else{
+       var img = defaultimg;
+     }
+        }
+      });
+    }
+  function loading(ty){
+    json.page=page;
+      $.ajax({
+        type:"Get",
+        data:json,
+        url:url,
+        async:false,
+        success:function(res){
+          if(res.data.wx_info){
+            var wx_info=res.data.wx_info;
+          }
+          else{
+            var userInfo=res.data.userInfo;
+          }
+          var data=res.data.msg_data;
+          if (data.total==0) {
+            settitle();
+            load.html('');
+            loadbool=false;
+            return false;
+          }
+//          if (data.total/data.per_page<page-1) {
+//            load.html("没有更多数据了");
+//            loadbool=false;
+//            return false;
+//          }
+          data=data.data;
+          if(data.length == 0){
+            load.html("没有更多数据了");
+            loadbool = false;
+             setTimeout(function(){
+              load.html('');
+            },1500)
+            return false;
+          }
+          var tim="";
+          var read="";
+          //十项对话消息并陈列
+          data.reverse();
+          var text="";
+          if(data.length==0&&titleisok==0){
+            settitle();
+          }
+          for (var i=0;i<data.length;i++) {
+            var aa="";
+            if(!msg_timebetween||data[i].send_time-msg_timebetween>600){
+                aa=aaa(data[i].send_time);
+            };
+            if(i==0){
+                aa=aaa(data[i].send_time);
+            };
+            if(titleisok==0){
+                if(wx_info&&data[i].sender_id==consignee_id&&data[i].bindwx!=0){
+                  if(wx_info[data[i].bindwx].nickname==""){
+                    settitle();
+                  }
+                  else{
+                      $("title").html('与&nbsp'+decodeURI(wx_info[data[i].bindwx].nickname)+'&nbsp聊天');
+                      $('.transfer_img img').attr('src',wx_info[data[i].bindwx].headimgurl);
+                      $('.transfername').html(wx_info[data[i].bindwx].nickname);
+                      titleisok=1;
+                     }
+              }
+              else if(titleisok==0&&i==data.length-1){
+                settitle();
+              }
+            }
+            var img;
+            if(wx_info){
+              if(data[i].userimg != undefined && data[i].userimg!=""){
+                  img=data[i].userimg;
+              }
+              else if(data[i].bindwx != undefined && data[i].bindwx != "" && wx_info[data[i].bindwx].headimgurl!=""){
+                  img=wx_info[data[i].bindwx].headimgurl;
+              }else if(res.data.hasOwnProperty('userInfo') && (res.data.userInfo.userimg != '' || res.data.userInfo.headimgurl != '')){
+                  img = res.data.userInfo.userimg != '' ? res.data.userInfo.userimg : res.data.userInfo.headimgurl;
+              }
+              else{
+                  img=defaultimg;
+              }
+            }
+            else if(userInfo){
+              if(uid==data[i].sender_id){
+                img=userInfo.headimgurl?userInfo.headimgurl:userInfo.userimg;
+                if(img==""){
+                  img=defaultimg;
+                }
+              }
+              else{
+                img="__HOME_STATIC__/img/message_index_08.png";
+              }
+            }
+            var con=testimg(data[i].minitype,data[i].content,data[i].sender_id,img);
+            text=text+aa+'<div class="user_chat">'+con+'<div class="clear"></div></div>';
+            if (data[i].sender_id!=uid) {
+                read=read+data[i].message_id+",";//拼接已读的消息id
+            }
+          }
+              content.prepend(text);
+              load.html("加载成功");
+              if((page == 1) || (page > 1 && !ty)){
+                scrollt();
+                scrollimg();
+              }
+              if(page > 1 && ty){
+                setTimeout(function(){
+                  content.scrollTop(10);
+                },400)
+              }
+                 setTimeout(function(){
+                  load.html('');
+                },1500)
+          var ab=read.slice(0,-1);//更改消息为已读
+                      $.ajax({
+                        type:"Post",
+                        data:{msg_id:ab},
+                        async:true,
+                        url:'{:url('api/Message/readMsg')}',
+                      success:function(data){
+                      }
+                      });
+                      page++;
+        if(Dcontent.scrollHeight == content.height()){
+        loading(false);
+      }
+        }
+      });
+        }
+        //判断消息类型
+        function testimg(type,content,id,img){
+        if (id==uid) {
+            if (type==1||type==0) {
+              return '<div class="user_img img"><img src="'+img+'"/></div><div class="chat_text chat">'+decodeURIComponent(content)+'</div>';
+          }
+                if(type==2){
+              return '<div class="user_img img"><img src="'+img+'"/></div><div class="chat_img chat chat_text_img"><img class="onloadimg" onclick="bigclick(this)" src="'+content+'"/></div>';
+            }
+                if(type==3){
+              return '<div class="user_img img"><img src="'+img+'"/></div><div class="transfer_right transfer_con chat"><img src="__HOME_STATIC__/img/transfer_01.png"/><p><span>转账成功</span><br />￥'+content+'</p></div><div class="clear"></div>';
+            }
+        }else{
+            if (type==1||type==0) {
+              return '<div class="service_userimg img"><img src="'+img+'"/></div><div class="service_text chat">'+decodeURIComponent(content)+'</div>';
+            }
+            if(type==2){
+              return '<div class="service_userimg img"><img src="'+img+'"/></div><div class="service_img chat chat_text_img"><img class="onloadimg" onclick="bigclick(this)" src="'+content+'"/></div>';
+          }
+              if(type==3){
+              return '<div class="service_userimg img"><img src="'+img+'"/></div><div class="transfer_left transfer_con chat"><img src="__HOME_STATIC__/img/transfer_01.png"/><p><span>收账成功<br /></span>￥'+content+'</p></div><div class="clear"></div>';
+            }
+      }
+        }
+//当收到消息的时候
+    function onMessage(evt) {
+      // json数据转换成js对象
+      var data = eval("("+evt.data+")");
+      var type = data.type || '';
+      switch(type){
+          // Events.php中返回的init类型的消息，将client_id发给后台进行uid绑定
+          case 'init':
+              // 利用jquery发起ajax请求，将client_id发给后端进行uid绑定
+                $.post('/home/message/bindUid', {client_id: data.client_id}, function(data){
+                }, 'json');
+              break;
+          // 当mvc框架调用GatewayClient发消息时直接alert出来
+          default :
+      var ss=aaa(data.time);
+      var img=textuser(data.sender_img,data.sender_id);
+      var con=testimg(data.minitype,data.content,data.sender_id,img);
+          var _temp=ss+'<div class="user_chat">'+con+'<div class="clear"></div></div>'
+            content.append(_temp);
+      scrollt();
+            var json_={msg_id:data.msg_id};
+            $.ajax({
+              type:"Post",
+              data:json_,
+              async:true,
+              url:'{:url('readMsg')}',
+            success:function(data){
+            }
+            });
+              msg_timebetween=data.time;
+      }
+    }
+    //发送消息
+      function send(minitype,imgsrc) {
+          var t="";
+          var msg="";
+          var json_={};
+          if(minitype==1){
+            msg=imgsrc?imgsrc:$("#val").val();
+            $("#val").val('');
+          }
+          if (minitype==2) {
+            msg=imgsrc;
+          }
+          if(minitype==3){
+            msg=imgsrc;
+          }
+        json_.minitype=minitype;
+          if(msg.trim()==""){
+            return false;
+          }
+          json_.msg=msg;
+          json_.consignee_id=consignee_id;
+          json_.sender_id
+      $.ajax({
+            type:'Post',
+            async:true,
+            data:json_,
+            url:'{:url('api/Message/sendMsg')}',
+            success:function(data){
+            }
+          });
+          var time=new Date();
+          var timestramp=time.getTime()/1000;
+          if (!msg_timebetween||timestramp-msg_timebetween>600) {
+            var t='<div class="time"><span>'+test(time.getHours())+':'+test(time.getMinutes())+'</span></div>';
+          }
+          if (minitype==1) {
+            var htm=t+'<div class="user_chat"><div class="user_img img"><img src="'+userimg+'"/></div><div class="chat_text chat">'+msg+'</div><div class="clear"></div></div>';
+          }
+          if(minitype==3){
+            var htm=t+'<div class="user_chat"><div class="user_img img"><img src="'+userimg+'"/></div><div class="transfer_right transfer_con chat"><img src="__HOME_STATIC__/img/transfer_01.png"/><p><span>转账成功</span><br />￥'+msg+'</p></div><div class="clear"></div></div>';
+          }
+      content.append(htm);
+      scrollt();
+      msg_timebetween=timestramp;
+    }
+//  检测有无用户头像，无则用默认头像
+    function textuser(img,sendid){
+            if (img) {
+              return img;
+          }
+            else if(sendid&&(sendid==-2||sendid.indexOf('S')!=-1)){
+              return '__HOME_STATIC__/img/message_index_08.png';
+            }
+            else{
+              return defaultimg;
+            }
+        }
+  $(document).keyup(function(event){
+    if (event.keyCode==13) {
+      send(1);
+    }
+  });
+  //下拉刷新
+  //下拉刷新
+  var isLoad = false;
+      content.scroll(function(){
+//      scrollpHeight=clientHeigh+scrollTop;
+        var scroll=content.scrollTop();
+        if(scroll > 9 && loadbool){
+//          load.html('<img src="__HOME_STATIC__/img/loading.gif"/>');
+          isLoad = true;
+        }
+        if (scroll == 0 && loadbool && isLoad) {
+          load.html('<img src="__HOME_STATIC__/img/loading.gif"/>');
+          loading(true);
+          isLoad = false;
+        }
+      })
+  //点击添加弹出 bottom_add
+  function scr(){
+    if(addimgshow){
+      chat_footer.height(187);
+      chat_footer_space.height(187);
+      body.scrollTop(body.height())
+      addimgshow=false;
+    }
+    else{
+      chat_footer.height(56);
+      chat_footer_space.height(56);
+      addimgshow=true;
+    }
+  }
+  //获取的本地图片
+  function getpicture(event){
+    var img=event.files;
+    for (var i=0;i<img.length;i++) {
+      if (!/image\/\w+/.test(img[i].type)) {
+        alert("请选择图片");
+        return false;
+      }
+      var t="";
+      var reader=new FileReader();
+      var file=reader.readAsDataURL(img[i]);
+      reader.onload=function(event){
+        $.ajax({
+          type:'Post',
+          data:{formFile:this.result},
+              url: "{:url('api/UploadFiles/saveBase64Image')}?to_dir=UserImg&compress=true",
+          success:function(data){
+            send(2,data.url);
+          }
+        })
+        var time=new Date();
+            var timestramp=time.getTime()/1000;
+            if (!msg_timebetween||timestramp-msg_timebetween>600) {
+              t='<div class="time"><span>'+test(time.getHours())+':'+test(time.getMinutes())+'</span></div>';
+            }
+            var htm=t+'<div class="user_chat"><div class="user_img img"><img onclick="bigclick(this) src="'+userimg+'"/></div><div class="chat_img chat chat_text_img"><img src="'+this.result+'"/></div><div class="clear"></div></div>';
+        content.append(htm);
+          scr();
+          scrollt();
+          }
+    }
+  }
+  function toorder(){
+    location.href='{:url('home/myorders/getorder')}?status=all'
+  }
+  var bigimgshow=$(".bigimgshow"),bigimgshow_height=$(".bigimgshow").height();
+  function bigclick(obj){
+    var obj=$(obj);
+    bigimgshow.append(obj.clone());
+    var bigimg=bigimgshow.find('img'),imgheight=bigimg.height();
+    var mar=imgheight>bigimgshow_height?0:(bigimgshow_height-imgheight)/2;
+    bigimgshow.css('visibility','visible');
+    bigimgshow.css('background','rgba(0,0,0,0.4)');
+    bigimg.css('padding-top',mar);
+  }
+  function hideimgshow(obj){
+    bigimgshow.css('background','rgba(255,255,255,0)');
+    bigimgshow.css('visibility','hidden');
+    bigimgshow.empty();
+  }
+  function transfer(){
+    message_chat.css('display','none');
+    transfer_box.css('display','block');
+    transinput.focus();
+  }
+  function confirmTransfer(){
+    var password="";
+    $paycodeInput.each(function(){
+      password+=$(this).val();
+    });
+    if (password.length!=6) {
+      alert("请正确输入密码");
+      return false;
+    }
+      $.ajax({
+        type:"Post",
+        url:'{:url("user/transfer_account")}',
+        async:true,
+        data:{to_user:consignee_id,money:transinput.val(),password:password,note:$("#note").val()},
+        success:function(data){
+          alert(data.msg);
+          click=1;
+          $(".password_box input").val('');
+          if (data.code==2000) {
+            canceltransfer();
+            send(3,transinput.val());
+            transinput.val('');
+          }
+        },
+        error:function(){
+          $(".password_box input").val('');
+          transinput.val('');
+          click=1;
+        }
+      });
+    }
+  function passwordshow(){
+    if (click) {
+      click=0;
+      if (pay_code=="") {
+        layer.open({
+          content: '您还未设置支付密码,是否前往设置？'
+          ,btn: ['是的,去设置', '否']
+          ,no: function(index){
+            layer.close(index);
+          },
+          yes:function(index){
+            layer.close(index);
+            location.href='{:url('user/checkpaypassword')}?to=1';
+          }
+        });
+      click=1;
+        return false;
+    }
+    if (transinput.val().trim()=="") {
+      alert("请输入金额");
+      click=1;
+    }
+    else if(transinput.val()>{$user_vb}){
+      alert("您输入的金额大于了您的余额");
+      click=1;
+    }
+    else if(transinput.val()<100){
+      alert("输入的金额需大于100元");
+      click=1;
+    }
+    else{
+      $(".passwordcontent").css('display','block');
+      $(".onepayinput").focus();
+      click=1;
+    }
+  }
+}
+  function testlength(event,obj){
+    var obj=$(obj);
+    var ev=event||window.event;
+    if (ev.keyCode==8) {
+        obj.parent('li').prev().find('input').val('');
+        obj.parent('li').prev().find('input').focus();
+    }
+    else if (obj.val().length>0) {
+        obj.val(obj.val().substr(0,1));
+        obj.parent('li').next().find('input').focus();
+      }
+  }
+  function canceltransfer(){
+    $(".passwordcontent").css('display','none');
+    transfer_box.css('display','none');
+    message_chat.css('display','block');
+  }
+  function cancelpassword(){
+    $(".passwordcontent").css('display','none');
+  }
+  //跳转到商城首页
+  function tohome(){
+    location.href='{:url("home/index/index")}';
+  }
+  // 设置哪个input显示密码;
+  (function(){
+  var $input = $(".paycode_box input");
+    $("#pwd-input").on("input", function () {
+      var pwd = $(this).val().trim();
+      for (var i = 0, len = pwd.length+1; i < len; i++) {
+        $input.eq("" + i + "").val(pwd[i]);
+      }
+      $input.each(function () {
+        var index = $(this).index();
+        if (index >= len) {
+          $(this).val("");
+        }
+      });
+      // 如果长度大于6,就只截取前六位;
+      if(len>6){
+        var newPwd =pwd.substr(0,6);
+        $(this).val(newPwd)
+      }
+    });
+
+  })()
+  function onClose(evt){}
+  function onError(evt){}
+</script>
+{/block}

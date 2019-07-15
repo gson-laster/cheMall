@@ -1,0 +1,280 @@
+.myTeam {
+    background-color: #f3f3f3;
+    font-size: 14px;
+    color: #cccccc;
+}
+.myTeam .none{
+    display: none;
+}
+
+.myTeam-header {
+    height: 24px;
+    margin: 10px 0 0 0;
+    text-align: center;
+    position: relative;
+}
+
+.myTeam-header #myTeam-search {
+    outline: 0;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 6px;
+}
+
+.myTeam-header .myTeam-search-icon {
+    height: 24px;
+    position: absolute;
+    top:13px;
+    margin-top: -12px;
+    width: 100%;
+    line-height: 24px;
+}
+
+.myTeam-header .myTeam-search-icon img {
+    width: 20px;
+    display: inline-block;
+    vertical-align: text-bottom;
+    margin-right: 4px;
+}
+
+.myTeam .myTeam-nav {
+    width: 100%;
+    background-color: #fff;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #333;
+    position: relative;
+}
+
+.myTeam .myTeam-nav .myTeam-nav-item {
+    display: flex;
+    flex-direction: row
+}
+
+.myTeam .myTeam-nav li {
+    flex: 1;
+    width: 25%;
+    box-sizing: border-box;
+    text-align: center;
+    border-right: 1px solid #cccccc;
+    height: 42px;
+    line-height: 42px;
+    position: relative;
+}
+
+.myTeam .myTeam-nav li:last-child {
+    border-right: none;
+}
+
+.myTeam .myTeam-nav li.active {
+    border-bottom: 2px solid #d80031;
+    color: #d80031;
+}
+
+.myTeam-nav .myTeam-nav-item li>span {
+    position: absolute;
+    display: inline-block;
+    bottom: -8px;
+    width: 30px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: 8px;
+    background-color: #d80031;
+    font-size: 12px;
+    left: 50%;
+    color: #fff;
+    margin-left: -15px;
+}
+
+
+.myTeam .myTeam-content-list {
+    background-color: #fff;
+}
+
+.myTeam-content-list li {
+    display: flex;
+    padding: 0 10px;
+    height: 80px;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.myTeam .myTeam-content-list .left {
+    height: 62px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.myTeam-content-list .myTeam-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    margin-right: 10px;
+    overflow: hidden;
+}
+
+.myTeam-content-list .myTeam-avatar img {
+    min-height: 58px;
+    width: 58px;
+}
+
+.myTeam-content-list .myTeam-detail p {
+    height: 18px;
+    line-height: 18px;
+    text-align: left;
+    color: #333333;
+}
+
+.myTeam-content-list .myTeam-detail p:last-child {
+    color: #FE8674;
+}
+
+.myTeam .myTeam-content-list .right {
+    height:24px;
+    border-radius:6px;
+    background-color: #60B341;
+    line-height:24px;
+    color: #fff;
+    padding: 6px 8px;
+}
+/*.myTeam .myTeam-footer{
+    width: 100%;
+    height: 50px;
+    position:fixed;
+    bottom: 0;
+    background-color: #fff;
+    max-width: 640px;
+}
+.myTeam-footer-item{
+    width: 100%;
+    display: table;
+}
+.myTeam-footer-item li{
+    display: table-cell;
+    text-align: center;
+    width: 50%;
+    height: 50px;
+}
+
+.myTeam-footer-item i{
+    display: inline-block;
+    padding-top:4px;
+    width: 26px;
+    height: 24px;
+}
+.myTeam-footer-item .message{
+    background: url(../img/message.png) no-repeat;
+    background-size: 100%;
+    background-position: 50%;
+}
+.myTeam-footer-item .contactor{
+    background: url(../img/contactor.png) no-repeat;
+    background-size: 100%;
+    background-position: 50%;
+}
+.myTeam-footer-item .active .contactor{
+    background: url(../img/contactor_active.png) no-repeat;
+    background-size: 100%;
+    background-position: 50%;
+}
+.myTeam-footer-item .active{
+    color: #d80031;
+}*/
+.myTeam  .list_footer li{
+	float: left;
+	width: 50%;
+	background-size: auto 20px;
+	background-repeat: no-repeat;
+	background-position: center top 12px;
+}
+.myTeam .msg_one{
+	/*height: 30px;*/
+	background-image: url(../img/message.png);
+}
+.myTeam .list_footer li p{
+	padding-top: 40px;
+	text-align: center;
+	padding-bottom: 5px;
+}
+.myTeam .list_footer ul>li{
+	color: #D70030;
+}
+.myTeam  .contactor{
+	background-image: url(../img/contactor_active.png);
+	color: #AAAAAA;
+}
+.myTeam .list_footer{
+	position: fixed;
+	bottom: 0;
+	max-width: 640px;
+	width: 100%;
+	background: white;
+}
+.myTeam  .list_footer_space{
+	height: 70px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

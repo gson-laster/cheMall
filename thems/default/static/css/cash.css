@@ -1,0 +1,110 @@
+.recharge_header{
+    width: 100%;
+    background-color: #cc2727;
+    height:40px;
+    text-align: center;
+    color: #fff;
+    line-height:40px;
+    display: flex;
+    align-items: center;
+    font-size:16px;
+}
+.recharge_header .header_left{
+    display: inline-block;
+    background: url("../../static/img/leftarrow.png") no-repeat center center;
+    background-size:20px 20px;
+    width:30px;
+    height:30px;
+    margin-left:6px;
+
+}
+
+.recharge_header .header_right{
+    margin-left: 30%;
+}
+.user_recharge{
+    padding: 0 10px;
+}
+.user_recharge .header{
+    width: 100%;
+    padding:10px 0;
+    text-align: left;
+    font-size:14px;
+}
+.user_recharge .header span{
+    width: 30%;
+}
+.user_recharge .header input{
+    outline: none;
+    border: 1px solid #fff;
+    padding-left:8px;
+    height:36px;
+    font-size:15px;
+    line-height:36px;
+}
+.pay_way{
+    width: 100%;
+    height:32px;
+    line-height:32px;
+    border-bottom: 1px solid #eee;
+}
+.pay_way .header{
+    font-size:14px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+.pay_way .header .left{
+    float: left;
+}
+.pay_way .header .right{
+    float: right;
+    color: #cc2727;
+}
+.pay_way .right .up_arrow{
+    display: inline-block;
+    background: url("../../static/img/uparrow.png") no-repeat center center;
+    background-size:16px 16px;
+    width:20px;
+    height:20px;
+    margin-left:12px;
+    transition: transform 0.3s ease-in;
+}
+.recharge_bottom{
+    width: 100%;
+}
+
+.recharge_bottom .bottom_item{
+    margin: 0 auto;
+    padding: 0 10px;
+    line-height:40px;
+    font-size:14px;
+    border-bottom: 1px solid #eee;
+}
+.recharge_bottom .bottom_item .left{
+    float: left;
+}
+.recharge_bottom .bottom_item .right{
+    float: right;
+    background: url("../../static/img/gou.png") center center;
+    background-size:20px 20px;
+    width:30px;
+    height:30px;
+    background-repeat:no-repeat;
+}
+
+.recharge_bottom .bottom_item .active{
+    color: #cc2727;
+}
+.recharge_submit{
+    width: 90%;
+    height:34px;
+    background-color: #cc2727;
+    border-radius:4px;
+    margin:12px auto 0 auto;
+    text-align: center;
+    color: #fff;
+    border: none;
+    display: block;
+    line-height:34px;
+    font-size:16px;
+}

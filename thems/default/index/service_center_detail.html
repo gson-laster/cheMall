@@ -1,0 +1,96 @@
+{extend name="public/base" /} {block name="headcss"}
+<link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/swiper-3.4.2.min.css">
+<link rel="Stylesheet" type="text/css" href="__HOME_STATIC__/css/index.css"> {/block} {block name="title"}服务中心详情{/block} {block name="headjs"}
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Apttc2OLQjWTvhBRRfhHQQ2p"></script>
+{/block} {block name="content"}
+<div class="service_center_detail">
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <img src="{$detail.thumb_pic}" alt="">
+      </div>
+    </div>
+    <!-- 如果需要分页器 -->
+    <div class="swiper-pagination"></div>
+  </div>
+  <div class="sub-desc">
+    <p>{$detail.sub_title}</p>
+  </div>
+  <div class="service-line"></div>
+  <div class="detail-list">
+    <ul>
+      <li class="item">
+        <p class="text">
+         <a href="tel:{$detail.phone}">
+          <span>{$detail.phone}</span>
+         </a>
+        </p>
+      </li>
+      <li class="item">
+        <p class="text location">
+          <span>{$detail.address}</span>
+        </p>
+      </li>
+      <li class="item btns">
+        <a href="tel:{$detail.phone}">一键拨号</a>
+        <a href="javascript:;" class="line"></a> 
+        <a href="{:url('showMap')}?id={$detail['id']}">一键导航</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="map-container" id="container"></div>
+{block name='footermenu'}
+  {include file="thems/default/public/Footer/footer.html"}
+{/block}
+{/block} 
+{block name="footerjs"}
+<script src="__HOME_STATIC__/js/zepto.js"></script>
+<script src="__HOME_STATIC__/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+  var myswiper = new Swiper('.swiper-container', {
+    direction: 'horizontal',
+    loop: true
+  })
+  var map = new BMap.Map('container')
+  var point = new BMap.Point({$detail.dimensionality}, {$detail.longitude})
+  var marker = new BMap.Marker(point);
+  map.addOverlay(marker); // 将标注添加到地图中
+  marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+  map.centerAndZoom(point, 15)
+  // 添加带有定位的导航控件
+  var navigationControl = new BMap.NavigationControl({
+    // 靠左上角位置
+    anchor: BMAP_ANCHOR_TOP_LEFT,
+    // LARGE类型
+    type: BMAP_NAVIGATION_CONTROL_LARGE,
+    // 启用显示定位
+    enableGeolocation: true
+  });
+  map.addControl(navigationControl);
+  // 添加定位控件
+  var geolocationControl = new BMap.GeolocationControl();
+  geolocationControl.addEventListener("locationSuccess", function (e) {
+    // 定位成功事件
+    var address = '';
+    address += e.addressComponent.province;
+    address += e.addressComponent.city;
+    address += e.addressComponent.district;
+    address += e.addressComponent.street;
+    address += e.addressComponent.streetNumber;
+    alert("当前定位地址为：" + address);
+  });
+  geolocationControl.addEventListener("locationError", function (e) {
+    // 定位失败事件
+    alert(e.message);
+  });
+  map.addControl(geolocationControl);
+  // 获取当前位置的经纬度;
+  var longitude, latitude;
+  if (window.navigator) {
+      
+  } else {
+
+  }
+</script>
+{/block}

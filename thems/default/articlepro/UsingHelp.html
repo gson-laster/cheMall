@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no'>
+  <meta name='keywords' content='' />
+  <meta name='description' content='' />
+  <meta http-equiv='X-UA-Compatible' content='ie=edge' />
+  <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/common.css">
+  <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/myExtend.css">
+  <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/swiper-3.4.2.min.css">
+  <style>
+  .footer_space{
+    height: 0;
+  }
+  .swiper-slide{
+      max-height: 200px;
+      overflow: hidden;
+  }
+  .article-container{
+    margin-bottom: 53px;
+  }
+  .scrollload-bottom{
+    margin-top: 10px;
+  }
+  </style>
+  <title>推广中心</title>
+</head>
+<body>
+  <div class="box myExtend">
+    <div class="header">
+      <!--大屏banner-->
+      <div class="swiper-container">
+        <div class="swiper-wrapper">
+          <!--<div class="swiper-slide">
+            <img src="__HOME_STATIC__/img/sucesstoshopping_02.png" alt="">
+          </div>
+          <div class="swiper-slide">
+            <img src="__HOME_STATIC__/img/sucesstoshopping_02.png" alt="">
+          </div>
+          <div class="swiper-slide">
+            <img src="__HOME_STATIC__/img/sucesstoshopping_02.png" alt="">
+          </div>-->
+          {volist name="banner" id="ba"}
+           <div class="swiper-slide">
+             <img src="{$ba.pic}" alt="">
+           </div> 
+          {/volist}
+        </div>
+        <!--如果需要分页器-->
+        <div class="swiper-pagination"></div>
+      </div>
+      <div class="tab-container" style="overflow: hidden;">
+        <div class="swiper-wrapper tab-wrapper" id="tab-wrapper" >
+         
+          {volist name="classinfo" id="item"}
+
+          <div class="swiper-slide tab-item" data-id="{$item['id']}">
+              <div class="tab-item-title" data-id="{$item['id']}">
+                {$item.title}
+              </div>
+          </div>
+          {/volist}
+        </div>
+      </div>
+    </div>
+
+    <!--<div class="article-container" style="display:none">
+      <div class="article-item">
+        <div class="left">
+          <img src="__HOME_STATIC__/img/goodsDetails_03.png" alt="">
+        </div>
+        <div class="right">
+          <p class="title">标题标题标题标题标题标题标题标题标题标题标题标题标题标题</p>
+          <p class="date">2017-06-05</p>
+        </div>
+      </div>
+    </div>-->
+    {include file="thems/default/public/Footer/footer.html"}
+  </div>
+
+ <?php
+    for($i=0;$i<count($classinfo);$i++){
+      echo '<div class="article-container scrollload-container" data-id="'.$classinfo[$i]['id'].'"><div class="scrollload-content"></div></div>';
+    }
+ ?>
+
+  <script src="__HOME_STATIC__/js/zepto.js"></script>
+  <script src="__HOME_STATIC__/js/swiper-3.4.2.jquery.min.js"></script>
+  <script src="__HOME_STATIC__/js/Scrollload.js"></script>
+  <script>
+    // 顶部banner
+    var mySwiper = new Swiper('.swiper-container', {
+      direction: 'horizontal',
+      pagination: '.swiper-pagination',
+      nextButton: '.swiper-button-next',
+      prevButton: '.swiper-button-prev'
+    });
+    // tab滑动：
+    var newSwiper = new Swiper('.tab-container', {
+      slidesPerView:{if condition="count($classinfo) gt '4'"}4{else/}{:count($classinfo)}{/if},
+      paginationClickable: true,
+      freeMode: true
+    });
+
+    // 页数起始值;
+    var pages =[];
+    $('.tab-item').each(function(index,container){
+        pages.push(1);
+    });
+   
+    var scrollloads=[];
+
+
+    // 第一次加载要显示的元素;
+    $('.scrollload-container').eq(0).css('display','block');
+    $('.tab-item-title').eq(0).addClass('red-border');
+
+    // 获取所有的scrollload-containier元素;
+    var scrollloadContainer = $('.scrollload-container');
+        scrollloadContainer.each(function(index,container){
+        scrollloads.push(new Scrollload({
+          container:container,
+          loadMore:function(me){
+              // 获取类id;
+             var classId = $(container).data('id');
+             $.ajax({
+               type:'GET',
+               url:'{:url("gethelplist")}?classid='+classId+'&'+'page='+pages[index]++,
+               dataType:'json',
+               success:function(res){
+                 if(res.code==1002){
+                    var html =htmlFn(res.data.artinfo.data);
+                    if(res.data.artinfo.current_page>=parseInt(res.data.artinfo.total)/res.data.artinfo.per_page){
+                        me.lock();
+                        me.noMoreData();
+                    }else{
+                      me.unLock();
+                    }
+                 }else{
+                   me.lock();
+                   me.noMoreData();
+                 } 
+                 $('.scrollload-content').eq(index).append(html);
+                 
+               }
+             });
+          
+          },
+          isInitLock:index==0?false:true,
+        }))
+        });  
+
+    // tab点击;
+    $('#tab-wrapper').on('click','.tab-item-title', function (e) {
+      // $(this).addClass('red-border').siblings().removeClass('red-border');
+      var _e = e.target;
+      $(_e).addClass('red-border').parent().siblings().find('.tab-item-title').removeClass('red-border');
+        
+      var _that =this;
+     
+      scrollloadContainer.each(function(index,container){
+        $(container).css('display',index==$(_that).parent().index()?'block':'none');
+      });
+      scrollloads.forEach(function(scrollload,index){
+        index===$(_that).parent().index()?scrollload.unLock():scrollload.lock();
+      });
+      
+
+    });
+
+
+    function htmlFn(data){
+      var html ='';
+      for(var i=0;i<data.length;i++){
+        html+='<a href="{:url('gethelpone')}?id='+data[i]['id']+'&classid='+data[i]['classid']+'">'+'<div class="article-item">'+
+        '<div class="left">'+
+          '<img src="'+data[i]['picurl']+'" alt="">'+
+        '</div>'+
+        '<div class="right">'+
+          '<p class="title">'+data[i]['title']+'</p>'+
+          '<p class="date">'+dateFormat(data[i]['createtime'])+'</p>'+
+        '</div>'+
+      '</div>'+'</a>'
+      }
+      return html;
+    }
+
+    function dateFormat(date){
+       var time='';
+       if(date){
+        var temp = date*1000;
+        time = new Date(temp);
+       }else{
+         time = new Date();
+       }
+        var year = time.getFullYear();
+        var month = time.getMonth()+1;
+        var date = time.getDate();
+        return year+'-'+month+'-'+date;
+    }
+  </script>
+</body>
+</html>

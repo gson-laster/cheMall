@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/common.css">
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/service.css">
+    <title>联系客服</title>
+</head>
+<body>
+    <div class="box service">
+        <div class="service-header">
+            <img src="__HOME_STATIC__/img/service_icon.png" alt="">
+            <p>我是您的专属客服顾问</p>
+        </div>
+        <div class="service-body">
+            <!--<div class="service-body-title">
+                <h2>猜您想问</h2>
+            </div>-->
+            <div class="service-body-content">
+                <div class="item">
+                    <!--<div class="item-left">
+                        <img src="__HOME_STATIC__/img/service_category.png" alt="">
+                        <p>分类一</p>
+                        <span class="up_arrow"></span>
+                    </div>-->
+                    <div class="item-right">
+                        <ul>
+                            <li><span>电话:</span><a href="tel:{$mobile}">{$mobile}</a></li>
+                            <li><span>Q&nbsp;Q:</span>{$qq}</li>
+                            <li><span>微信:</span>{$wx}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="__HOME_STATIC__/js/zepto.js"></script>
+    <script>
+        $(document).ready(function () {
+            var arrowStatus = 1;
+            $('.item-left').on('click', function () {
+                var _that = this;
+                var aLis = $(_that).siblings('.item-right').find('li');
+                for (var i = 0; i < aLis.length; i++) {
+                    var $li = $(aLis[i]);
+                    if ($li.index() >= 2) {
+                        $li.fadeToggle();
+                    }
+                }
+                //   改变箭头方向;
+                var arrow = $(_that).find('.up_arrow');
+                if (arrowStatus == 1) {
+                    arrowStatus = 0;
+                    arrow.css('transform', 'rotate(0deg)');
+                } else {
+                    arrowStatus = 1;
+                    arrow.css('transform', 'rotate(180deg)');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

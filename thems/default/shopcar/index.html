@@ -1,0 +1,289 @@
+{extend name='/public/base' /}
+{block name='title'}购物车{/block}
+{block name='headcss'}
+<link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/ShoppingCart.css" />
+{/block}
+{block name='content'}
+<body bgcolor="#F3F3F3">
+<div class="shoppingCart box">
+    <section class="bg_color">
+        <div class="warrp">
+            <div class="shopcar_title">
+              <div class="back" onclick="javascript:history.back(-1);" style="display:inline-block;position:absolute; left:0.1rem;top:0;">
+                  <!--<img style="width: 18px;" src="__HOME_STATIC__/img/back.png"/>-->
+              </div>
+                <h3>购物车</h3>
+                <div class="title_do" onclick="del()"><span>操作</span></div>
+            </div>
+            {volist name="list" id='l'}
+            <div class="content">
+                <div class="circle child_circle" data-price="{$l.mkt_price}" data-num="{$l.number}" data-id="{$l.id}">
+                    <div class="{eq name='l["selected"]' value='1'}{else/}none{/eq}"></div>
+                    <!--<img src="__HOME_STATIC__/img/shoppingCart_03.png" class="{eq name='l["selected"]' value='1'}{else/}none{/eq}" />-->
+                </div>
+                <div class="content_img">
+                    <img src="{$l.thumb}" />
+                </div>
+                <div class="mar_left">
+                    <div class="text">{$l.goods_name}</div>
+                    <div class="class">
+                        {volist name="l['spec']" id="sp"}
+                        <span>{$sp.name}:
+                              {volist name="l['spec_item']" id="spItem"}
+                                {eq name="spItem['spec_id']" value="$sp['id']"}
+                                  {$spItem.item}
+                                {/eq}
+                              {/volist}
+                            </span>
+                        {/volist}
+                    </div>
+                    <div class="money">
+                        <div class="money_1">￥{$l.mkt_price}
+                        </div>
+                    </div>
+                </div>
+                           <div class="count">
+                            <ul>
+                                <li class="reduce"><a href="javascript:;" style="text-decoration: none;width: 100%;display: inline-block;height:30px;">-</a></li>
+                                <li class="shop_car_num"><input goods-id="{$l.goods_id}"  shopcar-id="{$l.id}" class="number" type="number" value="{$l.number}"/></li>
+                                <li class="add"><a href="javascript:;" style="text-decoration: none;width: 100%;display: inline-block;height:30px;">+</a></li>
+                                <div class="clear">
+                                </div>
+                            </ul>
+                        </div>
+            </div>
+            {/volist}
+        </div>
+    </section>
+    {empty name='list'}
+    <section id="cart-content">
+          <div class="qb_tac" style="padding:50px 0">
+            <img src="__HOME_STATIC__/img/empty_cart.png" width="100" height="95">
+            <br>购物车还是空的</div>
+          <div class="qb_gap" style="width:60%; margin:0 auto;">
+            <a href="{:url('Index/index')}" class="mod_btn btn_strong">马上逛逛</a>
+          </div>
+    </section>
+    {/empty}
+    <section class="footer_space">
+        <div class="shoppingCart_footer">
+            <div class="check">
+                <span><div class="round select_all"><div class="select_img none"></div></div>全选</span>
+                <span style="color: red;" class="delete_select none" onclick="delcars()">删除选中</span>
+                <span>合计:<span id="totalPrice"></span></span>
+            </div>
+            <div class="gomall" id="addOrder">
+                去结算
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+{/block}
+
+{block name='footerjs'}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/shoppingCart.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script>
+//点击选中单个
+$(".child_circle").click(function(event) {
+
+  var img = $(this).find('div').eq(0);
+
+  if(img.hasClass('none')){
+    img.removeClass('none');
+  }else{
+    img.addClass('none');
+  }
+  getTotal();
+});
+//点击全选
+$(".select_all").click(function(event) {
+  var img = $(this).find('div').eq(0);
+  var item_img = $('.child_circle > div');
+  if(img.hasClass('none')){
+    img.removeClass('none');
+    item_img.removeClass('none');
+    getTotal();
+  }else{
+      img.addClass('none');
+      item_img.addClass('none');
+   	  getTotal();
+      
+  }
+  if($("#delete_select").hasClass('none')){
+    getTotal();
+  }
+});
+//加
+$(".add").click(function(event) {
+  var input = $(this).siblings('.shop_car_num').find('input');
+  var num = input.val();
+  var goods_id = input.attr('goods-id');
+  var shopcar_id = input.attr('shopcar-id');
+
+  var count = checkStoreCount(shopcar_id, goods_id, num);
+  num ++;
+  if(num > count){
+    num = count;
+    alert('库存不足啦');
+  }
+  input.val(num);
+  updateShopCar(shopcar_id, 'number', num);
+  $(this).parents('.count').siblings('.child_circle').data('num', num);
+//  console.log($(this).parents('.count'))
+  if(!$(this).parents('.count').siblings('.child_circle').find('div').eq(0).hasClass('none')){
+    getTotal();
+  }
+});
+//减
+$(".reduce").click(function(event) {
+  var input = $(this).siblings('.shop_car_num').find('input');
+  var num = input.val();
+  var shopcar_id = input.attr('shopcar-id');
+  num --;
+  if(num <= 1){
+    num = 1;
+  }
+  input.val(num);
+  updateShopCar(shopcar_id, 'number', num);
+  $(this).parents('.count').siblings('.child_circle').data('num', num);
+  if(!$(this).parents('.count').siblings('.child_circle').find('div').eq(0).hasClass('none')){
+    getTotal();
+  }
+});
+//填写数字
+$(".number").on('change', function(e){
+  var value = $(this).val();
+  var goods_id = $(this).attr('goods-id');
+  var shopcar_id = $(this).attr('shopcar-id');
+
+  var count = checkStoreCount(shopcar_id, goods_id, value);
+  if(parseInt(value) > count){
+    value = count;
+    alert('库存不足啦');
+  }
+  $(this).val(value)
+  $(this).parents('.count').siblings('.child_circle').data('num', value);
+  updateShopCar(shopcar_id, 'number', value);
+  if(!$(this).parents('.count').siblings('.child_circle').find('div').eq(0).hasClass('none')){
+    getTotal();
+  }
+})
+//校验库存
+function checkStoreCount(carid, gid, num){
+  var num = 0;
+  $.ajax({
+    url: "{:url('checkGoodsStoreCount')}",
+    data: {
+      "carid" : carid,
+      "gid"   : gid,
+      "num"   : gid
+    },
+    type: 'Get',
+    async: false,
+    success: function (responce) {
+      //console.log(responce.data.store_count)
+      num = responce.data.store_count;
+    }
+  })
+  return num;
+}
+//计算总价
+function getTotal(){
+  var label = $(".child_circle");
+  var totalPrice = 0;
+  label.each(function(index, el) {
+    if(!$(this).find('div').eq(0).hasClass('none')){
+      var price = $(this).data('price');
+      var num = $(this).data('num');
+      totalPrice += parseFloat(price) * parseInt(num);
+    }
+  });
+  $("#totalPrice").text(totalPrice)
+}
+//删除
+//$("#delete-shopcar").click(function(e){
+//if($("#delete_select").hasClass('none')){
+//  $("#delete_select").removeClass('none');
+//}else{
+//  $("#delete_select").addClass('none');
+//}
+//$(".child_circle").find('div').addClass('none');
+//})
+function del(){
+	var dele=$(".delete_select");
+	if (dele.hasClass('none')) {
+		dele.removeClass('none');
+	} else{
+		dele.addClass('none');
+	}
+}
+function delcars(){
+  var child_circle=$(".child_circle");
+  var ids = [];
+  var indexs = [];
+  child_circle.each(function(index, el) {
+      if(!$(this).find('div').eq(0).hasClass('none')){
+        ids.push($(this).data('id'));
+        indexs.push(index);
+      }
+  });
+  $.ajax({
+    "url": "{:url('delete')}",
+    "data": {"ids":ids.join(',')},
+    success: function (res) {
+      if(res.code > 0){
+      	alert(res.msg);
+        //移除节点
+      $(".child_circle").each(function() {
+      if(!$(this).find('div').eq(0).hasClass('none')){
+		$(this).parents('.content').remove();
+      }
+  });
+      }
+    }
+  })
+}
+
+//更新购物车
+function updateShopCar(id, key, value){
+  $.ajax({
+    url: "{:url('api/base/changeStatu')}",
+    data: {
+      "table": 'shopcar',
+      'id_name': 'id',
+      'id_value': id,
+      'field': key,
+      'value': value
+    },
+    type: 'get',
+    success: function (res) {
+      if(res.code > 0){
+
+      }else{
+        alert('更新失败')
+      }
+    }
+  })
+}
+
+//去结算
+$("#addOrder").click(function(){
+
+  var shopCarids = [];
+  $(".child_circle").each(function(index, el) {
+    if(!$(this).find('div').eq(0).hasClass('none')){
+      shopCarids.push($(this).data('id'));
+    }
+  });
+  if(shopCarids.length < 1){
+    alert('请先选择商品');
+    return false;
+  }
+  window.location.href = "{:url('home/Order/index')}?shopids="+shopCarids.join(',');
+  return false;
+})
+</script>
+{/block}

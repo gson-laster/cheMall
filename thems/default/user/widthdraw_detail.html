@@ -1,0 +1,50 @@
+{extend name='/public/base' /} {block name='title'}提现详情{/block} {block name='headcss'}
+<link rel="stylesheet" href="__HOME_STATIC__/css/wallet.css" /> {/block} {block name="content"}
+<div class="widthdraw_detail box">
+  <div class="title">提现详情</div>
+  <ul class="lists">
+    <!--<li class="item">
+      <p class="left">申请单号</p>
+      <p class="right">9907568034</p>
+    </li>-->
+    <li class="item">
+      <p class="left">提现金额</p>
+      <p class="right">{$data['sqtxprice']}</p>
+    </li>
+    <li class="item">
+      <p class="left">实到金额</p>
+      <p class="right">{$data['actual']}</p>
+    </li>
+    <li class="item">
+      <p class="left">收款银行</p>
+      <p class="right">{$data['bank_name']}</p>
+    </li>
+    <li class="item">
+      <p class="left">收款账号</p>
+      <p class="right">{$data['bank_card_code']}</p>
+    </li>
+    <li class="item">
+      <p class="left">开户人姓名</p>
+      <p class="right">{$data['real_name']}</p>
+    </li>
+    <li class="item">
+      <p class="left">创建时间</p>
+      <p class="right">{:date('Y-m-d h:i:s', $data['createtime'])}</p>
+    </li>
+    <li class="item">
+      <p class="left">提现状态</p>
+      <p class="right">
+             {switch name="data.isok"}
+                        {case value="1"}已支付{/case}
+                        {default/}未支付
+                        {/switch}
+        </p>
+    </li>
+    <li class="item">
+      <p class="left">通过时间</p>
+      <p class="right">{:date('Y-m-d h:i:s', $data['isoktime'])}</p>
+    </li>
+  </ul>
+  {block name='footermenu'} {include file="thems/default/public/Footer/footer.html"} {/block}
+</div>
+{/block}

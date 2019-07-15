@@ -1,0 +1,35 @@
+.con div{
+  /*box-sizing: border-box;*/
+  line-height: 40px;
+  text-align: center;
+  float: left;
+
+}
+.one{
+  width: 40%;
+}
+.two{
+  width: 30%;
+}
+.three{
+  width: 30%;
+}
+.con{
+  color: #333333; 
+  /*display: flex;
+  display: -webkit-flex;*/
+}
+
+.bg{
+  color: #fff !important;
+  background: #FF9274;
+}
+.clo{
+  color: #FA7B30;
+}
+.changebg:nth-child(n){
+  background: #FFFFFF;
+}
+.changebg:nth-child(2n){
+  background: #F3F3F3;
+}

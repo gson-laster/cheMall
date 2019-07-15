@@ -1,0 +1,440 @@
+	      <!--添加用户图层-->
+	      <style type="text/css">
+	      	 .label_name{
+      width: 160px !important;
+    }
+    #suoluetu{
+      width: 100px;
+      max-height: 100px;
+      margin-left: 10px;
+    }
+    .thumb_pic img{
+      width: 80px;
+    }
+     #imageBox li{
+       float: left;
+       border: 1px solid #C3C3C3;
+       padding: 10px;
+       margin: 10px;
+       min-width: 100px;
+       /*overflow: hidden;*/
+       text-align: center;
+       position: relative;
+     }
+    #imageBox img{
+      height: 100px;
+    }
+    .page-content{
+      margin-top: 20px;
+    }
+     .page-content li{
+       padding-bottom: 20px;
+     }
+     .page-content input{
+       width: 400px
+     }
+     .imgtatle{
+       border: solid 1px #ddd;
+       margin-top: 12px;
+       min-height: 40px;
+       padding: 12px;
+     }
+     .b-color{
+       border: solid 1px #ddd;
+       min-height: 40px;
+       margin-bottom: 12px;
+       
+     }
+     .file-panel{
+       position: absolute;
+       top: 0;
+       left: 0;
+       height: 36px;
+       width: 100%;
+       background: rgba(0, 0, 0, 0.5);
+       color: #fff;
+     }
+     .file-panel span{
+       padding-left: 4px !important;
+       padding-top: 4px;
+     }
+     .file-panel img{
+       height: 18px !important;
+       vertical-align: middle;
+     }
+     select{
+       width: 128px;
+       margin-left: 5px;
+     }
+	      </style>
+	            <script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+      <script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.all.min.js"> </script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/Widget/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/distpicker.min.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.admin.js"></script>
+<script src="__ADMIN_STATIC__/Widget/icheck/jquery.icheck.min.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.js"></script>
+<script src="__ADMIN_STATIC__/Widget/webuploader/0.1.5/webuploader.custom.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Apttc2OLQjWTvhBRRfhHQQ2p"></script>
+	      {php}
+	       if(!isset($service)){
+	         $service = [
+	         'title' => '',
+	         'phone' => '',
+	         'thumb_pic' => '__ADMIN_STATIC__/images/image.png',
+	         'sub_title' => '',
+	         'longitude' => '',
+	         'dimensionality' => '',
+	         'address' => '',
+	         'zid' => '',
+	         'recommend' => 1,
+	         'status' => 0,
+	         'area' => ''
+	         ];
+	         $detail = [
+	           'content' => ''
+	         ];
+	         $images = [];
+	         $address_arr = ['', '', '', ''];
+	       } else {
+	         $address_arr = explode('/', $service['area']);
+	       }
+	      {/php}
+	          <div >
+        <ul class=" page-content">
+            <li><label class="label_name">服务中心名称：</label><span class="add_name"><input value="{$service['title']}" name="title" type="text" data-title="服务中心名称"  class="text_add subInput" required data-role="add"/></span>
+                <div class="prompt r_f"></div>
+            </li>
+            <li><label class="label_name">服务中心简要说明：</label><span class="add_name">
+              <textarea style="width: 400px; height: 120px;" value="" name="sub_title" data-title="服务中心简要说明" class="subInput text_add" data-role="add">{$service['sub_title']}</textarea>
+            </span>
+                <div class="prompt r_f"></div>
+            </li>
+             <li style="margin-bottom: 15px;"><label class="label_name">服务中心缩略图：</label>
+                  <span onclick="document.getElementById('paymentLogo').click()" class="add_name">
+                    <img id="suoluetu" src="{$service['thumb_pic']}"/>
+                  </span>
+                <div class="prompt r_f"></div>
+            </li>
+            {if condition="$service.status eq 2"}
+              <li>
+                <label class="label_name">电话：</label>
+                <span class="add_name"><input name="phone" value="{$service['phone']}" type="text" data-title="电话" class="text_add subInput" /></span>
+                  <div class="prompt r_f"></div>
+              </li>
+            {/if}
+            <li>
+              <label class="label_name">服务中心地区：</label>
+                <div style="display: inline-block;" data-toggle="distpicker">
+                  <select class="province" onchange="setAddress()" data-province="{$address_arr[0]}"></select>
+                  <select class="city" onchange="setAddress()" data-city="{$address_arr[1]}"></select>
+                  <select class="district" onchange="setAddress()" data-district="{$address_arr[2]}"></select>
+                </div>
+              <div class="prompt r_f"></div>
+            </li>
+            {if condition="$service.status eq 2"}
+            <li><label class="label_name">服务中心详细地址：</label><span class="add_name"><input onchange="setAdr(this)" data-title="服务中心地址" value="{$address_arr[3]}" name="address" type="text"  class="subInput text_add" data-role="add"/></span>
+                  <div class="prompt r_f"></div>
+                </li>
+            <li><label class="label_name">服务中心经度：</label><span class="add_name"><input name="longitude" data-title="服务中心经度"  value="{$service['longitude']}" id="lat" type="text"  class="text_add subInput" /></span>
+                <div class="prompt r_f"></div>
+            </li>
+        
+        <li><label class="label_name">服务中心纬度：</label><span class="add_name"><input name="dimensionality" value="{$service['dimensionality']}" data-title="服务中心纬度" id="lng" type="text"  class="text_add subInput" /></span>
+                <div class="prompt r_f"></div>
+            </li>
+          {/if}
+                <li><label class="label_name">排序：</label><span class="add_name"><input name="zid" type="text" value="{$service['zid']}" data-title="排序" class="text_add subInput" /></span>
+                <div class="prompt r_f"></div>
+            </li>
+              <li>
+                <label class="label_name">是否推荐：</label><span class="add_name">
+                <label><input name="recommend" type="radio" {if condition="$service['recommend'] == 1"}checked="checked"{/if} value="1" class="ace" data-role="add"/><span class="lbl">是</span></label>&nbsp;&nbsp;&nbsp;
+                <label><input name="recommend"type="radio" class="ace" {if condition="$service['recommend'] == 0"}checked="checked"{/if} value="0" data-role="add"/><span class="lbl">否</span></label></span>
+                <div class="prompt r_f"></div>
+            </li>
+            <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
+                <label><input name="status" type="radio" {if condition="$service['status'] == 0"}checked="checked"{/if} value="0" class="ace" data-role="add"/><span class="lbl">未申请</span></label>&nbsp;&nbsp;&nbsp;
+                <label><input name="status"type="radio"{if condition="$service['status'] == 1"}checked="checked"{/if}  class="ace" value="1" data-role="add"/><span class="lbl">已申请</span></label></span>
+                <label><input name="status"type="radio"{if condition="$service['status'] == 2"}checked="checked"{/if}  class="ace" value="2" data-role="add"/><span class="lbl">已授权</span></label></span>
+                <div class="prompt r_f"></div>
+            </li>
+               <li>
+                 <label class="label_name">轮播图：</label>
+                 <div class="imgtatle">
+                   <div class="b-color">
+                 	<ul id="imageBox">
+                 	  {volist name="images" id="im"}
+                 	  	<li>
+                 	  	  <div onclick="deleteLunbo({path: '{$im['image_path']}', o: this})" class="file-panel" style="height: 30px;">
+                 	  	    <img src="__ADMIN_STATIC__/images/delete.png"/><span>删除</span>
+                 	  	  </div>
+                 	  	  <img class="isOldImg" src="{$im['image_path']}"/>
+                 	  	</li>
+                 	  {/volist}
+                 	</ul>
+                 	  <div style="clear: both;">
+                 	  </div>
+                   </div>
+                 	<div onclick="document.getElementById('image').click()" class="btn">
+                 		添加轮播图
+                 	</div>
+                 </div>
+            </li>
+              <li>
+                <label class="label_name">详情：</label>
+                <textarea rows=""  cols="" name="site_footer_desc" data-text="网站底部说明文字" id="editor" style="height:400px;"  >{$detail['content']}</textarea>
+            </li>
+        </ul>
+            <div >
+    {if condition="isset($service['id'])"}
+<div style="text-align: center;">
+    
+    <div onclick="tijiao({way: 'update', id: {$service['id']}})" class='btn'>
+  提交
+</div>
+</div>
+{else /}
+<div style="text-align: center;">
+	<div onclick="tijiao({way: 'add'})" class='btn'>
+  提交
+</div>
+</div>
+{/if}
+    <!--//轮播图图层-->
+      <div id="add_image_style" style="display:none;">
+        <div style="margin: 20px;" onclick="document.getElementById('image').click()" class="btn">添加轮播图</div>
+        <ul id="imageBox"> </ul>
+      </div>
+    <input type="file" name="paymentLogo" id="paymentLogo" onchange="fileSelect(this)" style="display:none" />
+    <input type="file" name="image" id="image" multiple="multiple" onchange="imageSelect(this)" style="display:none" />
+    
+    <script>
+  var ue = UE.getEditor('editor');
+      
+      var suoluetu = $("#suoluetu"), lat = $("#lat"), lng = $("#lng"), subInput = $(".subInput"), suoluetuChange = {old: '', is: false} /*缩略图是否change*/,
+      changeall = $('.changeall'), imageBox = $('#imageBox'), delesArr = [], addressBox = {province: '{$address_arr[0]}', city: '{$address_arr[1]}', district: '{$address_arr[2]}', address: '{$service["address"]}'}, province = $(".province"), city = $(".city"), district = $(".district");
+      
+      function base64(o) {
+        return new Promise(function(reslove, reject){
+          var File = new FileReader();
+          File.readAsDataURL(o.files[0]);
+          File.onload = function (e) {
+            reslove(this.result);
+          }
+        }).catch(e => {
+          console.log(e)
+        })
+      }
+function uploadimg(base) {
+  var result = ''
+      $.ajax({
+        type: "Post",
+        url: "{:url('api/UploadFiles/saveBase64Image')}?to_dir=logo",
+        data: {
+          'formFile': base
+        },
+        async: false,
+        success: function (data) {
+          result = data.url;
+        }
+      });
+      return result;
+}
+function delimg(src){
+    $.ajax({
+          type: "Post",
+          url: '{:url("api/UploadFiles/delImg")}',
+          data: {
+            'path': src
+          },
+          async: true,
+          success: function (data) {}
+    });
+}
+function setAddress(){
+  addressBox.province = province.val() 
+  addressBox.city = city.val() 
+  addressBox.district = district.val()
+  lbs();
+}
+function setAdr(o){
+  addressBox.address = $(o).val();
+  lbs()
+}
+//批量删除
+
+function deleteLunbo(option){
+  if (option.hasOwnProperty('path')) {
+  	delesArr.push(option.path)
+  }
+  $(option.o).parent('li').remove()
+}
+function changealls(o){
+  if ($(o).prop('checked')) {
+    changeall.each(function(){
+      $(this).prop('checked', true)
+    })
+  } else {
+    changeall.each(function(){
+      $(this).removeAttr('checked')
+    })
+  }
+}
+function fileSelect(o) {
+  base64(o).then(function(res){
+    suoluetuChange.old = suoluetu.attr('src')
+    suoluetu.attr('src', res)
+    suoluetuChange.is = res
+  })
+}
+//轮播图方法
+function imageSelect(o){
+  var all = o.files;
+  var arr = [];
+  for(var i = 0; i < all.length; i ++){
+    var f = new FileReader();
+      f.readAsDataURL(all[i]);
+      f.onload = function (e) {
+        imageBox.append('<li><div onclick="deleteLunbo({o: this})" class="file-panel" style="height: 30px;"><img src="__ADMIN_STATIC__/images/delete.png"/><span>删除</span></div><img class="isNewImg" src="'+ this.result +'"/></li>')
+    }
+  }
+}
+/*地址解析经纬度*/
+  var point = new BMap.Point(116.331398,39.897445);
+  // 创建地址解析器实例
+  var myGeo = new BMap.Geocoder();
+function lbs(){
+  //if (addressBox.province != '' && addressBox.city != '' &&  addressBox.district != '') {
+  	
+    // 百度地图API功能
+      myGeo.getPoint(addressBox.province + addressBox.city + addressBox.district + addressBox.address, function(point){
+      if (point) {
+        lat.val(point.lat)
+        lng.val(point.lng)
+  //      map.centerAndZoom(point, 16);
+  //      map.addOverlay(new BMap.Marker(point));                                            
+      }else{
+        alert("您选择地址没有解析到结果!");
+      }
+    });
+ // }
+}
+        /*用户-添加*/
+//      $('#member_add').on('click', function () {});
+function addImage(id){
+      layer.open({
+        type: 1,
+        title: '轮播图',
+        maxmin: true,
+        shadeClose: true, //点击遮罩关闭层
+        area: ['100%', '100%'],
+        maxmin: true,
+        content: $("#add_image_style"),
+        btn: ['提交', '取消'],
+        yes: function (index, layero) {}
+    });
+        
+}
+function tijiao (option){
+  for (var o = 0; o < delesArr.length; o ++) {
+  	delimg(delesArr[o])
+  }
+   var json = {}, sub = true;
+   subInput.each(function(){
+     var _t = $(this)
+     var val = _t.val();
+     if ( val == '') {
+        layer.msg(_t.attr('data-title') + '不能为空', {
+            icon: 5,
+            time: 1000
+        });
+        sub = false
+        return true
+     } else {
+       json[_t.attr('name')] = val
+     }
+   })
+   if (option.way == 'update') {
+      json.thumb_pic = suoluetu.attr('src')
+   }
+   if (suoluetuChange.is) {
+      var res = uploadimg(suoluetuChange.is)
+       json.thumb_pic = res
+       if (option.way == 'update') {
+        delimg(suoluetuChange.old)
+       }
+   }
+   if (!json.hasOwnProperty('thumb_pic') || json.thumb_pic == '') {
+       layer.msg('请上传缩略图', {
+            icon: 5,
+            time: 1000
+        });
+        sub = false
+        return false;
+   }
+    if(addressBox.province == '' || addressBox.city == '' ||  addressBox.district == ''){
+        layer.msg('请选择服务中心地址', {
+            icon: 5,
+            time: 1000
+        });
+      sub = false
+      return false;
+    }
+    json.area = addressBox.province + '/' + addressBox.city + '/' + addressBox.district;
+    json.address = addressBox.address;
+    
+   json.status = $('input:radio[name="status"]:checked').val();
+   json.recommend = $("input:radio[name='recommend']:checked").val()
+   json.content = ue.getContent();
+   //轮播图
+   
+          var imgArr = [];
+          var isNewImg = $('.isNewImg');
+          var isOldImg = $(".isOldImg");
+          isNewImg.each(function(){
+            imgArr.push(uploadimg($(this).attr('src')))
+          })
+           isOldImg.each(function(){
+            imgArr.push($(this).attr('src'))
+          })
+          json.images = imgArr;
+          if(!json.images || json.images == ''){
+           layer.msg('轮播图不能为空', {
+            icon: 5,
+            time: 1000
+            });
+            sub = false;
+            return false
+          }
+   if (option.hasOwnProperty('id')) {
+    json.id = option.id
+   }
+   if (sub) {
+     $.ajax({
+      type:"post",
+      url:"{:url('doPost')}",
+      data: json,
+      async:true,
+      success: function(res){
+        layer.msg('成功', {
+            icon: 1,
+            time: 1000
+        });
+        setTimeout(function(){
+          history.back(-1);
+        }, 1500)
+      }
+     });
+  }
+}
+
+    </script>

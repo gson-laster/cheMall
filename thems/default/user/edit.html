@@ -1,0 +1,318 @@
+{extend name="/public/base" /} {block name="title"}全民商城-我的{/block} {block name="headcss"}
+<link rel="stylesheet" href="__HOME_STATIC__/css/style.css" />
+<link rel="stylesheet" href="__HOME_STATIC__/css/reset.css" /> {/block} {block name="content"}
+
+<body bgcolor="#F3F3F3">
+  <div class="myDetail box">
+    <div class="main">
+      <section>
+        <div class="detail_hint">
+          <p>为保证头像显示效果美观，建议上传<span class="color">正方形</span>的图片</p>
+        </div>
+        <div class="avatar_name">
+          <label for="change_user_img">
+                <div class="avatar clear" id="user_img">
+                    <div class="left">
+                        <span>头像</span>
+                    </div>
+                        <div class="user_img" >{if condition='session("userInfo")["userimg"] eq null'}<img id="img_show"  data-src="" src="__HOME_STATIC__/img/defalut_userimg.jpg" />{else /}<img id="img_show" data-src='{php}echo session("userInfo")["userimg"]{/php}' src='{php}echo session("userInfo")["userimg"]{/php}' alt="">{/if}</div>
+                    <input class="none" onchange="change_userimg(this)"   id="change_user_img" type="file"/>
+                </div>
+                </label>
+          <div class="name clear">
+            <span>昵称</span>
+            <div id="name" class="pos_right"><input onchange="changename(this)" type="text" value='{php}echo session("userInfo")["nickname"]{/php}'></div>
+          </div>
+        </div>
+
+        <div class="phone_address">
+          <div class="phone_container">
+            <div class="name">
+              <span>手机号</span>
+              <div id="phone" class="pos_right"><input onchange="changephone(this)" type="text" value={$userInfo.phone} /></div>
+            </div>
+          </div>
+          <a href="/home/address/index.html">
+            <div class="address">
+              <span>我的收货地址</span>
+            </div>
+        </div>
+        </a>
+
+        <ul>
+          <li>
+            <a href="{:url('home/weichat/auth_login')}?regster_bindwx=1&regster_uid={$userInfo.id}">
+              <div class="bind_container">
+                <span>绑定微信</span> {if condition='$userInfo.bindwx eq 0'}
+                <div class="arrow arrow_1">
+                  未绑定
+                </div>
+                {else /}
+                <div class="arrow arrow_1 unbind">
+                  已绑定
+                </div>
+                {/if}
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="{:url('realname')}">
+              <div class="bind_container">
+                <span>实名认证</span>
+                <div class="arrow arrow_1">
+                  {if condition='isset($real_status)'}{if condition='$real_status eq 0'}未审核{elseif condition='$real_status eq 1' /}审核通过{elseif
+                  condition='$real_status eq 2' /}审核失败{elseif condition='$real_status eq -1' /}未提交{elseif condition='$real_status eq null' /}未提交{/if}{else /}未提交{/if}
+                </div>
+              </div>
+            </a>
+          </li>
+        </ul>
+
+
+        <div onclick="ResetPassword()" class="bind_container">
+          <span>登录密码</span>
+        </div>
+         <div style="margin-top: 0;" onclick="Resetpaycode()" class="bind_container">
+          <span>支付密码</span>
+        </div>
+        <div class="detail_save">
+          <button style="font-size: 15px;margin-bottom: 0.6rem;" onclick="sublimt_()" type="submit">保存</button>
+        </div>
+    </div>
+    <section id="three" class="ResetPassword none">
+      <div class="warry">
+        <div class="warn">
+          请输入旧的登录密码,并设置新的登陆密码。
+        </div>
+        <div class="inputone">
+          <div class="input_head">
+            原密码
+          </div>
+          <input id="input_one" type="password" placeholder="请输入旧的密码" />
+        </div>
+        <div class="inputone">
+          <div class="input_head">
+            新密码
+          </div>
+          <input id="input_two" type="password" placeholder="请输入密码" />
+        </div>
+        <div class="inputone">
+          <div class="input_head">
+            确认新密码
+          </div>
+          <input id="input_three" type="password" placeholder="请确认密码" />
+        </div>
+        <div class="submit">
+          <button onclick="complete()">提交</button>
+          <button style="margin-bottom: 0.6rem;" onclick="cancel()">取消</button>
+        </div>
+      </div>
+    </section>
+    {block name="footermenu"} {include file="thems/default/public/Footer/footer.html"} {/block}
+  </div>
+</body>
+{/block} {block name="footerjs"}
+<script src="__HOME_STATIC__/js/zepto.js" type="text/javascript" charset="utf-8"></script>
+<script src="__HOME_STATIC__/js/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/static/js/util.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  var uid = {$Request.session.qt_userId};
+  var base_img;
+  var user_img = $("#img_show");
+  var user_img_bool = false;
+  var nickname_bool = false;
+  var phone_bool = false;
+  var oldimg;
+  var main=$(".main");//主面板
+  //change user_img
+  function change_userimg(event) {
+    var img = event.files[0];
+    if (!/image\/\w+/.test(img.type)) {
+      alert("请选择图片");
+      return false;
+    }
+    var fileder = new FileReader();
+    fileder.readAsDataURL(img);
+    fileder.onload = function (e) {
+      oldimg = user_img.attr("data-src");
+      user_img.attr("src", this.result);
+      user_img_bool = true;
+      base_img = this.result;
+    }
+  };
+  //change name start
+  function changename(obj) {
+    var obj = $(obj);
+    if (obj.val().trim() == "") {
+      alert("请输入昵称");
+      return false;
+    }
+    nickname_bool = true;
+  }
+  //changephone
+  function changephone(obj) {
+    var obj = $(obj);
+    if (!/^1\d{10}$/.test(obj.val())) {
+      alert("请输入手机号");
+      return false;
+    }
+    phone_bool = true;
+  }
+
+  function sublimt_() {
+    var json = {
+      'id': uid
+    };
+    if (nickname_bool) {
+      json.nickname = $("#name input").val();
+    }
+    if (phone_bool) {
+      json.phone = $("#phone input").val()
+    }
+    if (user_img_bool) {
+      $.ajax({
+        type: "Post",
+        url: "{:url('api/UploadFiles/saveBase64Image')}?to_dir=UserImg&compress=true",
+        data: {
+          'formFile': base_img
+        },
+        async: false,
+        success: function (data) {
+          json.userimg = data.url;
+        }
+      });
+    }
+    //发送修改请求
+    $.ajax({
+      type: "Post",
+      data: json,
+      dataType: 'json',
+      url: "{:url('save')}",
+      async: true,
+      success: function (data) {
+        alert("修改成功");
+        //删除之前的图片
+        $.ajax({
+          type: "Post",
+          url: '{:url("api/UploadFiles/delImg")}',
+          data: {
+            'path': oldimg
+          },
+          async: true,
+          success: function (data) {
+
+          }
+        });
+        setTimeout(function () {
+          location.href = '{:url("home/user/index")}';
+        }, 1000);
+      }
+    });
+  };
+  //reset password start
+  function ResetPassword() {
+    main.hide();
+    $("#three").css('display', 'block !important');
+    opendhref();
+  };
+  function opendhref(){
+  	    location.hash = "open";
+    //按回退按钮时
+    if (location.hash == "#open") {
+      $(document).ready(function (e) {
+        if (window.history && window.history.pushState) {
+          $(window).on('popstate', function () {
+            location.href = location.href;
+          });
+        }
+      });
+    }
+  }
+  function complete() {
+    var input_one = $("#input_one").val();
+    var input_two = $("#input_two").val();
+    var input_three = $("#input_three").val();
+    if (input_one == "") {
+      alert("请输入旧密码");
+      return false;
+    }
+    if (input_two == "") {
+      alert("请输入新密码");
+      return false;
+    }
+    if (input_three == "") {
+      alert("请确认密码");
+      return false;
+    }
+    if (input_two !== input_three) {
+      alert("请输入一致的密码");
+      return false;
+    };
+    var json = {
+      'oldpassword': input_one,
+      'password': input_two,
+      'password_confirm': input_three,
+      'id': uid
+    };
+    $.ajax({
+      type: "Post",
+      data: json,
+      dataType: 'json',
+      url: '{:url("save")}',
+      async: true,
+      success: function (data) {
+        alert(data.msg);
+        if (data.code > 0) {
+          setTimeout(function () {
+            location.href = '{:url("home/login/index")}';
+          }, 1500);
+        }
+      }
+    });
+  };
+  //取消修改密码
+  function cancel() {
+    layer.open({
+      content: '您确定要取消修改密码吗？',
+      btn: ['确定', '不要'],
+      yes: function (index) {
+        main.show();
+        $("#three").css('display', 'none !important');
+        layer.close(index);
+      }
+    });
+  };
+  // 点击已绑定解绑;
+  $('.bind_container .unbind').on('click', function () {
+    layer.open({
+      content: '确定解除绑定么？',
+      btn: ['确定', '取消'],
+      yes: function (index) {
+        $.ajax({
+          url: '{:url("unbindweichat")}',
+          type: 'GET',
+          dataType: 'json',
+          success: function (res) {
+            if (res.code == 2000) {
+              alert(res.msg);
+              setTimeout(function () {
+                window.location = window.location.href;
+              }, 1000);
+            } else if (res.code == 4000) {
+              alert(res.msg);
+            }
+          },
+          error: function (xhr, type) {
+            alert(xhr.status + '服务器异常');
+          }
+        });
+        layer.close(index);
+      },
+    });
+    return false
+  });
+		function Resetpaycode(){
+				location.href='{:url('checkpaypassword')}?to=0'
+			}
+</script>
+{/block}

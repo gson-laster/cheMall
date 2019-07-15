@@ -1,0 +1,462 @@
+<!-- page specific plugin scripts -->
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.min.js"></script>
+<script src="__ADMIN_STATIC__/assets/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__ADMIN_STATIC__/js/ajaxfileupload.js"></script>
+<!--<script type="text/javascript" src="__ADMIN_STATIC__/js/Hfumanxdmin.js"></script>-->
+
+<body>
+<style>
+    .delete-img{
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        cursor: pointer;
+    }
+    .layui-layer-page .layui-layer-content{
+        height: 380px;
+    }
+</style>
+<div class="page-content clearfix">
+    <div id="Member_Ratings">
+        <div class="d_Confirm_Order_style">
+            <!---->
+            <div class="border clearfix">
+                    <span class="l_f">
+                      <a href="javascript:;" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加分类</a>
+                      <a href="javascript:;" class="btn btn-danger" onclick="deletesAll(this)" data-action="{:url('delete')}"><i
+                              class="icon-trash"></i>批量删除</a>
+                    </span>
+                <span class="r_f">共：<b></b>条</span>
+            </div>
+            <!---->
+            <div class="table_menu_list">
+                <table class="table table-striped table-bordered table-hover" id="sample-table">
+                    <thead>
+                    <tr>
+                        <th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+                        <th width="80">ID</th>
+                        <th width="100">名称</th>
+                        <th width="50">图标</th>
+                        <th width="80">描述</th>
+                        <th width="180">加入时间</th>
+                        <th width="70">状态</th>
+                        <th width="250">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name='list' id='u'}
+                    <tr>
+                        <td><label><input type="checkbox" name="ids[]" value="{$u.id}" class="ace"><span
+                                class="lbl"></span></label></td>
+                        <td>{$u.id}</td>
+                        <td align="left">{$u.name}</td>
+                        <td><img src="{$u.logo}" alt="{$u.name}" width="60" height="50" /></td>
+                        <td>{$u.desc}</td>
+                        <td>{$u.createtime}</td>
+                        <td class="td-status"><span class="label {switch name='u.status'}{case value='正常'}label-success{/case}{case value='禁用'}label-default{/case}{/switch}">{eq name='u.status' value='正常'}正常{else /}已停用{/eq}</span></td>
+                        <td class="td-manage">
+                            <a onClick="{if condition='$u.status eq "正常"'}member_stop(this,{$u.id}){elseif condition='$u.status eq "禁用"'}member_start(this,{$u.id}){/if}" class="btn btn-xs {if condition='$u.status eq "正常"'}btn-success{elseif condition='$u.status eq "禁用"'}btn_default {/if}"
+                            title="{if condition='$u.status eq "正常"' }停用{elseif condition='$u.status eq "禁用"'}开启{/if}"
+                            ><i class="icon-ok bigger-120"></i></a>
+                            <a title="编辑" onclick="member_edit({$u.id})" href="javascript:;" class="btn btn-xs btn-info"><i
+                                    class="icon-edit bigger-120"></i></a>
+                            <a title="删除" href="javascript:;" onclick="member_del(this,{$u.id})" class="btn btn-xs btn-warning"><i
+                                    class="icon-trash  bigger-120"></i></a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+    <ul class=" page-content" style="height:100px">
+        <li class="adderss">
+            <label class="label_name">名称：</label><span class="add_name"><input name="name" type="text"
+                                                                               class="text_add" style=" width:350px"
+                                                                               required data-title="name"
+                                                                               data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss">
+            <label class="label_name">描述：</label><span class="add_name"><input name="desc" type="text"
+                                                                               class="text_add"
+                                                                               style=" width:350px" required
+                                                                               data-title="description" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+        <li class="adderss">
+            <label class="label_name">支付标识：</label><span class="add_name"><input name="paycode" type="text"
+                                                                                 class="text_add"
+                                                                                 style=" width:350px" required
+                                                                                 data-title="payMark" data-role="add"/></span>
+            <div class="prompt r_f"></div>
+        </li>
+
+        <li class="adderss" style="height:auto;"><label class="label_name">品牌LOGO：</label><span class="add_name"><div class="demo l_f">
+	           <div class="logobox"><div class="resizebox" id="upload" onclick="document.getElementById('paymentLogo').click()" style="position:relative"><img src="__ADMIN_STATIC__/images/image.png" width="100px" alt="" height="100px"><i class="delete-img">删除</i></div></div>
+               <div class="logoupload">
+                  <div class="btnbox"><a id="uploadBtnHolder" class="uploadbtn" href="javascript:;" onclick="document.getElementById('paymentLogo').click()">上传替换</a></div>
+              </div>
+              <input type="hidden" name="logo" value="" id="logo" data-role='add'/>
+           </div></span>
+            <div class="prompt r_f"></div>
+        </li>
+
+        <li class="address" style="display: block;margin: 0 auto;text-align: center;width:75%"><button class="btn btn-default btn-sm btn-config">添加配置</button></li>
+        <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span
+                class="add_name"><label><input name="status" type="radio" checked="checked" value="正常" class="ace"
+                                               data-role="add"/><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+            <label><input name="status" type="radio" class="ace" value="禁用" data-role="add"/><span class="lbl">关闭</span></label></span>
+            <div class="prompt r_f"></div>
+        </li>
+    </ul>
+</div>
+<input type="file" name="paymentLogo" id="paymentLogo" onchange="fileSelect(this)" style="display:none"/>
+<script>
+  $(document).ready(function () {
+
+      /*点击添加分类*/
+    $('#member_add').on('click', function () {
+
+        /*清空input-start*/
+      $(".add_menber input[type$='text']").each(function(n) {
+        $(this).val('');
+      });
+      $("#upload img").attr('src', '__ADMIN_STATIC__/images/image.png')
+        /*清空input-end*/
+
+      layer.open({
+        type: 1,
+        title: '添加分类',
+        maxmin: true,
+        shadeClose:false, //点击遮罩关闭层
+        area: ['800px', ''],
+        content: $('#add_menber_style'),
+        btn: ['提交', '取消'],
+        yes: function (index, layero) {
+          var num = 0;
+          var str = "";
+          var arrInput = $('.page-content').find('input[type="text"]');
+
+            /*不能为空*/
+          arrInput.each(function (n) {
+            if ($(this).attr("name") == "name" && $(this).val() == "") {
+              layer.alert(str += "" + $(this).attr("data-title") + "不能为空！\r\n", {
+                title: '提示框',
+                icon: 0,
+              });
+              num++;
+              return false;
+            }
+          })
+          if (num > 0) {
+              /*name没有数据*/
+            return false
+          } else {
+              /*进行ajax请求*/
+            var data = serializeData();
+            console.log(data);
+            util.ajaxPost('{:url("addEdit")}',data).done(function (res) {
+              if(res.code>0){
+                console.log(res);
+                layer.close(index);
+                layer.msg(res.msg);
+                setTimeout(function () {
+                  window.location.href=res.url;
+                },2000);
+              }else{
+                layer.msg(res.msg);
+              }
+
+            }).fail(function (error) {
+              layer.msg(error.status+"服务器发生错误");
+            })
+          }
+
+        },
+        cancel:function () {
+          $('.add_config').remove();
+        }
+      })
+
+    });
+
+    $(".logobox .delete-img").on('click', function (e) {
+      if($(this).data('src') !== undefined){
+        util.ajaxPost('{:url('api/UploadFiles/delImg')}', {path: $(this).data('src')}).done(function (res) {
+          if(res.code == 1){
+            $("#upload").find('img').eq(0).attr('src', '')
+            $('.delete-img').data('src', '')
+            $("#logo").val('');
+          }
+          layer.msg(res.msg)
+        }).fail(function (err) {
+          layer.msg(err.status + '服务器错误')
+        });
+      }
+      return false;
+    })
+      /*点击配置按钮添加*/
+    $('.btn-config').on('click', function () {
+      var $li = $('<li class="adderss add_config"><label class="label_name">配置:</label><span class="add_name"><input name="zid" type="text"  class="text_add" style=" width:175px" required data-title="config" data-role="addConfig"/><input type="text" style="width: 175px" class="text_add" required data-role="addConfig"/><button class="btn btn-danger btn-xs click_delete" style="position: relative;top: -2px;margin-left: 10px" onclick="click_delete(this)">删除</button></span> <div class="prompt r_f"></div> </li>');
+      var $last = $(".page-content").find('li:last-child');
+      $li.insertBefore($last);
+    })
+
+  });
+
+  /*照片异步上传*/
+  function fileSelect(o){
+    // alert(1)
+    // return false
+    $.ajaxFileUpload({
+        url:'{:url('api/UploadFiles/uploadAjax',array('file'=>'paymentLogo','to_dir'=>'payment'))}',
+      type: 'post',
+      secureuri :false,
+      fileElementId :'paymentLogo',
+      dataType : 'json',
+      success : function (res){
+      if(res.code == 1){
+        layer.msg('上传成功')
+        $("#upload").find('img').eq(0).attr('src', res.path);
+        $('.delete-img').data('src', res.path);
+        $("#logo").val(res.path);
+      }else{
+        layer.msg('上传失败')
+      }
+    },
+    error: function(data, status, e){   //提交失败自动执行的处理函数
+      // alert('error',e);
+      console.log(data)
+      console.log(status)
+      console.log(e)
+    }
+  })
+
+  }
+
+  /*点击删除按钮进行删除*/
+  function click_delete(obj) {
+    $(obj).parents('.add_config').remove();
+  }
+
+
+
+  /*点击启用*/
+  function member_start(obj, id) {
+    layer.confirm('确认要启用吗？', function(index) {
+
+      adminAjax('Post','{:url('addEdit')}', util.jsonToUrlStr({"id":id,'status': '正常'}), false, function () {
+
+        layer.msg('已启用!', {
+          icon: 6,
+          time: 1000
+        });
+        $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs btn-success" onClick="member_stop(this,'+id+')" href="javascript:;" title="停用"><i class="icon-ok bigger-120"></i></a>');
+        $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">正常</span>');
+        $(obj).remove();
+      })
+
+    });
+  }
+
+
+  /*用户-停用*/
+  function member_stop(obj, id) {
+    layer.confirm('确认要停用吗？', function(index) {
+      adminAjax('Post','{:url('addEdit')}', util.jsonToUrlStr({"id":id,'status': '禁用'}), false, function () {
+        layer.msg('已停用!', {
+          icon: 5,
+          time: 1000
+        });
+        $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs " onClick="member_start(this,'+id+')" href="javascript:;" title="开启"><i class="icon-ok bigger-120"></i></a>');
+        $(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
+        $(obj).remove();
+      })
+    });
+  }
+
+
+  /*点击编辑*/
+  function member_edit(id) {
+      /*获取data-role='add'的元素并设置值*/
+    var eles=$("*[data-role='add']");
+    console.log(eles);
+    adminAjax('Get', '{:url('getPayById')}', util.jsonToUrlStr({"id": id}), false, function (res) {
+      var data= res.data;
+      console.log(data);
+      for(var i=0;i<eles.length;i++){
+        var name=$(eles[i]).attr("name");
+        if($(eles[i]).attr('type')=='radio'){
+          if($(eles[i]).val()==data.status){
+            $(eles[i]).prop('checked','checked')
+          }else{
+            $(eles[i]).prop('checked',false);
+          }
+        }else {
+          $(eles[i]).val(data[name]);
+        }
+      }
+      $("#upload img").attr('src', data['logo']);
+
+          /*设置配置的值*/
+      var config =data.config;
+      var arrConfig = config.split('|$|');
+      var jsonConfig={};
+          /*配置共有多少个数据，一横有两条*/
+      var newArrConfig=[];
+      if(arrConfig.length>1){
+        for (var i=0;i<arrConfig.length;i++){
+          jsonConfig = JSON.parse(arrConfig[i]);
+          $.each(jsonConfig,function (key,value) {
+            newArrConfig.push(key);
+            newArrConfig.push(value);
+          })
+        }
+        console.log(newArrConfig);
+
+          /*创建row来承载配置的内容*/
+        var number = newArrConfig.length/2;
+        for(var i=0;i<number;i++){
+          $('.btn-config').trigger("click");
+        }
+
+        var eleConfig=$('*[data-role="addConfig"]');
+        for (var i=0;i<eleConfig.length;i++){
+          $(eleConfig[i]).val(newArrConfig[i]);
+        }
+      }else{
+        console.log('没有配置信息');
+    }
+
+
+      layer.open({
+        type: 1,
+        title: '添加分类',
+        maxmin: true,
+        shadeClose: false, //点击遮罩关闭层
+        area: ['800px', ''],
+        content: $('#add_menber_style'),
+        btn: ['提交', '取消'],
+        yes: function(index, layero) {
+          var num = 0;
+          var str = "";
+          //不能为空
+          $(".add_menber input[type$='text']").each(function(n) {
+            if ($(this).attr('name') == 'name' && $(this).val() == "") {
+
+              layer.alert(str += "" + $(this).attr("data-title") + "不能为空！\r\n", {
+                title: '提示框',
+                icon: 0,
+              });
+              num++;
+              return false;
+            }
+          });
+          if (num > 0) {
+            return false;
+          } else {
+            var data = serializeData()+'&id='+id;
+            console.log(data)
+            util.ajaxPost("{:url('addEdit')}", data).done(function (res) {
+              if(res.code > 0){
+                layer.close(index);
+                layer.msg(res.msg);
+                setTimeout(function () {  window.location.href = res.url;},2000)
+              }else{
+                layer.msg(res.msg)
+              }
+
+            }).fail(function (err) {
+              layer.msg(err.status+"服务器发生错误")
+            });
+          }
+        },
+        cancel:function () {
+          $('.add_config').remove();
+        },
+
+      });
+    })
+
+  }
+
+  /*用户-删除*/
+  function member_del(obj, id) {
+    layer.confirm('确认要删除吗？', function(index) {
+      adminAjax('Get', '{:url('delete')}', util.jsonToUrlStr({"id":id}), false, function () {
+        $(obj).parents("tr").remove();
+        layer.msg('已删除!', {
+          icon: 1,
+          time: 1000
+        });
+      })
+    });
+  }
+
+
+
+  /*格式化数据并返回-start*/
+  function serializeData(type) {
+    var type = type || 'add';
+
+      /*获取所有(data-role)为add的元素*/
+    var eles = $("*[data-role='add']");
+
+    var data = [];
+    var str = '';
+
+      /*获取config标签，根据标签获取值*/
+    var arrConfig = $('*[data-role="addConfig"]');
+    var dataJson = {};
+    var dataArr = [];
+    var dataArr2 = [];
+    var dataStr = '';
+
+      /*数组保存每个config元素的值*/
+    for (var i = 0; i < arrConfig.length; i++) {
+      dataArr[i] = $(arrConfig[i]).val();
+    }
+      /*获取数组里面每两个的值，用json对象保存*/
+    for (var j = 0; j < dataArr.length; j = j + 2) {
+      dataJson[dataArr[j]] = dataArr[j + 1];
+      dataJson = JSON.stringify(dataJson);
+        /*保存json数据*/
+      dataArr2.push(dataJson);
+      dataJson = {};
+    }
+    dataStr ='config='+dataArr2.join("|$|");
+
+    for (var i = 0; i < eles.length; i++) {
+      var _d = $(eles[i]);
+        /*判断是否为单选按钮*/
+      if (_d.attr('type') == "radio") {
+          /*判断单选按钮是否被选中,选中则添加否则不添加*/
+        if (_d.prop("checked")) {
+          data[_d.attr('name')] =_d.val();
+          str += _d.attr('name') + '=' + _d.val() + '&';
+        }
+
+      } else {
+        data[_d.attr('name')] = _d.val();
+        str += _d.attr('name') + '=' + _d.val() + '&';
+      }
+
+    }
+    return str+dataStr;
+  }
+  /*格式化数据并返回-end*/
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!--登录-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/tool.css"/>
+    <link rel="stylesheet" type="text/css" href="__HOME_STATIC__/css/newStyle.css"/>
+    <script src="__HOME_STATIC__/js/zepto.js"></script>
+    <script src="__PUBLIC__/static/js/util.js"></script>
+	<title>登录</title>
+</head>
+<body  style="background: #fff;">
+<div  class="box Login SignUp OtherLogin">
+	<section>
+		<div class="item">
+				<ul>
+					{if condition="cache_data('site_config')['login_sms'] eq 1"}
+						<li class="border_bottom one_item" onclick="item(this)">账号密码登录</li>
+						<li onclick="item(this)">快捷免密码登录</li>
+					{else /}<li style="width: 100%;">账号密码登录</li>
+					{/if}
+				</ul>
+		
+			<div class="clear">
+
+			</div>
+		</div>
+	</section>
+	<section class="one_box none">
+		<div class="warry">
+			<div class="inputone">
+				<div id="prenumber_phone">
+					+86
+				</div>
+				<input id="input_one" type="text" placeholder="请输入手机号"/>
+			</div>
+			<div class="inputone pad_right">
+				<span class="login_identify_code" id="sendtest">
+					获取验证码
+				</span>
+				<input id="testinput" type="text" placeholder="请输入验证码"/>
+			</span>
+			<div class="submit">
+				<button onclick="shortcut()">登录</button>
+			</div>
+		</div>
+	</section>
+	<section class="two_box">
+		<div class="warry">
+			<div class="inputone pad_right">
+				<!--<div class="name">
+					
+				</div>-->
+				<input  id="phone" class="pad_left" type="text" placeholder="请输入手机号"/>
+			</div>
+			<div class="inputone pad_right">
+				<!--<div class="name login_password">
+					
+				</div>-->
+				<input id="test" class="pad_left" type="password" placeholder="请输入密码"/>
+			</div>
+			<div class="submit">
+				<button onclick="textuser()">登录</button>
+			</div>
+			<div class="login-to">
+				<a href="{:url('home/login/FindPassword')}">忘记密码</a>
+				{php}
+				if(!input('fromwchat') && input('fromwchat') != 1){
+					echo '<span>/</span><a href="'.url('home/login/reg').'">立即注册</a>';
+				}
+				{/php}
+			</div>
+		</div>
+		<section>
+			<div class="otherLogin_footer">
+				<div class="circle">
+					<img src="__HOME_STATIC__/img/OtherLogin_03.png"/>
+				</div>
+				<div class="other">-其他登录方式-</div>
+				<div class="weixinLogin">
+					<a href="{:url('home/Weichat/auth_login')}"><img src="__HOME_STATIC__/img/OtherLogin_07.png"/></a>
+				</div>
+				<div class="wenxin">
+					微信
+				</div>
+			</div>
+		</section>
+	</section>
+</div>
+<script src="__HOME_STATIC__/js/Login.js"></script>
+<script src="__PUBLIC__/static/js/util.js"></script>
+<script src="__HOME_STATIC__/js/layer.js"></script>
+<script type="text/javascript" charset="utf-8">
+//console.log('{:cache_data('site_config')['sms_wait_time']}');
+    function textuser(){
+        var value_1=$("#phone").val();
+        var value_2=$("#test").val();
+        if(value_1==""){
+		alert("请输入用户名");
+            return false;
+        };
+        if(value_2==""){
+			alert("请输入密码");
+            return false;
+        }
+        $.ajax({
+            url: '{:url('login')}',
+            type:'post',
+            anync:true,
+            data:{phone:value_1,password:value_2},
+            datatype:'text',
+            success:function(data){
+                console.log(data);
+                if(data.code==0){
+					alert("登入失败,请检查用户名或密码");
+                };
+                 if(data.code>0){
+					 location.href=data.url;
+                };
+//
+            }
+        })
+    };
+</script>
+<script type="text/javascript">
+	//快捷登录
+	{if condition="cache_data('site_config')['login_sms'] eq 1"}
+	var timer;
+	var sendtest_=$("#sendtest");
+	sendtest_.on('click',fastLogin);
+		function fastLogin(){
+			var phonetest=$("#input_one").val();
+	    		if (phonetest=="") {
+					alert("请输入手机号");
+					  return false;
+	    	};
+    			if (!/^1\d{10}$/.test(phonetest)) {
+					alert("请输入正确的手机号");
+				  return false;
+    	};
+    	clearInterval(timer);
+    	sendtest_.off('click');
+	var text=$("#input_one").val();
+	$.ajax({
+		type:"Post",
+		data:{'mobile':text,'login_type':'sms'},
+		url:'{:url('ajaxSendSms')}',
+		async:true,
+		success:function(data){
+		}
+	});
+			var index='{:cache_data('site_config')['sms_wait_time']}';
+	      sendtest_.html(index+'s');
+	      timer=setInterval(function(){
+	        if (index<1) {
+	          clearInterval(timer);
+	          sendtest_.on("click",fastLogin);
+	          sendtest_.html("重新获取");
+	          return false;
+	        }
+	        index--;
+	        var index_=index<10&&index>0?"0"+index:index;
+	        sendtest_.html(index_+'s');
+	      },1000);
+}
+			//快捷登入
+ function shortcut(){
+    	var phonetest=$("#input_one").val();
+    	var test=$("#testinput").val();
+    		if (phonetest=="") {
+				alert("请输入手机号");
+				  return false;
+    	};
+    			if (!/^1\d{10}$/.test(phonetest)) {
+					alert("请输入正确的手机号");
+				  return false;
+    	};
+    	if (test=="") {
+				alert("请输入验证码");
+				return false;
+    	};
+	$.ajax({
+		type:"Post",
+		data:{'login_type':'sms','phone':phonetest,'code':test},
+		url:'{:url('login')}',
+		async:true,
+		success:function(data){
+			if (data.code>0) {
+				  location.href=data.url;
+			}
+		}
+	});
+}
+	{/if}
+</script>
+</body>
+</html>
